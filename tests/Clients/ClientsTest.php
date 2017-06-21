@@ -159,10 +159,12 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::JSON));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":"testing"}')));
         $this->assertJsonStringEqualsJsonString('{"q":"testing"}', $this->class->toJson());
-        /*$file = file_get_contents(dirname(__DIR__).'/Data/test.xls');
-        $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::XLS));
-        $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $file)));
-        $this->assertJsonStringEqualsJsonString('{"q":"testing"}', $this->class->toJson());*/
+        if (class_exists('PHPExcel_IOFactory')) {
+            $file = file_get_contents(dirname(__DIR__).'/Data/test.xls');
+            $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::XLS));
+            $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $file)));
+            $this->assertJsonStringEqualsJsonString('{"1":{"A":"q"},"2":{"A":"testing"}}', $this->class->toJson());
+        }
     }
 
     public function testIsJson()
@@ -205,12 +207,6 @@ class EntityTest extends TestCase
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setApiEntity(new TrackingEntity()));
         $this->assertInstanceOf(ApiEntityInterface::class, $this->class->getApiEntity());
-    }
-
-    public function testSetGetAlternativeAuthorizedUrl()
-    {
-        $this->assertInstanceOf(ClientsInterface::class, $this->class->setAlternativeAuthorizedUrl('x'));
-        $this->assertSame('x', $this->class->getAlternativeAuthorizedUrl());
     }
 
     public function testSetGetAlternativeAuthorizedUrl()

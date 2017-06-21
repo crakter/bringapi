@@ -87,8 +87,6 @@ abstract class ApiEntityBase
                         continue;
                     } else {
                         if ((!isset($v) || $v === null) && $valid == ValidateParameters::NOT_NULL) {
-                            echo $k."\r\n";
-                            echo $v;
                             throw new ApiEntityNotCorrectException(sprintf('%s is not allowed to be empty in %s', $k, __CLASS__));
                         }
                     }

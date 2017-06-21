@@ -372,8 +372,7 @@ abstract class Base
 
                 return json_encode($xml);
             case ReturnFileTypes::XLS:
-                //TODO: needs to check if this is working.
-                $tmpFile = tempnam('/tmp', 'BringApi') ?? 'tmp.xls';
+                $tmpFile = /*tempnam('/tmp', 'BringApi') ??*/ 'tmp.xls';
                 file_put_contents($tmpFile, $this->getResponse()->getBody());
                 $objPHPExcel = \PHPExcel_IOFactory::load($tmpFile);
                 unlink($tmpFile);
