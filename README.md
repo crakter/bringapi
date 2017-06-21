@@ -96,22 +96,21 @@ For the tests to be able to run the Bring UID, Bring API Key and Customer number
 For people running Linux
 
 ```
-cd example/
 export BRING_UID="john.doe@example.com" && export BRING_API_KEY="1234abc-abcd-1234-5678-abcd1234abcd" && export BRING_CUSTOMER_NUMBER="	PARCELS_NORWAY-10001123123"
 ```
 
 For people running Windows
 
 ```
-cd examples/
-setx BRING_UID me@myemail.com
-setx BRING_API_KEY xxxxxx-xxxxx-xxx-xxxx
-setx BRING_CUSTOMER_NUMBER BRING__CUSTOMER_NUMBER
+setx BRING_UID john.doe@example.com
+setx BRING_API_KEY 1234abc-abcd-1234-5678-abcd1234abcd
+setx BRING_CUSTOMER_NUMBER PARCELS_NORWAY-10001123123
 ```
 
 Go into a new command prompt and run the examples.
 Some examples can be passed with arguments like postalcodes.
 ```
+cd examples/
 php BookAndPickupShipment.php
 php PostalCode.php <numberOfPostalCode>
 php ShippingGuideAll.php <fromPostalCode> <toPostalCode>
