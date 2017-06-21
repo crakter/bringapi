@@ -1,0 +1,35 @@
+{
+    "name": "Crakter/BringApi",
+    "type": "library",
+    "description": "BringApi is a fully functional library to help contact Bring API",
+    "authors": [
+        {
+            "name": "Martin Madsen",
+            "email": "crakter@gmail.com",
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+		"guzzlehttp/guzzle": ">=6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=6",
+        "friendsofphp/php-cs-fixer": ">=2",
+		"sami/sami": ">=4"
+    },
+    "suggest": {
+        "phpoffice/phpexcel": "Allows for convertion of response to JSON/array"
+    },
+    "autoload": {
+        "psr-4": {
+		  "Crakter\\BringApi\\": "src/"
+		}
+    },
+	"autoload-dev": {
+		"psr-4": {
+		  "Crakter\\BringApi\\": "tests/"
+		}
+	},
+    "license": "MIT"
+}
