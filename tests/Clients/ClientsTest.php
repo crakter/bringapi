@@ -163,7 +163,7 @@ class EntityTest extends TestCase
             $file = file_get_contents(dirname(__DIR__).'/Data/test.xls');
             $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::XLS));
             $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $file)));
-            $this->assertJsonStringEqualsJsonString('{"1":{"A":"q"},"2":{"A":"testing"}}', $this->class->toJson());
+            $this->assertJsonStringEqualsJsonString('{"q":"testing"}', $this->class->toJson());
         }
     }
 

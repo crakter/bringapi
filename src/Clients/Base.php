@@ -372,13 +372,35 @@ abstract class Base
 
                 return json_encode($xml);
             case ReturnFileTypes::XLS:
-                $tmpFile = /*tempnam('/tmp', 'BringApi') ??*/ 'tmp.xls';
+                $tmpFile = @tempnam('/tmp', 'BringApi') ?? 'tmp.xls';
                 file_put_contents($tmpFile, $this->getResponse()->getBody());
                 $objPHPExcel = \PHPExcel_IOFactory::load($tmpFile);
                 unlink($tmpFile);
                 $array = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
 
-                return json_encode($array);
+                $id = 0;
+                $newObj = new \stdClass();
+                $newArray = [];
+                foreach($array as $key => $val) {
+                    $id++;
+                    if ($id === 1) {
+                        foreach ($val as $k => $v) {
+                            $header[$k] = $v;
+                        }
+                        continue;
+                    }
+                    foreach ($val as $k => $v) {
+                        $newObj->{$header[$k]} = $v;
+                    }
+                    if (($val === end($array)) && $id === 2) {
+                        $newArray = $newObj;
+                    } else {
+                        $newArray[] = $newObj;
+                    }
+                    $newObj = new \stdClass();
+                }
+
+                return json_encode($newArray);
                 break;
             case ReturnFileTypes::JSON:
             default:
