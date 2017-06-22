@@ -113,6 +113,27 @@ abstract class Base
     }
 
     /**
+     * Set Client
+     * @param  ClientInterface               $client client interface
+     * @return ClientsInterface              All clients must implement ClientsInterface
+     */
+    public function setClient(ClientInterface $client): ClientsInterface
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Get Client
+     * @return ClientInterface              All clients must implement ClientsInterface
+     */
+    public function getClient(): ClientInterface
+    {
+        return $this->client;
+    }
+
+    /**
      * Set Accept-Language
      * @param  string                        $value value of option
      * @throws InputValueNotAllowedException if value does not existing

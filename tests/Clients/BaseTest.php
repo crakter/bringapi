@@ -7,10 +7,12 @@ use Crakter\BringApi\DefaultData\ReturnFileContentTypes;
 use Crakter\BringApi\DefaultData\ReturnFileTypes;
 use Crakter\BringApi\DefaultData\HttpMethods;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Crakter\BringApi\Entity\ApiEntityInterface;
 use Crakter\BringApi\Entity\TrackingEntity;
 
-class EntityTest extends TestCase
+class BaseTest extends TestCase
 {
     private $class;
 
@@ -213,5 +215,11 @@ class EntityTest extends TestCase
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setAlternativeAuthorizedUrl('x'));
         $this->assertSame('x', $this->class->getAlternativeAuthorizedUrl());
+    }
+
+    public function testSetGetClient()
+    {
+        $this->assertInstanceOf(ClientsInterface::class, $this->class->setClient(new Client()));
+        $this->assertInstanceOf(ClientInterface::class, $this->class->getClient());
     }
 }

@@ -45,8 +45,7 @@ class ListCustomers extends Base implements ClientsInterface
      */
     public function getProductsCustomer(string $customerNumber): array
     {
-        $array = $this->getResponse()['customers'];
-        foreach ($array as $key => $val) {
+        foreach ($this->toArray()['customers'] as $key => $val) {
             if ($val['customerNumber'] == $customerNumber) {
                 return $val['products'];
             }

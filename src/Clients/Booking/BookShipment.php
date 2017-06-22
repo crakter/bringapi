@@ -67,7 +67,9 @@ class BookShipment extends Base implements ClientsInterface
      */
     public function processEntity(): ClientsInterface
     {
-        if ($this->getApiEntity() == null) {
+        try {
+            $this->getApiEntity();
+        } catch (\Throwable $e) {
             throw new ApiEntityNotCorrectException('Api Entity needs to be set.');
         }
         $this->setOptionsJson($this->getApiEntity()->toArray());
