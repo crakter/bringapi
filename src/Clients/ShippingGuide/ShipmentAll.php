@@ -16,6 +16,7 @@ use Crakter\BringApi\Clients\Base;
 use Crakter\BringApi\Clients\ClientsInterface;
 use Crakter\BringApi\DefaultData\HttpMethods;
 use Crakter\BringApi\Exception\BringClientException;
+use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
 
 /**
  * BringApi ShipmentAll
@@ -67,6 +68,11 @@ class ShipmentAll extends Base implements ClientsInterface
      */
     public function processEntity(): ClientsInterface
     {
+        try {
+            $this->getApiEntity();
+        } catch (\Throwable $e) {
+            throw new ApiEntityNotCorrectException('Api Entity needs to be set.');
+        }
         $this->setOptionsQuery($this->apiEntity->toArray());
 
         return $this;
