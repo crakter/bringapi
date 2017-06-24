@@ -110,7 +110,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Volume with support for multiple values.
-     * @param  int               $int value of Volume per package
+     * @param  int                $int value of Volume per package
      * @return ApiEntityInterface
      */
     public function addVolume(int $volume): ApiEntityInterface
@@ -124,7 +124,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Weight in Grams with support for multiple values.
-     * @param  int               $int value of weightInGrams per package
+     * @param  int                $int value of weightInGrams per package
      * @return ApiEntityInterface
      */
     public function addWeightInGrams(int $weightInGrams): ApiEntityInterface
@@ -138,7 +138,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Width in cm with support for multiple values.
-     * @param  int               $int value of width per package
+     * @param  int                $int value of width per package
      * @return ApiEntityInterface
      */
     public function addWidth(int $width): ApiEntityInterface
@@ -152,7 +152,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Height in cm with support for multiple values.
-     * @param  int               $int value of height per package
+     * @param  int                $int value of height per package
      * @return ApiEntityInterface
      */
     public function addHeight(int $height): ApiEntityInterface
@@ -166,7 +166,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Length in cm with support for multiple values.
-     * @param  int               $int value of length per package
+     * @param  int                $int value of length per package
      * @return ApiEntityInterface
      */
     public function addLength(int $length): ApiEntityInterface
@@ -249,12 +249,12 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Add product to the list of products
-     * @param  string              $product Products::SERVICEPAKKE
+     * @param  string             $product Products::SERVICEPAKKE
      * @return ApiEntityInterface
      */
     public function addProduct(string $product): ApiEntityInterface
     {
-        if(!isset($this->product)) {
+        if (!isset($this->product)) {
             $this->product = [];
         }
         $this->product[] = $product;
@@ -264,12 +264,12 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Add addtional service to the list of services
-     * @param  string              $additional
+     * @param  string             $additional
      * @return ApiEntityInterface
      */
     public function addAdditional(string $additional): ApiEntityInterface
     {
-        if(!isset($this->additional)) {
+        if (!isset($this->additional)) {
             $this->additional = [];
         }
         $this->additional[] = $additional;

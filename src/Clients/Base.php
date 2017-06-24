@@ -114,8 +114,8 @@ abstract class Base
 
     /**
      * Set Client
-     * @param  ClientInterface               $client client interface
-     * @return ClientsInterface              All clients must implement ClientsInterface
+     * @param  ClientInterface  $client client interface
+     * @return ClientsInterface All clients must implement ClientsInterface
      */
     public function setClient(ClientInterface $client): ClientsInterface
     {
@@ -126,7 +126,7 @@ abstract class Base
 
     /**
      * Get Client
-     * @return ClientInterface              All clients must implement ClientsInterface
+     * @return ClientInterface All clients must implement ClientsInterface
      */
     public function getClient(): ClientInterface
     {
@@ -402,7 +402,7 @@ abstract class Base
                 $id = 0;
                 $newObj = new \stdClass();
                 $newArray = [];
-                foreach($array as $key => $val) {
+                foreach ($array as $key => $val) {
                     $id++;
                     if ($id === 1) {
                         foreach ($val as $k => $v) {
