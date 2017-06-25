@@ -30,6 +30,61 @@ class PostalCodeTest extends TestCase
         $this->assertInstanceOf(ClientsInterface::class, $this->class->processClientUrlVariables());
     }
 
+    public function testCheckIfNormal()
+    {
+        $array = [
+            'result' => 'OSLO',
+            'valid' => true,
+            'postalCodeType' => 'NORMAL',
+        ];
+        $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], json_encode($array)));
+        $this->assertTrue($this->class->checkIfNormal());
+    }
+
+    public function testCheckIfUnknown()
+    {
+        $array = [
+            'result' => 'OSLO',
+            'valid' => true,
+            'postalCodeType' => 'UNKNOWN',
+        ];
+        $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], json_encode($array)));
+        $this->assertTrue($this->class->checkIfUnknown());
+    }
+
+    public function testCheckIfPoBox()
+    {
+        $array = [
+            'result' => 'OSLO',
+            'valid' => true,
+            'postalCodeType' => 'POBOX',
+        ];
+        $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], json_encode($array)));
+        $this->assertTrue($this->class->checkIfPoBox());
+    }
+
+    public function testCheckIfSpecialCustomer()
+    {
+        $array = [
+            'result' => 'OSLO',
+            'valid' => true,
+            'postalCodeType' => 'SPECIALCUSTOMER',
+        ];
+        $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], json_encode($array)));
+        $this->assertTrue($this->class->checkIfSpecialCustomer());
+    }
+
+    public function testCheckIfSpecialNoStreet()
+    {
+        $array = [
+            'result' => 'OSLO',
+            'valid' => true,
+            'postalCodeType' => 'SPECIALNOSTREET',
+        ];
+        $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], json_encode($array)));
+        $this->assertTrue($this->class->checkIfSpecialNoStreet());
+    }
+
     public function testCheckErrorsException()
     {
         $this->expectException(BringClientException::class);

@@ -45,6 +45,7 @@ class ListCustomersTest extends TestCase
           "HOME_DELIVERY_PARCEL",
           "HOME_DELIVERY_MAILBOX",
         ]);
+        $this->assertSame($this->class->getProductsCustomer('x'), []);
     }
 
     public function testProcessClientUrlVariables()

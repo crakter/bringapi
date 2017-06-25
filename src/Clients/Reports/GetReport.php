@@ -15,6 +15,7 @@ use Crakter\BringApi\DefaultData\ClientUrls;
 use Crakter\BringApi\Clients\Base;
 use Crakter\BringApi\Clients\ClientsInterface;
 use Crakter\BringApi\DefaultData\HttpMethods;
+use Crakter\BringApi\Exception\BringClientException;
 
 /**
  * BringApi GetReport
@@ -88,7 +89,11 @@ class GetReport extends Base implements ClientsInterface
      */
     public function checkErrors(): ClientsInterface
     {
-        $array = $this->toArray();
+        $checkIfNotError = $this->isJson($this->toJson());
+
+        if ($checkIfNotError === false) {
+            throw new BringClientException('There was an error in response');
+        }
 
         return $this;
     }

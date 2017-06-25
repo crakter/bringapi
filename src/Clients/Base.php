@@ -389,7 +389,7 @@ abstract class Base
     {
         switch ($this->getEndPoint()) {
             case ReturnFileTypes::XML:
-                $xml = simplexml_load_string($this->getResponse()->getBody());
+                $xml = @simplexml_load_string($this->getResponse()->getBody());
 
                 return json_encode($xml);
             case ReturnFileTypes::XLS:
@@ -426,7 +426,6 @@ abstract class Base
             case ReturnFileTypes::JSON:
             default:
                 return (string) $this->getResponse()->getBody();
-                break;
         }
     }
 

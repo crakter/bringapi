@@ -21,6 +21,11 @@ class BaseTest extends TestCase
         $this->class = (new Booking\BookShipment);
     }
 
+    public function testConstruct()
+    {
+        $this->assertInstanceOf(ClientsInterface::class, (new Booking\BookShipment(new TrackingEntity(), new Authorization())));
+    }
+
     public function testSetAcceptLanguage()
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setAcceptLanguage('no'));
@@ -185,8 +190,8 @@ class BaseTest extends TestCase
     public function testToXml()
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::JSON));
-        $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":"testing"}')));
-        $this->assertSame('<?xml version="1.0"?><root><q>testing</q></root>', str_replace(["\r", "\n", '  '], '', $this->class->toXml('root')));
+        $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":{"p":"testing"}}')));
+        $this->assertSame('<?xml version="1.0"?><root><q><p>testing</p></q></root>', str_replace(["\r", "\n", '  '], '', $this->class->toXml('root')));
     }
 
     public function testGetSetHttpMethod()

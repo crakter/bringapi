@@ -54,7 +54,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfUnknown(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'UNKOWN') ? true : false;
+        return ($this->toArray()['postalCodeType'] == 'UNKNOWN') ? true : false;
     }
 
     /**
