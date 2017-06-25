@@ -49,7 +49,8 @@ class EntityTest extends TestCase
     public function testToXml()
     {
         $this->class->setQ('testing');
-        $this->assertSame(str_replace(["\r", "\n", '  '], '', $this->class->toXml()), '<?xml version="1.0"?><Entity><q>testing</q></Entity>');
+        $this->class->setP(['test' => 'x']);
+        $this->assertSame(str_replace(["\r", "\n", '  '], '', $this->class->toXml()), '<?xml version="1.0"?><Entity><q>testing</q><p><test>x</test></p></Entity>');
     }
 
     public function testSet()
