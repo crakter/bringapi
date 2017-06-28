@@ -1,15 +1,22 @@
 <?php
 
+/*
+ * This file is part of the BringApi package.
+ *
+ * (c) Martin Madsen <crakter@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Crakter\BringApi\Clients;
 
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
 use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
 use Crakter\BringApi\DefaultData\ReturnFileTypes;
 
 class GetReportTest extends TestCase

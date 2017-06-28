@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the BringApi package.
+ *
+ * (c) Martin Madsen <crakter@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Crakter\BringApi\DefaultData;
 
 use PHPUnit\Framework\TestCase;
@@ -12,7 +21,7 @@ class AdditionalProductsTest extends TestCase
      */
     public function testHasAppliesToAllowedValue(string $allowed, array $onProducts)
     {
-        foreach($onProducts as $product) {
+        foreach ($onProducts as $product) {
             $this->assertTrue(AdditionalProducts::hasAppliesTo($allowed, $product));
         }
     }
@@ -23,7 +32,7 @@ class AdditionalProductsTest extends TestCase
     public function testHasAppliesToNotAllowedValue(string $notAllowed, array $onProducts)
     {
         $this->expectException(ProductAppliesToNotAllowedException::class);
-        foreach($onProducts as $product) {
+        foreach ($onProducts as $product) {
             AdditionalProducts::hasAppliesTo($notAllowed, $product);
         }
     }

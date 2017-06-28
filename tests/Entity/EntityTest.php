@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the BringApi package.
+ *
+ * (c) Martin Madsen <crakter@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Crakter\BringApi\Entity;
 
 use PHPUnit\Framework\TestCase;
@@ -83,7 +92,6 @@ class EntityTest extends TestCase
         $this->assertSame('testing', $this->class->getQ());
     }
 }
-
 
 class EntityTesting extends ApiEntityBase implements ApiEntityInterface
 {

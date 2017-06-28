@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the BringApi package.
+ *
+ * (c) Martin Madsen <crakter@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Crakter\BringApi\Clients;
 
 use PHPUnit\Framework\TestCase;
@@ -43,7 +52,7 @@ class BaseTest extends TestCase
         $array = [
             'schemaVersion' => 1,
             'testIndicator' => true,
-            'customerNumber' => 'x'
+            'customerNumber' => 'x',
         ];
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setOptionsQuery($array));
         $this->assertSame($this->class->getOptions(), ['query' => 'schemaVersion=1&testIndicator=true&customerNumber=x']);
@@ -54,7 +63,7 @@ class BaseTest extends TestCase
         $array = [
             'schemaVersion' => 1,
             'testIndicator' => true,
-            'customerNumber' => 'x'
+            'customerNumber' => 'x',
         ];
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setOptionsJson($array));
         $this->assertSame($this->class->getOptions(), ['json' => $array]);
@@ -65,7 +74,7 @@ class BaseTest extends TestCase
         $array = ['json' => [
             'schemaVersion' => 1,
             'testIndicator' => true,
-            'customerNumber' => 'x'
+            'customerNumber' => 'x',
         ]];
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setOptions($array));
         $this->assertSame($this->class->getOptions(), $array);
