@@ -49,32 +49,9 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
      * @see Base::toArray()
      * @return array
      */
-    public function getInvoiceNumbers(): string
+    public function getInvoiceNumbers(): array
     {
         return $this->toArray()['invoiceNumbers'];
-    }
-	
-	/**
-     * Sets the customerId for clientUrl
-     * @param string $customerId
-     * @example PARCELS_NORWAY-00012341234
-     * @return ClientsInterface All clients must implement ClientsInterface
-     */
-    public function setCustomerId(string $customerId): ClientsInterface
-    {
-        $this->customerId = $customerId;
-
-        return $this;
-    }
-
-    /**
-     * Gets the customerId for clientUrl
-     * @example PARCELS_NORWAY-00012341234
-     * @return string
-     */
-    public function getCustomerId(): string
-    {
-        return $this->customerId;
     }
 
     /**
@@ -105,7 +82,7 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
      */
     public function processClientUrlVariables(): ClientsInterface
     {
-        $this->setClientUrlVariables($this->getCustomerId(), $this->getCustomerOrGroupId(), $this->getEndPoint());
+        $this->setClientUrlVariables($this->getCustomerOrGroupId(), $this->getEndPoint());
 
         return $this;
     }
