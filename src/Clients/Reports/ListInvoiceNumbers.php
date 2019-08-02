@@ -106,6 +106,9 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
      */
     public function processEntity(): ClientsInterface
     {
+		if ($this->getApiEntity()) {
+			$this->setOptionsQuery($this->apiEntity->toArray());
+		}
         return $this;
     }
 }
