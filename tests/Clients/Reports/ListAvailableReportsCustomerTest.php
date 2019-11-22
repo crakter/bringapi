@@ -17,7 +17,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
 use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\DefaultData\ReturnFileTypes;
 
 class ListAvailableReportsCustomerTest extends TestCase
 {
