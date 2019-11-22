@@ -17,7 +17,7 @@ $ composer require crakter/bringapi
 
 ## Requirements
 
-* PHP version 7.0.0 or higher
+* PHP version 7.2.0 or higher
 * PHP extension `php_simplexml` enabled (enabled by default in 5.1.2 and above)
 
 ## Supported Apis

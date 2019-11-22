@@ -11,12 +11,15 @@
 
 $dir = __DIR__ . '/src';
 
-$iterator = Symfony\Component\Finder\Finder::create()
+use Sami\Sami;
+use Symfony\Component\Finder\Finder;
+
+$iterator = Finder::create()
     ->files()
     ->name('*.php')
     ->exclude('build')
     ->exclude('tests')
-    ->in($dir);
+    ->in('./src');
 
 $options = [
     'theme' => 'default',
@@ -25,6 +28,4 @@ $options = [
     'cache_dir' => __DIR__ . '/docs/cache',
 ];
 
-$sami = new Sami\Sami($iterator, $options);
-
-return $sami;
+return new Sami($iterator, $options);
