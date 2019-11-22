@@ -27,8 +27,8 @@
             "Crakter\\BringApi\\": "src/"
         }
     },
-	"autoload-dev": {
-		"psr-4": {
+    "autoload-dev": {
+        "psr-4": {
             "Crakter\\BringApi\\": "tests/"
         }
     },
