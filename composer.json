@@ -2,6 +2,7 @@
     "name": "crakter/bringapi",
     "type": "library",
     "description": "BringApi is a fully functional library to help contact Bring API",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Martin Madsen",

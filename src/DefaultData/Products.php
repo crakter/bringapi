@@ -58,4 +58,6 @@ abstract class Products
     const COURIER_4H = 'COURIER_4H';
     const COURIER_6H = 'COURIER_6H';
     const OIL_EXPRESS = 'OIL_EXPRESS';
+    const MAILBOX_PARCEL_NO_TRACKING = 3584; // new PAKKE_I_POSTKASSEN from 13.01.2020
+    const MAILBOX_PARCEL_RF_TRACKING = 3570; // new PAKKE_I_POSTKASSEN_SPORBAR from 13.01.2020
 }

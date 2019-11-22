@@ -645,16 +645,14 @@ abstract class Base
                 $this->getOptions()
             );
         } catch (ClientException $e) {
-            $request = $e->getResponse()->getBody()->getContents();
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $request),
+                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getMessage()),
                 null,
                 $e
             );
         } catch (RequestException $e) {
-            $request = $e->getResponse()->getBody()->getContents();
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $request),
+                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getMessage()),
                 null,
                 $e
             );

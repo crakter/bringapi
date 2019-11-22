@@ -43,8 +43,8 @@ $shipDate->modify('+5 hours');
 // Adds the essentials for ShippingGuide
 $request = (new ShippingGuideEntity)
     ->setClientUrl($clientUrl)
-    ->setFrom($fromPostalCode)
-    ->setTo($toPostalCode)
+    ->setFromPostalCode($fromPostalCode)
+    ->setToPostalCode($toPostalCode)
     ->setCustomerNumber($customerNumber)
     ->setDate($shipDate)
     ->setTime($shipDate)
@@ -85,7 +85,7 @@ $weightInKg = [
 ];
 foreach ($weightInKg as $k => $v) {
     $weight = $v * 1000;
-    for($x = 0; $x < $packages[$k]; $x++) {
+    for ($x = 0; $x < $packages[$k]; $x++) {
         $request->addWeightInGrams($weight);
     }
 }
@@ -96,7 +96,7 @@ $width = [
     40,
 ];
 foreach ($width as $k => $v) {
-    for($x = 0; $x < $packages[$k]; $x++) {
+    for ($x = 0; $x < $packages[$k]; $x++) {
         $request->addWidth($v);
     }
 }
@@ -107,7 +107,7 @@ $height = [
     30,
 ];
 foreach ($height as $k => $v) {
-    for($x = 0; $x < $packages[$k]; $x++) {
+    for ($x = 0; $x < $packages[$k]; $x++) {
         $request->addHeight($v);
     }
 }
@@ -118,7 +118,7 @@ $length = [
     60,
 ];
 foreach ($length as $k => $v) {
-    for($x = 0; $x < $packages[$k]; $x++) {
+    for ($x = 0; $x < $packages[$k]; $x++) {
         $request->addLength($v);
     }
 }

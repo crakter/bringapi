@@ -17,11 +17,11 @@ namespace Crakter\BringApi\Entity;
  * An class to supply correct information to Bring Api servers
  *
  * Quick setup: <code>$shippingGuide = (new ShippingGuideEntity)
- *                     ->setFrom('1712')
- *                     ->setTo('0278');</code>
+ *                     ->setFromPostalCode('1712')
+ *                     ->setToPostalCode('0278');</code>
  *
- * @property string $from             This can be set to from postal code
- * @property string $to               This can be set to to postal code
+ * @property string $fromPostalCode   This can be set to from postal code
+ * @property string $toPostalCode     This can be set to to postal code
  * @property int $weightInGrams       This can be set to the weight of the package/shipment
  * @property int $width               This can be set to width of package
  * @property int $length              This can be set to length of package
@@ -41,9 +41,9 @@ namespace Crakter\BringApi\Entity;
  * @property bool $volumeSpecial      This can be set if the package has a shape that may require "special handling fee"
  * @property string $fromCountry      This can be set to from which country it is sent from, default Norway. Example: Countries::NORWAY
  * @property string $toCountry      This can be set to from which country it is sent from, default Norway. Example: Countries::NORWAY
- * @method ApiEntityInterface setFrom(string $string)
+ * @method ApiEntityInterface setFromPostalCode(string $string)
  * @method string getFrom()
- * @method ApiEntityInterface setTo(string $string)
+ * @method ApiEntityInterface setToPostalCode(string $string)
  * @method string getTo()
  * @method ApiEntityInterface setWeightInGrams(int $int)
  * @method string getWeightInGrams()
@@ -143,7 +143,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      */
     public function addWidth(int $width): ApiEntityInterface
     {
-        $name = "weightInGrams{$this->counterWidth}";
+        $name = "width{$this->counterWidth}";
         $this->{$name} = $width;
         $this->counterWidth++;
 
@@ -157,7 +157,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      */
     public function addHeight(int $height): ApiEntityInterface
     {
-        $name = "weightInGrams{$this->counterHeight}";
+        $name = "height{$this->counterHeight}";
         $this->{$name} = $height;
         $this->counterHeight++;
 
@@ -171,7 +171,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      */
     public function addLength(int $length): ApiEntityInterface
     {
-        $name = "weightInGrams{$this->counterLength}";
+        $name = "length{$this->counterLength}";
         $this->{$name} = $length;
         $this->counterLength++;
 

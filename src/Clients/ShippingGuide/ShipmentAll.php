@@ -44,8 +44,6 @@ class ShipmentAll extends Base implements ClientsInterface
      */
     public function processClientUrlVariables(): ClientsInterface
     {
-        $this->setClientUrlVariables($this->getEndPoint());
-
         return $this;
     }
 

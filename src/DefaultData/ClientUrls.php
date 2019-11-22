@@ -16,7 +16,7 @@ namespace Crakter\BringApi\DefaultData;
  *
  * Specify which client urls are available by Bring Api
  *
- * Quick example: <code>sprintf(ClientUrls::REPORTS_LIST_AVAILABLE_CUSTOMERS, ReturnFileTypes::JSON);</code>
+ * Quick example: <code>ClientUrls::REPORTS_LIST_AVAILABLE_CUSTOMERS</code>
  *
  * @author Martin Madsen <crakter@gmail.com>
  */
@@ -55,9 +55,9 @@ abstract class ClientUrls
     /**
      * Links for Shipping Guide
      */
-    const SHIPPINGGUIDE_SHIPMENT_PRICES = 'https://api.bring.com/shippingguide/products/price.%s';
-    const SHIPPINGGUIDE_SHIPMENT_DELIVERY_TIME = 'https://api.bring.com/shippingguide/products/expectedDelivery.%s';
-    const SHIPPINGGUIDE_SHIPMENT_ALL = 'https://api.bring.com/shippingguide/products/all.%s';
+    const SHIPPINGGUIDE_SHIPMENT_PRICES = 'https://api.bring.com/shippingguide/v2/products/price';
+    const SHIPPINGGUIDE_SHIPMENT_DELIVERY_TIME = 'https://api.bring.com/shippingguide/v2/products/expectedDelivery';
+    const SHIPPINGGUIDE_SHIPMENT_ALL = 'https://api.bring.com/shippingguide/v2/products';
 
     /**
      * Links for Booking API
