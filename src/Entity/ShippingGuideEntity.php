@@ -32,7 +32,7 @@ namespace Crakter\BringApi\Entity;
  * @property string $clientUrl        This can be set to client URL, this does not have to be set if this is supplied through AuthorizationInterface
  * @property bool $edi                This can be set to true if edi is sent, or false if not
  * @property bool $postingAtPostOffice This can be set to true if it is posted at a postal office
- * @property array $additonal         This can set the optional additional services Bring support. Example: [AdditionalProducts::COD, AdditionalProducts::ENOTIFICATION]
+ * @property array $additionalservice This can set the optional additional services Bring support. Example: [AdditionalProducts::COD, AdditionalProducts::ENOTIFICATION]
  * @property string $priceAdjustments This can be set up the price to a set value (example: m20p = Minus 20 percentage)
  * @property string $pid              This can be set to a unique public id, last part of logged in user of Shipping Guide
  * @property array $product           This can be set to the different products you want to have
@@ -67,7 +67,7 @@ namespace Crakter\BringApi\Entity;
  * @method string getPriceAdjustments()
  * @method ApiEntityInterface setPid(string $string)
  * @method string getPid()
- * @method array getAdditional()
+ * @method array getAdditionalservice()
  * @method array getProduct()
  * @method ApiEntityInterface setCustomerNumber(string $string)
  * @method string getCustomerNumber()
@@ -204,9 +204,9 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      * @param  array              $args setAdditional(AdditionalProducts::COD, AdditionalProducts::ENOTIFICATION)
      * @return ApiEntityInterface
      */
-    public function setAdditional(array ...$args): ApiEntityInterface
+    public function setAdditionalservice(array ...$args): ApiEntityInterface
     {
-        $this->additional = $args;
+        $this->additionalservice = $args;
 
         return $this;
     }
@@ -267,12 +267,12 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      * @param  string             $additional
      * @return ApiEntityInterface
      */
-    public function addAdditional(string $additional): ApiEntityInterface
+    public function addAdditionalservice(string $additionalservice): ApiEntityInterface
     {
-        if (!isset($this->additional)) {
-            $this->additional = [];
+        if (!isset($this->additionalservice)) {
+            $this->additionalservice = [];
         }
-        $this->additional[] = $additional;
+        $this->additionalservice[] = $additionalservice;
 
         return $this;
     }
