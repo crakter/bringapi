@@ -16,18 +16,18 @@ use Crakter\BringApi\Exception\InputValueNotAllowedException;
 
 class ReturnFileTypesTest extends TestCase
 {
-    public function testHasConstant()
+    public function testHasConstant(): void
     {
         $this->assertTrue(ReturnFileTypes::has('XML'), 'Test has trait on class');
         $this->assertTrue(ReturnFileTypes::has('xml'), 'Test has trait on class');
     }
 
-    public function testHasNotConstant()
+    public function testHasNotConstant(): void
     {
         $this->assertFalse(ReturnFileTypes::has('XMML'), 'Test has trait on class');
     }
 
-    public function testGetConstantException()
+    public function testGetConstantException(): void
     {
         $this->expectException(InputValueNotAllowedException::class);
         ReturnFileTypes::get('XMML');

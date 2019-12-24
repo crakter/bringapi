@@ -19,74 +19,74 @@ class EntityTest extends TestCase
 {
     private $class;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = new EntityTesting();
     }
 
-    public function testGetValidationParameters()
+    public function testGetValidationParameters(): void
     {
         $this->class->setRequiredParameters(['name']);
         $this->assertSame($this->class->getValidateParameters(), ['name' => ValidateParameters::NOT_NULL]);
     }
 
-    public function testSetRequiredParameters()
+    public function testSetRequiredParameters(): void
     {
         $this->class->setRequiredParameters(['name']);
         $this->assertSame($this->class->getValidateParameters(), ['name' => ValidateParameters::NOT_NULL]);
     }
 
-    public function testCheckValuesException()
+    public function testCheckValuesException(): void
     {
         $this->expectException(ApiEntityNotCorrectException::class);
         $this->class->setRequiredParameters(['name']);
         $this->class->toArray();
     }
 
-    public function testCheckValues()
+    public function testCheckValues(): void
     {
         $this->class->setQ('testing');
         $this->assertArrayHasKey('q', $this->class->toArray());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $this->class->setQ('testing');
         $this->assertSame($this->class->toArray(), ['q' => 'testing']);
     }
 
-    public function testToXml()
+    public function testToXml(): void
     {
         $this->class->setQ('testing');
         $this->class->setP(['test' => 'x']);
         $this->assertSame(str_replace(["\r", "\n", '  '], '', $this->class->toXml()), '<?xml version="1.0"?><Entity><q>testing</q><p><test>x</test></p></Entity>');
     }
 
-    public function testSet()
+    public function testSet(): void
     {
         $this->class->set(['q' => 'testing']);
         $this->assertSame($this->class->toArray(), ['q' => 'testing']);
     }
 
-    public function testAutomaticSet()
+    public function testAutomaticSet(): void
     {
         $this->class->q = 'testing';
         $this->assertSame($this->class->toArray(), ['q' => 'testing']);
     }
 
-    public function testAutomaticGet()
+    public function testAutomaticGet(): void
     {
         $this->class->q = 'testing';
         $this->assertSame('testing', $this->class->q);
     }
 
-    public function testAutomaticCallGet()
+    public function testAutomaticCallGet(): void
     {
         $this->class->q = 'testing';
         $this->assertSame('testing', $this->class->getQ());
     }
 
-    public function testAutomaticCallSet()
+    public function testAutomaticCallSet(): void
     {
         $this->class->setQ('testing');
         $this->assertSame('testing', $this->class->getQ());

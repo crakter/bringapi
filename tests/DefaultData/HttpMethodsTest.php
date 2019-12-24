@@ -15,13 +15,13 @@ use PHPUnit\Framework\TestCase;
 
 class HttpMethodsTest extends TestCase
 {
-    public function testConstantValue()
+    public function testConstantValue(): void
     {
         $this->assertEquals(HttpMethods::GET, 'GET', 'Test that HttpMethod::GET is equal');
         $this->assertEquals(HttpMethods::POST, 'POST', 'Test that HttpMethod::POST is equal');
     }
 
-    public function testConstantValueWrong()
+    public function testConstantValueWrong(): void
     {
         $this->assertNotEquals(HttpMethods::GET, 'POST', 'Test that HttpMethod::GET is not equal');
         $this->assertNotEquals(HttpMethods::POST, 'GET', 'Test that HttpMethod::POST is not equal');

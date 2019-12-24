@@ -25,29 +25,29 @@ class BaseTest extends TestCase
 {
     private $class;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = (new Booking\BookShipment);
     }
 
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, (new Booking\BookShipment(new TrackingEntity(), new Authorization())));
     }
 
-    public function testSetAcceptLanguage()
+    public function testSetAcceptLanguage(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setAcceptLanguage('no'));
         $this->assertSame($this->class->getOptions(), ['headers' => ['Accept-Language' => 'no']]);
     }
 
-    public function testSetHeader()
+    public function testSetHeader(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setHeader('testing', 'name'));
         $this->assertSame($this->class->getOptions(), ['headers' => ['testing' => 'name']]);
     }
 
-    public function testSetOptionsQuery()
+    public function testSetOptionsQuery(): void
     {
         $array = [
             'schemaVersion' => 1,
@@ -58,7 +58,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getOptions(), ['query' => 'schemaVersion=1&testIndicator=true&customerNumber=x']);
     }
 
-    public function testSetOptionsJson()
+    public function testSetOptionsJson(): void
     {
         $array = [
             'schemaVersion' => 1,
@@ -69,7 +69,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getOptions(), ['json' => $array]);
     }
 
-    public function testSetGetOptions()
+    public function testSetGetOptions(): void
     {
         $array = ['json' => [
             'schemaVersion' => 1,
@@ -80,7 +80,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getOptions(), $array);
     }
 
-    public function testSetReturnXml()
+    public function testSetReturnXml(): void
     {
         $array = ['headers' => [
             'Accept' => ReturnFileContentTypes::XML,
@@ -91,7 +91,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::XML);
     }
 
-    public function testSetReturnPng()
+    public function testSetReturnPng(): void
     {
         $array = ['headers' => [
             'Accept' => ReturnFileContentTypes::PNG,
@@ -102,7 +102,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::PNG);
     }
 
-    public function testSetReturnXls()
+    public function testSetReturnXls(): void
     {
         $array = ['headers' => [
             'Accept' => ReturnFileContentTypes::XLS,
@@ -113,7 +113,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::XLS);
     }
 
-    public function testSetReturnHtml()
+    public function testSetReturnHtml(): void
     {
         $array = ['headers' => [
             'Accept' => ReturnFileContentTypes::HTML,
@@ -124,7 +124,7 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::HTML);
     }
 
-    public function testSetReturnJson()
+    public function testSetReturnJson(): void
     {
         $array = ['headers' => [
             'Accept' => ReturnFileContentTypes::JSON,
@@ -135,19 +135,19 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::JSON);
     }
 
-    public function testSetGetEndPoint()
+    public function testSetGetEndPoint(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::JSON));
         $this->assertSame($this->class->getEndPoint(), ReturnFileTypes::JSON);
     }
 
-    public function testSetGetClientUrl()
+    public function testSetGetClientUrl(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setClientUrl('x'));
         $this->assertSame($this->class->getClientUrl(), 'x');
     }
 
-    public function testSetGetIsFullAddress()
+    public function testSetGetIsFullAddress(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setIsFullAddress(true));
         $this->assertSame($this->class->getIsFullAddress(), true);
@@ -155,19 +155,19 @@ class BaseTest extends TestCase
         $this->assertSame($this->class->getIsFullAddress(), false);
     }
 
-    public function testSetGetClientUrlVariables()
+    public function testSetGetClientUrlVariables(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setClientUrlVariables('test', 'testing', 'end'));
         $this->assertSame($this->class->getClientUrlVariables(), ['test', 'testing', 'end']);
     }
 
-    public function testSetGetResponse()
+    public function testSetGetResponse(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'])));
         $this->assertInstanceOf(Response::class, $this->class->getResponse());
     }
 
-    public function testToJson()
+    public function testToJson(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::XML));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '<?xml version="1.0"?><Response><q>testing</q></Response>')));
@@ -183,27 +183,27 @@ class BaseTest extends TestCase
         }
     }
 
-    public function testIsJson()
+    public function testIsJson(): void
     {
         $this->assertTrue($this->class->isJson('{"q":"testing"}'));
         $this->assertFalse($this->class->isJson('{"q":"testing}'));
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::JSON));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":"testing"}')));
         $this->assertArrayHasKey('q', $this->class->toArray());
     }
 
-    public function testToXml()
+    public function testToXml(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setEndPoint(ReturnFileTypes::JSON));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":{"p":"testing"}}')));
         $this->assertSame('<?xml version="1.0"?><root><q><p>testing</p></q></root>', str_replace(["\r", "\n", '  '], '', $this->class->toXml('root')));
     }
 
-    public function testGetSetHttpMethod()
+    public function testGetSetHttpMethod(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setGet());
         $this->assertSame(HttpMethods::GET, $this->class->getHttpMethod());
@@ -213,25 +213,25 @@ class BaseTest extends TestCase
         $this->assertSame(HttpMethods::POST, $this->class->getHttpMethod());
     }
 
-    public function testSetGetAuthorizationModule()
+    public function testSetGetAuthorizationModule(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setAuthorizationModule(new Authorization()));
         $this->assertInstanceOf(AuthorizationInterface::class, $this->class->getAuthorizationModule());
     }
 
-    public function testSetGetApiEntity()
+    public function testSetGetApiEntity(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setApiEntity(new TrackingEntity()));
         $this->assertInstanceOf(ApiEntityInterface::class, $this->class->getApiEntity());
     }
 
-    public function testSetGetAlternativeAuthorizedUrl()
+    public function testSetGetAlternativeAuthorizedUrl(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setAlternativeAuthorizedUrl('x'));
         $this->assertSame('x', $this->class->getAlternativeAuthorizedUrl());
     }
 
-    public function testSetGetClient()
+    public function testSetGetClient(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setClient(new Client()));
         $this->assertInstanceOf(ClientInterface::class, $this->class->getClient());

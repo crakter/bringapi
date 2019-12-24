@@ -1,4 +1,5 @@
 # Bring API PHP
+[![Build Status](https://travis-ci.org/crakter/bringapi.svg?branch=master)](https://travis-ci.org/crakter/bringapi)
 
 Bring API PHP is a library to contact Bring API for prices, booking, reports and so on.
 I did not find anything that i could use for my project with PHP and Bring API. So i needed a good library that was reusable.

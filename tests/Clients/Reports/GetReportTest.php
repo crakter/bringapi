@@ -24,43 +24,43 @@ class GetReportTest extends TestCase
     private $class;
     private $xml;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = (new Reports\GetReport);
         $this->xml = file_get_contents(dirname(dirname(__DIR__)).'/Data/GetReportResponse.xml');
         $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $this->xml));
     }
 
-    public function testGetSetReportId()
+    public function testGetSetReportId(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setReportId('x'));
         $this->assertSame('x', $this->class->getReportId());
     }
 
-    public function testGetEndPoint()
+    public function testGetEndPoint(): void
     {
         $this->assertSame(ReturnFileTypes::XML, $this->class->getEndPoint());
     }
 
-    public function testProcessClientUrlVariables()
+    public function testProcessClientUrlVariables(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setReportId('x'));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->processClientUrlVariables());
     }
 
-    public function testCheckErrorsException()
+    public function testCheckErrorsException(): void
     {
         $this->expectException(BringClientException::class);
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], 'test')));
         $this->class->checkErrors();
     }
 
-    public function testCheckErrors()
+    public function testCheckErrors(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->checkErrors());
     }
 
-    public function testSend()
+    public function testSend(): void
     {
         $array = $this->class->toArray();
         $mock = new MockHandler([$this->class->getResponse()]);

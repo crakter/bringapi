@@ -16,18 +16,18 @@ use Crakter\BringApi\Exception\InputValueNotAllowedException;
 
 class ProductsTest extends TestCase
 {
-    public function testHasConstant()
+    public function testHasConstant(): void
     {
         $this->assertTrue(Products::has('BPAKKE_DOR_DOR'), 'Test has trait on class');
         $this->assertTrue(Products::has('BPAKKE_DOR-DOR'), 'Test has trait on class');
     }
 
-    public function testHasNotConstant()
+    public function testHasNotConstant(): void
     {
         $this->assertFalse(Products::has('BPAKKE_DORDOR'), 'Test has trait on class');
     }
 
-    public function testGetConstantException()
+    public function testGetConstantException(): void
     {
         $this->expectException(InputValueNotAllowedException::class);
         Products::get('BPAKKE_DORDOR');

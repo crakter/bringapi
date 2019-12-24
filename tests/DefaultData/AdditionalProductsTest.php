@@ -19,7 +19,7 @@ class AdditionalProductsTest extends TestCase
     /**
      * @dataProvider additionProviderHasAppliesToAllowed
      */
-    public function testHasAppliesToAllowedValue(string $allowed, array $onProducts)
+    public function testHasAppliesToAllowedValue(string $allowed, array $onProducts): void
     {
         foreach ($onProducts as $product) {
             $this->assertTrue(AdditionalProducts::hasAppliesTo($allowed, $product));
@@ -29,7 +29,7 @@ class AdditionalProductsTest extends TestCase
     /**
      * @dataProvider additionProviderHasAppliesToNotAllowed
      */
-    public function testHasAppliesToNotAllowedValue(string $notAllowed, array $onProducts)
+    public function testHasAppliesToNotAllowedValue(string $notAllowed, array $onProducts): void
     {
         $this->expectException(ProductAppliesToNotAllowedException::class);
         foreach ($onProducts as $product) {
@@ -37,7 +37,7 @@ class AdditionalProductsTest extends TestCase
         }
     }
 
-    public function additionProviderHasAppliesToNotAllowed()
+    public function additionProviderHasAppliesToNotAllowed(): array
     {
         return [
             ['EVARSLING', [
@@ -126,7 +126,7 @@ class AdditionalProductsTest extends TestCase
         ];
     }
 
-    public function additionProviderHasAppliesToAllowed()
+    public function additionProviderHasAppliesToAllowed(): array
     {
         return [
             ['EVARSLING', [

@@ -16,17 +16,17 @@ use Crakter\BringApi\Exception\InputValueNotAllowedException;
 
 class ClientUrlsTest extends TestCase
 {
-    public function testHasConstant()
+    public function testHasConstant(): void
     {
         $this->assertTrue(ClientUrls::has('REPORTS_LIST_AVAILABLE_CUSTOMERS'), 'Test has trait on class');
     }
 
-    public function testHasNotConstant()
+    public function testHasNotConstant(): void
     {
         $this->assertFalse(ClientUrls::has('REPORTS_LIST_AVAILABLE_CUSTOMERS_ALL'), 'Test has trait on class');
     }
 
-    public function testGetConstantException()
+    public function testGetConstantException(): void
     {
         $this->expectException(InputValueNotAllowedException::class);
         ClientUrls::get('REPORTS_LIST_AVAILABLE_CUSTOMERS_ALL');

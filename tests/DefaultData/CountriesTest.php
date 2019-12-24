@@ -16,24 +16,24 @@ use Crakter\BringApi\Exception\InputValueNotAllowedException;
 
 class CountriesTest extends TestCase
 {
-    public function testHasConstant()
+    public function testHasConstant(): void
     {
         $this->assertTrue(Countries::has('NORWAY'), 'Test has trait on class');
         $this->assertTrue(Countries::has('NO'), 'Test has trait on class');
     }
 
-    public function testHasNotConstant()
+    public function testHasNotConstant(): void
     {
         $this->assertFalse(Countries::has('NOWAY'), 'Test has trait on class');
     }
 
-    public function testGetConstant()
+    public function testGetConstant(): void
     {
         $this->assertEquals(Countries::get('NORWAY'), 'NO', 'Test that the constant is unchanged');
         $this->assertEquals(Countries::get('NO'), 'NO', 'Test that the constant is unchanged');
     }
 
-    public function testGetConstantException()
+    public function testGetConstantException(): void
     {
         $this->expectException(InputValueNotAllowedException::class);
         Countries::get('NOWAY');

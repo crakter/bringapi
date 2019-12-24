@@ -26,44 +26,44 @@ class OrderPickupTest extends TestCase
     private $class;
     private $json;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = (new Booking\OrderPickup);
         $this->json = file_get_contents(dirname(dirname(__DIR__)).'/Data/OrderPickupsResponse.json');
         $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $this->json));
     }
 
-    public function testProcessClientUrlVariables()
+    public function testProcessClientUrlVariables(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->processClientUrlVariables());
     }
 
-    public function testCheckErrorsException()
+    public function testCheckErrorsException(): void
     {
         $this->expectException(BringClientException::class);
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], 'test')));
         $this->class->checkErrors();
     }
 
-    public function testCheckErrors()
+    public function testCheckErrors(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], '{"q":"testing"}')));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->checkErrors());
     }
 
-    public function testProcessEntityException()
+    public function testProcessEntityException(): void
     {
         $this->expectException(ApiEntityNotCorrectException::class);
         $this->assertInstanceOf(ClientsInterface::class, $this->class->processEntity());
     }
 
-    public function testProcessEntity()
+    public function testProcessEntity(): void
     {
         $this->assertInstanceOf(ClientsInterface::class, $this->class->setApiEntity(new OrderPickupsEntity()));
         $this->assertInstanceOf(ClientsInterface::class, $this->class->processEntity());
     }
 
-    public function testSend()
+    public function testSend(): void
     {
         $mock = new MockHandler([$this->class->getResponse()]);
         $handler = HandlerStack::create($mock);
