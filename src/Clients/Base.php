@@ -646,7 +646,7 @@ abstract class Base
             );
         } catch (ClientException $e) {
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getMessage()),
+                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getResponse()->getBody(true)),
                 null,
                 $e
             );
