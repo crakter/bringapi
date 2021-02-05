@@ -27,7 +27,7 @@ abstract class Products
     const PAKKE_TIL_HENTESTED = 5800;
     const RETUR_FRA_HENTESTED = 9300;
     const PAKKE_TIL_BEDRIFT = 5000;
-    const RETUR_PAKKE_FRA_BEDIFT = 9000;
+    const RETUR_PAKKE_FRA_BEDRIFT = 9000;
     const EKSPRESS_NESTE_DAG = 4850;
     const RETUREKSPRESS = 9600;
 	const STYKKGODS_TIL_BEDIFT = 5300;
