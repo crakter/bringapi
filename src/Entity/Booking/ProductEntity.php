@@ -31,8 +31,8 @@ use Crakter\BringApi\DefaultData\AllowedServices;
  * @method string getId()
  * @method ApiEntityInterface setCustomerNumber(string $string)
  * @method string getCustomerNumber()
- * @method ApiEntityInterface setServices(ApiEntityInterface $array)
- * @method array getServices()
+ * @method ApiEntityInterface setAdditionalServices(ApiEntityInterface $array)
+ * @method array getAdditionalServices()
  * @method ApiEntityInterface setCustomsDeclaration(array $array)
  * @method array getCustomsDeclaration()
  * @author Martin Madsen <crakter@gmail.com>
@@ -49,16 +49,15 @@ class ProductEntity extends ApiEntityBase implements ApiEntityInterface
      */
     public $customerNumber;
 
-    public function setServices(ApiEntityInterface $services): ApiEntityInterface
+    public function setAdditionalServices(array $services): ApiEntityInterface
     {
         if ($this->getId() == '') {
             throw new ApiEntityNotCorrectException('The Product Id needs to be set before the Services, to be able to check if allowed');
         }
-        $services = $services->toArray();
-        foreach ($services as $key => $var) {
-            AllowedServices::hasAppliesTo($key, $this->getId());
+        foreach ($services as $var) {
+            AllowedServices::hasAppliesTo($var['id'], $this->getId());
         }
-        $this->services = $services;
+        $this->additionalServices = $services;
 
         return $this;
     }

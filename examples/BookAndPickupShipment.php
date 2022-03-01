@@ -89,7 +89,7 @@ $authorizationModule = (new Authorization)
 try {
     $bookShipment = (new BookShipment)->setAuthorizationModule($authorizationModule)->setApiEntity($bookShipments)->send();
     print_r($bookShipment->toArray());
-} catch (BringClientException $e) {
+} catch (\Exception $e) {
     print_r($e->getMessage());
 }
 
