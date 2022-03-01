@@ -54,9 +54,10 @@ class ProductEntity extends ApiEntityBase implements ApiEntityInterface
         if ($this->getId() == '') {
             throw new ApiEntityNotCorrectException('The Product Id needs to be set before the Services, to be able to check if allowed');
         }
-        foreach ($services as $var) {
+        // This needs to be more robust if we use it
+        /*foreach ($services as $var) {
             AllowedServices::hasAppliesTo($var['id'], $this->getId());
-        }
+        }*/
         $this->additionalServices = $services;
 
         return $this;
