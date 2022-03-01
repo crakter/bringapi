@@ -31,7 +31,7 @@ use Crakter\BringApi\DefaultData\AllowedServices;
  * @method string getId()
  * @method ApiEntityInterface setCustomerNumber(string $string)
  * @method string getCustomerNumber()
- * @method ApiEntityInterface setServices(array $array)
+ * @method ApiEntityInterface setServices(ApiEntityInterface $array)
  * @method array getServices()
  * @method ApiEntityInterface setCustomsDeclaration(array $array)
  * @method array getCustomsDeclaration()
@@ -59,5 +59,7 @@ class ProductEntity extends ApiEntityBase implements ApiEntityInterface
             AllowedServices::hasAppliesTo($key, $this->getId());
         }
         $this->services = $services;
+
+        return $this;
     }
 }
