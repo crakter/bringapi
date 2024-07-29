@@ -86,27 +86,44 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * @var int $counterWeightInGrams Counter of how many packages
      */
-    private $counterWeightInGrams = 0;
+    private int $counterWeightInGrams = 0;
 
     /**
      * @var int $counterWidth Counter of how many packages
      */
-    private $counterWidth = 0;
+    private int $counterWidth = 0;
 
     /**
      * @var int $counterHeight Counter of how many packages
      */
-    private $counterHeight = 0;
+    private int $counterHeight = 0;
 
     /**
      * @var int $counterLength Counter of how many packages
      */
-    private $counterLength = 0;
+    private int $counterLength = 0;
 
     /**
      * @var int $counterVolume Counter of how many packages
      */
-    private $counterVolume = 0;
+    private int $counterVolume = 0;
+
+    private string $fromPostalCode = '';
+    private string $toPostalCode = '';
+    private int $weightInGrams = 0;
+    private int $width = 0;
+    private int $length = 0;
+    private int $height = 0;
+    private string $clientUrl = '';
+    private bool $edi = true;
+    private bool $postingAtPostOffice = false;
+    private string $priceAdjustments = '';
+    private string $pid = '';
+    private string $customerNumber = '';
+    private string $language = '';
+    private bool $volumeSpecial = false;
+    private string $fromCountry = '';
+    private string $toCountry = '';
 
     /**
      * Volume with support for multiple values.
@@ -319,7 +336,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
         return $this;
     }
 
-    public function setClientUrl(int $val): ApiEntityInterface
+    public function setClientUrl(string $val): ApiEntityInterface
     {
         $this->clientUrl = $val;
 
@@ -368,7 +385,7 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
         return $this;
     }
 
-    public function setVolumeSpecial(string $val): ApiEntityInterface
+    public function setVolumeSpecial(bool $val): ApiEntityInterface
     {
         $this->volumeSpecial = $val;
 
