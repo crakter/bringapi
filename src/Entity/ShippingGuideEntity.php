@@ -122,8 +122,8 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     private string $customerNumber = '';
     private string $language = '';
     private bool $volumeSpecial = false;
-    private string $fromCountry = '';
-    private string $toCountry = '';
+    private string $fromcountry = '';
+    private string $tocountry = '';
 
     /**
      * Volume with support for multiple values.
@@ -394,14 +394,14 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     public function setFromCountry(string $val): ApiEntityInterface
     {
-        $this->fromCountry = $val;
+        $this->fromcountry = $val;
 
         return $this;
     }
 
     public function setToCountry(string $val): ApiEntityInterface
     {
-        $this->toCountry = $val;
+        $this->tocountry = $val;
 
         return $this;
     }
