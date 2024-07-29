@@ -35,10 +35,10 @@ namespace Crakter\BringApi\Entity;
  */
 class PostalCodeEntity extends ApiEntityBase implements ApiEntityInterface
 {
-    public string $pnr;
-    public string $clientUrl;
-    public string $country;
-    public string $callback;
+    public string $pnr = '';
+    public string $clientUrl = '';
+    public string $country = '';
+    public string $callback = '';
 
     public function setPnr(string $val): ApiEntityInterface
     {

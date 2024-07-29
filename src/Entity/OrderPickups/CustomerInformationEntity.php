@@ -33,12 +33,12 @@ class CustomerInformationEntity extends ApiEntityBase implements ApiEntityInterf
     /**
      * @var string $customerNumber This needs to be set to the customerNumber. <code>'PARCELS_NORWAY-12340056789'</code>
      */
-    public $customerNumber;
+    public $customerNumber = '';
 
     /**
      * @var string $companyName This needs to be set to the name of the company. <code>'Norsk Bedrift AS'</code>
      */
-    public $companyName;
+    public $companyName = '';
 
     public function setCustomerNumber(string $val): ApiEntityInterface
     {

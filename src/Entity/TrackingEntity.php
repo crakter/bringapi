@@ -29,7 +29,7 @@ namespace Crakter\BringApi\Entity;
  */
 class TrackingEntity extends ApiEntityBase implements ApiEntityInterface
 {
-    public $q;
+    public $q = '';
 
     public function setQ(string $val): ApiEntityInterface
     {
