@@ -46,4 +46,25 @@ class ParcelsInformationEntity extends ApiEntityBase implements ApiEntityInterfa
      * @var int $numberOfPallets      Number of pallets to pickup. <code>2</code>
      */
     public $numberOfPallets = 0;
+
+    public function setNumberOfPackages(int $val): ApiEntityInterface
+    {
+        $this->numberOfPackages = $val;
+
+        return $this;
+    }
+
+    public function setNumberOfPostContainers(int $val): ApiEntityInterface
+    {
+        $this->numberOfPostContainers = $val;
+
+        return $this;
+    }
+
+    public function setNumberOfPallets(int $val): ApiEntityInterface
+    {
+        $this->numberOfPallets = $val;
+
+        return $this;
+    }
 }

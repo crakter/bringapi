@@ -45,17 +45,17 @@ class PickupAddressEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * @var string $street      This needs to be set to the address of pickup. <code>'Testsvingen 12'</code>
      */
-    public $street;
+    public string $street;
 
     /**
      * @var string $postalCode  This needs to be set to the Postal code of pickup. <code>'0263'</code>
      */
-    public $postalCode;
+    public string $postalCode;
 
     /**
      * @var string $city        This needs to be set to the City of pickup. <code>'Oslo'</code>
      */
-    public $city;
+    public string $city;
 
     /**
      * Convert Booking AddressEntity to this PickupAddressEntity so we don't need to pass the same info twice.
@@ -73,6 +73,27 @@ class PickupAddressEntity extends ApiEntityBase implements ApiEntityInterface
         if (isset($entity->contact['phoneNumber'])) {
             $this->phoneNumber = $entity->contact['phoneNumber'];
         }
+
+        return $this;
+    }
+
+    public function setStreet(string $val): ApiEntityInterface
+    {
+        $this->street = $val;
+
+        return $this;
+    }
+
+    public function setPostalCode(string $val): ApiEntityInterface
+    {
+        $this->postalCode = $val;
+
+        return $this;
+    }
+
+    public function setCity(string $val): ApiEntityInterface
+    {
+        $this->city = $val;
 
         return $this;
     }

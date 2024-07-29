@@ -55,4 +55,26 @@ class BookShipmentsEntity extends ApiEntityBase implements ApiEntityInterface
 
         return $this;
     }
+
+    public function setTestIndicator(bool $val): ApiEntityInterface
+    {
+        $this->testIndicator = $val;
+        return $this;
+    }
+
+    public function setSchemaVersion(int $val): ApiEntityInterface
+    {
+        $this->schemaVersion = $val;
+        return $this;
+    }
+
+    public function getTestIndicator(): bool
+    {
+        return $this->testIndicator;
+    }
+
+    public function getSchemaVersion(): int
+    {
+        return $this->schemaVersion;
+    }
 }

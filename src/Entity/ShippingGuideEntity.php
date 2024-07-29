@@ -276,4 +276,116 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
         return $this;
     }
+
+    public function setFromPostalCode(string $val): ApiEntityInterface
+    {
+        $this->fromPostalCode = $val;
+
+        return $this;
+    }
+
+    public function setToPostalCode(string $val): ApiEntityInterface
+    {
+        $this->toPostalCode = $val;
+
+        return $this;
+    }
+
+    public function setWeightInGrams(int $val): ApiEntityInterface
+    {
+        $this->weightInGrams = $val;
+
+        return $this;
+    }
+
+    public function setWidth(int $val): ApiEntityInterface
+    {
+        $this->width = $val;
+
+        return $this;
+    }
+
+    public function setLength(int $val): ApiEntityInterface
+    {
+        $this->length = $val;
+
+        return $this;
+    }
+
+    public function setHeight(int $val): ApiEntityInterface
+    {
+        $this->height = $val;
+
+        return $this;
+    }
+
+    public function setClientUrl(int $val): ApiEntityInterface
+    {
+        $this->clientUrl = $val;
+
+        return $this;
+    }
+
+    public function setEdi(bool $val): ApiEntityInterface
+    {
+        $this->edi = $val;
+
+        return $this;
+    }
+
+    public function setPostingAtPostOffice(bool $val): ApiEntityInterface
+    {
+        $this->postingAtPostOffice = $val;
+
+        return $this;
+    }
+
+    public function setPriceAdjustments(string $val): ApiEntityInterface
+    {
+        $this->priceAdjustments = $val;
+
+        return $this;
+    }
+
+    public function setPid(string $val): ApiEntityInterface
+    {
+        $this->pid = $val;
+
+        return $this;
+    }
+
+    public function setCustomerNumber(string $val): ApiEntityInterface
+    {
+        $this->customerNumber = $val;
+
+        return $this;
+    }
+
+    public function setLanguage(string $val): ApiEntityInterface
+    {
+        $this->language = $val;
+
+        return $this;
+    }
+
+    public function setVolumeSpecial(string $val): ApiEntityInterface
+    {
+        $this->volumeSpecial = $val;
+
+        return $this;
+    }
+
+    public function setFromCountry(string $val): ApiEntityInterface
+    {
+        $this->fromCountry = $val;
+
+        return $this;
+    }
+
+    public function setToCountry(string $val): ApiEntityInterface
+    {
+        $this->toCountry = $val;
+
+        return $this;
+    }
 }

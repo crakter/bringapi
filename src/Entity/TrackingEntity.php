@@ -30,4 +30,18 @@ namespace Crakter\BringApi\Entity;
 class TrackingEntity extends ApiEntityBase implements ApiEntityInterface
 {
     public $q;
+
+    public function setQ(string $val): ApiEntityInterface
+    {
+        $this->q = $val;
+
+        return $this;
+    }
+
+    public function setCallback(string $val): ApiEntityInterface
+    {
+        $this->callback = $val;
+
+        return $this;
+    }
 }

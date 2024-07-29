@@ -39,4 +39,18 @@ class CustomerInformationEntity extends ApiEntityBase implements ApiEntityInterf
      * @var string $companyName This needs to be set to the name of the company. <code>'Norsk Bedrift AS'</code>
      */
     public $companyName;
+
+    public function setCustomerNumber(string $val): ApiEntityInterface
+    {
+        $this->customerNumber = $val;
+
+        return $this;
+    }
+
+    public function setCompanyName(string $val): ApiEntityInterface
+    {
+        $this->companyName = $val;
+
+        return $this;
+    }
 }
