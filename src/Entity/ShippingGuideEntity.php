@@ -108,22 +108,22 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
      */
     private int $counterVolume = 0;
 
-    private string $fromPostalCode = '';
-    private string $toPostalCode = '';
-    private int $weightInGrams = 0;
-    private int $width = 0;
-    private int $length = 0;
-    private int $height = 0;
-    private string $clientUrl = '';
-    private bool $edi = true;
-    private bool $postingAtPostOffice = false;
-    private string $priceAdjustments = '';
-    private string $pid = '';
-    private string $customerNumber = '';
-    private string $language = '';
-    private bool $volumeSpecial = false;
-    private string $fromcountry = '';
-    private string $tocountry = '';
+    public string $fromPostalCode = '';
+    public string $toPostalCode = '';
+    public int $weightInGrams = 0;
+    public int $width = 0;
+    public int $length = 0;
+    public int $height = 0;
+    public string $clientUrl = '';
+    public bool $edi = true;
+    public bool $postingAtPostOffice = false;
+    public string $priceAdjustments = '';
+    public string $pid = '';
+    public string $customerNumber = '';
+    public string $language = '';
+    public bool $volumeSpecial = false;
+    public string $fromCountry = '';
+    public string $toCountry = '';
 
     /**
      * Volume with support for multiple values.
@@ -394,14 +394,14 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     public function setFromCountry(string $val): ApiEntityInterface
     {
-        $this->fromcountry = $val;
+        $this->fromCountry = $val;
 
         return $this;
     }
 
     public function setToCountry(string $val): ApiEntityInterface
     {
-        $this->tocountry = $val;
+        $this->toCountry = $val;
 
         return $this;
     }
