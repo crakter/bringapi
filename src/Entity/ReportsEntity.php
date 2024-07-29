@@ -80,4 +80,32 @@ class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 
         return $this;
     }
+
+    public function setSelectedCriteria(string $val): ApiEntityInterface
+    {
+        $this->selectedCriteria = $val;
+
+        return $this;
+    }
+
+    public function setInvoiceNumber(string $val): ApiEntityInterface
+    {
+        $this->invoiceNumber = $val;
+
+        return $this;
+    }
+    
+    public function setReportType(string $val): ApiEntityInterface
+    {
+        $this->reporttype = $val;
+
+        return $this;
+    }
+    
+    public function setYear(string $val): ApiEntityInterface
+    {
+        $this->year = $val;
+
+        return $this;
+    }
 }
