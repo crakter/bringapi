@@ -111,9 +111,9 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     public string $fromPostalCode = '';
     public string $toPostalCode = '';
     public int $weightInGrams = 0;
-    public int $width = 0;
-    public int $length = 0;
-    public int $height = 0;
+    public int $width = 1;
+    public int $length = 1;
+    public int $height = 1;
     public string $clientUrl = '';
     public bool $edi = true;
     public bool $postingAtPostOffice = false;
