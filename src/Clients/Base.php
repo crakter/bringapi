@@ -42,51 +42,51 @@ abstract class Base
     /**
      * @var object $client Implements the ClientsInterface
      */
-    protected $client;
+    protected ClientsInterface $client;
 
     /**
      * @var string $endPoint   The filetype to return
      */
-    protected $endPoint;
+    protected string $endPoint;
 
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl;
+    protected string $clientUrl;
     /**
      * @var array $clientUrlVariables    The clients url Variables.
      */
-    protected $clientUrlVariables = [];
+    protected array $clientUrlVariables = [];
 
     /**
-     * @var string $response     The response
+     * @var Response $response     The response
      */
-    protected $response;
+    protected Response $response;
 
     /**
      * @var array $options     The options for Request
      */
-    protected $options;
+    protected array $options;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod;
+    protected string $httpMethod;
 
     /**
      * @var ApiEntityInterface $apiEntity   Instance of ApiEntityInterface with all request body
      */
-    protected $apiEntity;
+    protected ApiEntityInterface $apiEntity;
 
     /**
      * @var bool $isFullAddress   Set if URL is fixed and not parsed by UrlParameters
      */
-    protected $isFullAddress = false;
+    protected bool $isFullAddress = false;
 
     /**
      * @var string $alternativeAuthorizedUrl    Alternative url if we are logged in (required for tracking client)
      */
-    protected $alternativeAuthorizedUrl;
+    protected string $alternativeAuthorizedUrl;
 
     /**
      * Set authorizationModule if provided and ClientInterface if provided, defaults to default GuzzleHttp Client
@@ -117,7 +117,7 @@ abstract class Base
      * @param  ClientInterface  $client client interface
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setClient(ClientInterface $client): ClientsInterface
+    public function setClient(ClientInterface $client): self
     {
         $this->client = $client;
 
@@ -128,7 +128,7 @@ abstract class Base
      * Get Client
      * @return ClientInterface All clients must implement ClientsInterface
      */
-    public function getClient(): ClientInterface
+    public function getClient(): self
     {
         return $this->client;
     }
@@ -139,7 +139,7 @@ abstract class Base
      * @throws InputValueNotAllowedException if value does not existing
      * @return ClientsInterface              All clients must implement ClientsInterface
      */
-    public function setAcceptLanguage(string $value): ClientsInterface
+    public function setAcceptLanguage(string $value): self
     {
         $this->options['headers']['Accept-Language'] = Languages::get($value);
 
@@ -152,7 +152,7 @@ abstract class Base
      * @param  string           $value  value of option
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setHeader(string $option, string $value): ClientsInterface
+    public function setHeader(string $option, string $value): self
     {
         $this->options['headers'][$option] = $value;
 
@@ -164,7 +164,7 @@ abstract class Base
      * @param  array            $value value of option
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setOptionsQuery(array $value): ClientsInterface
+    public function setOptionsQuery(array $value): self
     {
         foreach ($value as &$var) {
             if (is_bool($var)) {
@@ -181,7 +181,7 @@ abstract class Base
      * @param  string           $value value of option
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setOptionsJson(array $value): ClientsInterface
+    public function setOptionsJson(array $value): self
     {
         $this->options['json'] = $value;
 
@@ -193,7 +193,7 @@ abstract class Base
      * @param  string           $value value of option
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setOptions(array $value): ClientsInterface
+    public function setOptions(array $value): self
     {
         $this->options = $value;
 
@@ -213,9 +213,8 @@ abstract class Base
      * Sets the Header to say we want XML back from Bring API
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setReturnXml(): ClientsInterface
+    public function setReturnXml(): self
     {
-        $this->setHeader('Accept', ReturnFileContentTypes::XML);
         $this->setHeader('Content-type', ReturnFileContentTypes::XML);
         $this->setEndPoint(ReturnFileTypes::XML);
 
@@ -226,7 +225,7 @@ abstract class Base
      * Sets the Header to say we want png back from Bring API
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setReturnPng(): ClientsInterface
+    public function setReturnPng(): self
     {
         $this->setHeader('Accept', ReturnFileContentTypes::PNG);
         $this->setHeader('Content-type', ReturnFileContentTypes::PNG);
@@ -239,7 +238,7 @@ abstract class Base
      * Sets the Header to say we want HTML back from Bring API
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setReturnHtml(): ClientsInterface
+    public function setReturnHtml(): self
     {
         $this->setHeader('Accept', ReturnFileContentTypes::HTML);
         $this->setHeader('Content-type', ReturnFileContentTypes::HTML);
@@ -252,7 +251,7 @@ abstract class Base
      * Sets the Header to say we want XLS back from Bring API
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setReturnXls(): ClientsInterface
+    public function setReturnXls(): self
     {
         $this->setHeader('Accept', ReturnFileContentTypes::XLS);
         $this->setHeader('Content-type', ReturnFileContentTypes::XLS);
@@ -265,7 +264,7 @@ abstract class Base
      * Sets the Header to say we want JSON back from Bring API
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setReturnJson(): ClientsInterface
+    public function setReturnJson(): self
     {
         $this->setHeader('Accept', ReturnFileContentTypes::JSON);
         $this->setHeader('Content-type', ReturnFileContentTypes::JSON);
@@ -279,7 +278,7 @@ abstract class Base
      * @param  string           $endPoint The endpoint
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setEndPoint(string $endPoint): ClientsInterface
+    public function setEndPoint(string $endPoint): self
     {
         $this->endPoint = $endPoint;
 
@@ -301,7 +300,7 @@ abstract class Base
      * @param  bool             $isFullAddress Set if URL is full address - not parsed by UrlVariables
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setClientUrl(string $clientUrl, bool $isFullAddress = false): ClientsInterface
+    public function setClientUrl(string $clientUrl, bool $isFullAddress = false): self
     {
         $this->clientUrl = $clientUrl;
         $this->setIsFullAddress($isFullAddress);
@@ -323,7 +322,7 @@ abstract class Base
      * @param  bool             $isFullAddress Set if URL is full address - not parsed by UrlVariables
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setIsFullAddress(bool $isFullAddress): ClientsInterface
+    public function setIsFullAddress(bool $isFullAddress): self
     {
         $this->isFullAddress = $isFullAddress;
 
@@ -344,7 +343,7 @@ abstract class Base
      * @param  array            ...$args
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setClientUrlVariables(...$args): ClientsInterface
+    public function setClientUrlVariables(...$args): self
     {
         $this->clientUrlVariables = $args;
 
@@ -365,7 +364,7 @@ abstract class Base
      * @param  Response         $response PSR-7 complient Response Interface.
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setResponse(Response $response): ClientsInterface
+    public function setResponse(Response $response): self
     {
         $this->response = $response;
 
@@ -493,7 +492,7 @@ abstract class Base
      * Sets the HTTP method to GET
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setGet(): ClientsInterface
+    public function setGet(): self
     {
         $this->setHttpMethod(HttpMethods::GET);
 
@@ -504,7 +503,7 @@ abstract class Base
      * Sets the HTTP method to POST
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setPost(): ClientsInterface
+    public function setPost(): self
     {
         $this->setHttpMethod(HttpMethods::POST);
 
@@ -516,7 +515,7 @@ abstract class Base
      * @param  string           $name HTTP method to be sent with request(POST, GET)
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setHttpMethod(string $name): ClientsInterface
+    public function setHttpMethod(string $name): self
     {
         $this->httpMethod = $name;
 
@@ -537,7 +536,7 @@ abstract class Base
      * @param  AuthorizationModule $authorizationModule Authorization must implement AuthorizationInterface
      * @return ClientsInterface    All clients must implement ClientsInterface
      */
-    public function setAuthorizationModule(AuthorizationInterface $authorizationModule): ClientsInterface
+    public function setAuthorizationModule(AuthorizationInterface $authorizationModule): self
     {
         $this->authorizationModule = $authorizationModule;
 
@@ -558,7 +557,7 @@ abstract class Base
      * @param  ApiEntityInterface $apiEntity Entity must implement ApiEntityInterface
      * @return ClientsInterface   All clients must implement ClientsInterface
      */
-    public function setApiEntity(ApiEntityInterface $apiEntity): ClientsInterface
+    public function setApiEntity(ApiEntityInterface $apiEntity): self
     {
         $this->apiEntity = $apiEntity;
 
@@ -579,7 +578,7 @@ abstract class Base
      * @param  string           $alternativeAuthorizedUrl
      * @return ClientsInterface All clients must implement ClientsInterface
      */
-    public function setAlternativeAuthorizedUrl(string $alternativeAuthorizedUrl): ClientsInterface
+    public function setAlternativeAuthorizedUrl(string $alternativeAuthorizedUrl): self
     {
         $this->alternativeAuthorizedUrl = $alternativeAuthorizedUrl;
 
@@ -647,13 +646,13 @@ abstract class Base
         } catch (ClientException $e) {
             throw new BringClientException(
                 sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getResponse()->getBody(true)),
-                null,
+                0,
                 $e
             );
         } catch (RequestException $e) {
             throw new BringClientException(
                 sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getMessage()),
-                null,
+                0,
                 $e
             );
         }
