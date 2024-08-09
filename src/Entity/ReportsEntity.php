@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity;
 
 use Crakter\BringApi\DefaultData\ValidateParameters;
@@ -43,10 +44,16 @@ use Crakter\BringApi\DefaultData\ValidateParameters;
  */
 class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 {
+    public string $selectedCriteria;
+    public string $fromDate;
+    public string $toDate;
+    public string $invoiceNumber;
+    public string $reporttype;
+    public string $year;
+
     /**
      * Sets the required Parameters, if you need extra checking.
      * @param  array              $parameters list of required variables from ListAvailableReportsCustomer
-     * @return ApiEntityInterface
      */
     public function setRequiredParameters(array $parameters): ApiEntityInterface
     {
@@ -59,8 +66,6 @@ class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Common for most reports
-     * @param  DateTime           $date
-     * @return ApiEntityInterface
      */
     public function setFromDate(\DateTime $date): ApiEntityInterface
     {
@@ -71,8 +76,6 @@ class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Common for most reports
-     * @param  DateTime           $date
-     * @return ApiEntityInterface
      */
     public function setToDate(\DateTime $date): ApiEntityInterface
     {

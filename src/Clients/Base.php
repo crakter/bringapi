@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients;
 
 use GuzzleHttp\ClientInterface;
@@ -37,12 +38,12 @@ abstract class Base
     /**
      * @var object $authorizationModule Implements the AuthorizationInterface
      */
-    protected $authorizationModule = null;
+    protected $authorizationModule;
 
     /**
      * @var object $client Implements the ClientsInterface
      */
-    protected ClientsInterface $client;
+    protected Client $client;
 
     /**
      * @var string $endPoint   The filetype to return
@@ -90,17 +91,14 @@ abstract class Base
 
     /**
      * Set authorizationModule if provided and ClientInterface if provided, defaults to default GuzzleHttp Client
-     * @param  ApiEntityInterface     $apiEntity
-     * @param  AuthorizationInterface $authorizationModule
-     * @param  ClientInterface        $client
      * @return ClientsInterface       All clients must implement ClientsInterface
      */
     public function __construct(ApiEntityInterface $apiEntity = null, AuthorizationInterface $authorizationModule = null, ClientInterface $client = null)
     {
-        if ($authorizationModule !== null) {
+        if ($authorizationModule instanceof \Crakter\BringApi\Clients\AuthorizationInterface) {
             $this->setAuthorizationModule($authorizationModule);
         }
-        if ($client === null) {
+        if (!$client instanceof \GuzzleHttp\ClientInterface) {
             $client = new Client();
         }
         $this->client = $client;
@@ -171,7 +169,7 @@ abstract class Base
                 $var = $var ? 'true' : 'false';
             }
         }
-        $this->options['query'] = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($value));
+        $this->options['query'] = preg_replace('/%5B(?:\d|[1-9]\d+)%5D=/', '=', http_build_query($value));
 
         return $this;
     }
@@ -202,7 +200,6 @@ abstract class Base
 
     /**
      * Gets Options to be sent with request
-     * @return array
      */
     public function getOptions(): array
     {
@@ -287,7 +284,6 @@ abstract class Base
 
     /**
      * Gets the endpoint for request URL
-     * @return string
      */
     public function getEndPoint(): string
     {
@@ -310,7 +306,6 @@ abstract class Base
 
     /**
      * Gets the Client URL for request
-     * @return string
      */
     public function getClientUrl(): string
     {
@@ -352,7 +347,6 @@ abstract class Base
 
     /**
      * Gets the Variables for Client URL, used in send function.
-     * @return array
      */
     public function getClientUrlVariables(): array
     {
@@ -382,13 +376,12 @@ abstract class Base
 
     /**
      * Returns the response in JSON format
-     * @return string
      */
     public function toJson(): string
     {
         switch ($this->getEndPoint()) {
             case ReturnFileTypes::XML:
-                $xml = @simplexml_load_string($this->getResponse()->getBody());
+                $xml = simplexml_load_string((string) $this->getResponse()->getBody());
 
                 return json_encode($xml);
             case ReturnFileTypes::XLS:
@@ -401,7 +394,7 @@ abstract class Base
                 $id = 0;
                 $newObj = new \stdClass();
                 $newArray = [];
-                foreach ($array as $key => $val) {
+                foreach ($array as $val) {
                     $id++;
                     if ($id === 1) {
                         foreach ($val as $k => $v) {
@@ -421,7 +414,6 @@ abstract class Base
                 }
 
                 return json_encode($newArray);
-                break;
             case ReturnFileTypes::JSON:
             default:
                 return (string) $this->getResponse()->getBody();
@@ -442,7 +434,6 @@ abstract class Base
 
     /**
      * Returns the response in Array format
-     * @return array
      */
     public function toArray(): array
     {
@@ -452,7 +443,6 @@ abstract class Base
     /**
      * toXml returnes the object at hand in form of an xml string
      * @param  string $xmlRoot Name of element root
-     * @return string
      */
     public function toXml(string $xmlRoot): string
     {
@@ -470,9 +460,6 @@ abstract class Base
 
     /**
      * Recursive XML function to loop through all values.
-     * @param  SimpleXMLElement $object
-     * @param  array            $data
-     * @return void
      */
     private function recursiveXml(\SimpleXMLElement $object, array $data): bool
     {
@@ -524,7 +511,6 @@ abstract class Base
 
     /**
      * Gets the HTTP method
-     * @return string
      */
     public function getHttpMethod(): string
     {
@@ -575,7 +561,6 @@ abstract class Base
 
     /**
      * Sets the AlternativeAuthorizedUrl
-     * @param  string           $alternativeAuthorizedUrl
      * @return ClientsInterface All clients must implement ClientsInterface
      */
     public function setAlternativeAuthorizedUrl(string $alternativeAuthorizedUrl): self
@@ -587,7 +572,6 @@ abstract class Base
 
     /**
      * Gets the AlternativeAuthorizedUrl
-     * @return string
      */
     public function getAlternativeAuthorizedUrl(): string
     {
@@ -615,11 +599,11 @@ abstract class Base
     public function send()
     {
         // Defaults to Json return if not set.
-        if ($this->getEndPoint() == '') {
+        if ($this->getEndPoint() === '') {
             $this->setReturnJson();
         }
         if ($this->authorizationModule !== null) {
-            if ($this->getIsFullAddress() === false && !empty($this->getAlternativeAuthorizedUrl())) {
+            if ($this->getIsFullAddress() === false && ($this->getAlternativeAuthorizedUrl() !== '' && $this->getAlternativeAuthorizedUrl() !== '0')) {
                 $this->setClientUrl($this->getAlternativeAuthorizedUrl());
             }
             $this->setHeader('X-Bring-Client-URL', $this->authorizationModule->getClientUrl());
@@ -629,10 +613,10 @@ abstract class Base
             }
         }
         if ($this->getIsFullAddress() === false) {
-            if (empty($this->getClientUrlVariables())) {
+            if ($this->getClientUrlVariables() === []) {
                 $this->processClientUrlVariables();
             }
-            if (!empty($this->getClientUrlVariables())) {
+            if ($this->getClientUrlVariables() !== []) {
                 $this->setClientUrl(vsprintf($this->getClientUrl(), $this->getClientUrlVariables()));
             }
         }
@@ -645,13 +629,13 @@ abstract class Base
             );
         } catch (ClientException $e) {
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getResponse()->getBody(true)),
+                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', static::class, $e->getResponse()->getBody(true)),
                 0,
                 $e
             );
         } catch (RequestException $e) {
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', get_called_class(), $e->getMessage()),
+                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', static::class, $e->getMessage()),
                 0,
                 $e
             );

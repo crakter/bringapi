@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity;
 
 use ReflectionObject;
@@ -39,8 +40,6 @@ abstract class ApiEntityBase
 
     /**
      * Sets the validateParameter.
-     * @param string $name
-     * @param string $value
      */
     protected function setValidateParameter(string $name, string $value): ApiEntityInterface
     {
@@ -51,7 +50,6 @@ abstract class ApiEntityBase
 
     /**
      * Gets the validateParameters
-     * @return array
      */
     public function getValidateParameters(): array
     {
@@ -61,7 +59,6 @@ abstract class ApiEntityBase
     /**
      * Sets the required Parameters, if you need extra checking.
      * @param  array              $parameters list of required variables from ListAvailableReportsCustomer
-     * @return ApiEntityInterface
      */
     public function setRequiredParameters(array $parameters): ApiEntityInterface
     {
@@ -74,25 +71,27 @@ abstract class ApiEntityBase
 
     /**
      * Check if values are according to validateParameters and all values must have a value, cannot be empty
-     * @param array $result
      */
     private function checkValues(array $result): bool
     {
-        if (!empty($this->getValidateParameters())) {
+        if ($this->getValidateParameters() !== []) {
             foreach ($this->validateParameters as $key => $valid) {
                 foreach ($result as $k => $v) {
                     $checked[] = $k;
                     // Do not check if these values is set as these should of been checked.
                     if (is_array($v)) {
                         continue;
-                    } else {
-                        if ((!isset($v) || $v === null) && $valid == ValidateParameters::NOT_NULL) {
-                            throw new ApiEntityNotCorrectException(sprintf('%s is not allowed to be empty in %s', $k, __CLASS__));
-                        }
                     }
+                    if (isset($v) && $v !== null) {
+                        continue;
+                    }
+                    if ($valid != ValidateParameters::NOT_NULL) {
+                        continue;
+                    }
+                    throw new ApiEntityNotCorrectException(sprintf('%s is not allowed to be empty in %s', $k, self::class));
                 }
                 if (!in_array($key, $checked)) {
-                    throw new ApiEntityNotCorrectException(sprintf('%s must be set in %s', $key, __CLASS__));
+                    throw new ApiEntityNotCorrectException(sprintf('%s must be set in %s', $key, self::class));
                 }
             }
         }
@@ -103,7 +102,6 @@ abstract class ApiEntityBase
     /**
      * toArray returnes the object at hand in form of an Array
      * @see ApiEntityBase::checkValues();
-     * @return array
      */
     public function toArray(): array
     {
@@ -123,7 +121,6 @@ abstract class ApiEntityBase
 
     /**
      * toXml returnes the object at hand in form of an xml string
-     * @return string
      */
     public function toXml(): string
     {
@@ -141,9 +138,6 @@ abstract class ApiEntityBase
 
     /**
      * Recursive XML function to loop through all values.
-     * @param  SimpleXMLElement $object
-     * @param  array            $data
-     * @return void
      */
     private function recursiveXml(\SimpleXMLElement $object, array $data): bool
     {
@@ -161,8 +155,6 @@ abstract class ApiEntityBase
 
     /**
      * Sets variables in class to be used by toArray()
-     * @param  array              $entries
-     * @return ApiEntityInterface
      */
     public function set(array $entries): ApiEntityInterface
     {
@@ -175,18 +167,14 @@ abstract class ApiEntityBase
 
     /**
      * Sets automagically values in class
-     * @param  string             $name
-     * @param  mixed              $value
-     * @return ApiEntityInterface
      */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         $this->{$name} = $value;
     }
 
     /**
      * Gets automagically values in class
-     * @param  string $name
      * @return mixed
      */
     public function __get(string $name)

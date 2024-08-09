@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Booking;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,12 +32,12 @@ class ListCustomers extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::BOOKING_LIST_CUSTOMER_NUMBERS;
+    protected string $clientUrl = ClientUrls::BOOKING_LIST_CUSTOMER_NUMBERS;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * Get the list of products available to customer
@@ -45,7 +46,7 @@ class ListCustomers extends Base implements ClientsInterface
      */
     public function getProductsCustomer(string $customerNumber): array
     {
-        foreach ($this->toArray()['customers'] as $key => $val) {
+        foreach ($this->toArray()['customers'] as $val) {
             if ($val['customerNumber'] == $customerNumber) {
                 return $val['products'];
             }

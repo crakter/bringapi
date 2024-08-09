@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity\OrderPickups;
 
 use Crakter\BringApi\Entity\Booking\AddressEntity;
@@ -60,7 +61,6 @@ class PickupAddressEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Convert Booking AddressEntity to this PickupAddressEntity so we don't need to pass the same info twice.
      * @param  AddressEntity      $entity Populated AddressEntity object
-     * @return ApiEntityInterface
      */
     public function convertBookingAddress(AddressEntity $entity): ApiEntityInterface
     {

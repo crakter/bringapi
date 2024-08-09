@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity;
 
 /**
@@ -59,7 +60,7 @@ class OrderPickupsEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * @var string $pickupIsReadyAtTime can be set to time of pickup HH:mm:ss
      */
-    public $pickupIsReadyAtTime = null;
+    public $pickupIsReadyAtTime;
 
     /**
      * @var string $countryCode This needs to be set to the current country. <code>Countries::NORWAY</code>
@@ -73,8 +74,6 @@ class OrderPickupsEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Sets correct input format
-     * @param  DateTime           $dateTime
-     * @return ApiEntityInterface
      */
     public function setPickupDate(\DateTime $dateTime): ApiEntityInterface
     {
@@ -85,8 +84,6 @@ class OrderPickupsEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Sets correct input format
-     * @param  DateTime           $dateTime
-     * @return ApiEntityInterface
      */
     public function setPickupIsReadyAtTime(\DateTime $dateTime): ApiEntityInterface
     {

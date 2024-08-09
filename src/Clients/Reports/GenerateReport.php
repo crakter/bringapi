@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -32,29 +33,26 @@ class GenerateReport extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_GENERATE;
+    protected string $clientUrl = ClientUrls::REPORTS_GENERATE;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * CustomerId to be used in url
-     * @var string $customerId
      */
-    protected $customerId;
+    protected string $customerId;
     /**
      * ReportTypeId to be used in url
-     * @var string $reportTypeId
      */
-    protected $reportTypeId;
+    protected string $reportTypeId;
 
     /**
      * Gets the available customers from response.
      * @example https://www.mybring.com/reports/api/report/db285042-6e8d-4563-94ca-eb1100706a73/status/
      * @see Base::toArray()
-     * @return string
      */
     public function getStatusUrl(): string
     {
@@ -65,16 +63,14 @@ class GenerateReport extends Base implements ClientsInterface
      * Gets the report id from url (we need this to be able to change to JSON in request)
      * @example db285042-6e8d-4563-94ca-eb1100706a73
      * @see Base::toArray()
-     * @return string
      */
     public function getReportId(): string
     {
-        return explode('/', $this->toArray()['statusUrl'])[6];
+        return explode('/', (string) $this->toArray()['statusUrl'])[6];
     }
 
     /**
      * Sets the customerId for clientUrl
-     * @param string $customerId
      * @example PARCELS_NORWAY-00012341234
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -88,7 +84,6 @@ class GenerateReport extends Base implements ClientsInterface
     /**
      * Gets the customerId for clientUrl
      * @example PARCELS_NORWAY-00012341234
-     * @return string
      */
     public function getCustomerId(): string
     {
@@ -97,7 +92,6 @@ class GenerateReport extends Base implements ClientsInterface
 
     /**
      * Sets the reportTypeId for clientUrl
-     * @param string $reportTypeId
      * @example PARCELS-PRE_NOTIFICATION_RECEIVED
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -111,7 +105,6 @@ class GenerateReport extends Base implements ClientsInterface
     /**
      * Gets the customerId for clientUrl
      * @example PARCELS-PRE_NOTIFICATION_RECEIVED
-     * @return string
      */
     public function getReportTypeId(): string
     {
@@ -149,7 +142,7 @@ class GenerateReport extends Base implements ClientsInterface
     {
         try {
             $this->getApiEntity();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             throw new ApiEntityNotCorrectException('Api Entity needs to be set.');
         }
         $this->setOptionsQuery($this->apiEntity->toArray());

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Traits;
 
 use ReflectionClass;
@@ -32,7 +33,7 @@ trait Validate
      */
     public static function has(string $name): bool
     {
-        $class = new ReflectionClass(__CLASS__);
+        $class = new ReflectionClass(self::class);
 
         return $class->hasConstant(strtoupper($name)) ?: in_array($name, $class->getConstants());
     }
@@ -45,13 +46,13 @@ trait Validate
      */
     public static function get(string $name): string
     {
-        $class = new ReflectionClass(__CLASS__);
+        $class = new ReflectionClass(self::class);
         if (!self::has($name)) {
             throw new InputValueNotAllowedException(
                 sprintf('$name(%s) is not allowed by Bring API in %s', $name, $class->getName())
             );
         }
-        $class = new ReflectionClass(__CLASS__);
+        $class = new ReflectionClass(self::class);
 
         return $class->getConstant(strtoupper($name)) ?: $name;
     }

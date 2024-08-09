@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,29 +32,26 @@ class ListAvailableReportsCustomer extends Base implements ClientsInterface
 {
     /**
      * CustomerId to be used in url
-     * @var string $customerId
      */
-    protected $customerId;
+    protected string $customerId;
 
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_LIST_AVAILABLE_REPORTS_CUSTOMER;
+    protected string $clientUrl = ClientUrls::REPORTS_LIST_AVAILABLE_REPORTS_CUSTOMER;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * Gets the parameters required for the report.
-     * @param string $reportId
      * @example Array (0 => ['name' => "fromDate", 'type' => "date",
      *                      'description' => "Startdate of the report. Format: DD.MM.YYYY"]
      *                )
      * @see ListAvailableReportsCustomer::getReports()
      * @throws ValueNotSetException if reportId is not returned from Bring Api
-     * @return array
      */
     public function getParameters(string $reportId): array
     {
@@ -76,7 +74,6 @@ class ListAvailableReportsCustomer extends Base implements ClientsInterface
      *                      'description' => "Startdate of the report. Format: DD.MM.YYYY"]
      *                )
      * @see Base::toArray()
-     * @return array
      */
     public function getReports(): array
     {
@@ -85,7 +82,6 @@ class ListAvailableReportsCustomer extends Base implements ClientsInterface
 
     /**
      * Sets the customerId for clientUrl
-     * @param string $customerId
      * @example PARCELS_NORWAY-00012341234
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -99,7 +95,6 @@ class ListAvailableReportsCustomer extends Base implements ClientsInterface
     /**
      * Gets the customerId for clientUrl
      * @example PARCELS_NORWAY-00012341234
-     * @return string
      */
     public function getCustomerId(): string
     {

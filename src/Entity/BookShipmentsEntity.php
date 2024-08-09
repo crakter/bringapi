@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity;
 
 /**
@@ -47,7 +48,6 @@ class BookShipmentsEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Add consignment array to consignments
      * @param  array              $consignment Example: ConsignmentsEntity->toArray()
-     * @return ApiEntityInterface
      */
     public function addConsignment(array $consignment): ApiEntityInterface
     {

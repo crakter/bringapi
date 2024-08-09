@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,23 +32,22 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_LIST_INVOICE_NUMBERS;
+    protected string $clientUrl = ClientUrls::REPORTS_LIST_INVOICE_NUMBERS;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * @var string $reportId    customerOrGroupId to be used in url
      */
-    protected $customerOrGroupId;
+    protected string $customerOrGroupId;
 
     /**
      * Gets the available invoices.
      * @example Array([['label' => '702941479 (10/18/2015)', 'id' => '702941479', 'year' => 2015, 'month' => 10, 'day' => 18]])
      * @see Base::toArray()
-     * @return array
      */
     public function getInvoiceNumbers(): array
     {
@@ -56,7 +56,6 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
 
     /**
      * Sets the customerOrGroupId for clientUrl
-     * @param string $customerOrGroupId
      * @example PARCELS_NORWAY-00012341234
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -70,7 +69,6 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
     /**
      * Gets the reportId for clientUrl
      * @example PARCELS_NORWAY-00012341234
-     * @return string
      */
     public function getCustomerOrGroupId(): string
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients;
 
 /**
@@ -27,17 +28,17 @@ class Authorization implements AuthorizationInterface
     /**
      * @var string Holds the ApiKey
      */
-    private $apiKey;
+    private string $apiKey;
 
     /**
      * @var string Holds the ClientId
      */
-    private $clientId;
+    private string $clientId;
 
     /**
      * @var string Holds the ClientUrl
      */
-    private $clientUrl;
+    private string $clientUrl;
 
     /**
      * Sets the parameters if they are supplied, or use fluent interface to do the same thing
@@ -113,7 +114,7 @@ class Authorization implements AuthorizationInterface
     public function get(string $name): string
     {
         if (!$this->has($name)) {
-            throw new ValueNotSetException(sprintf('Value %s is not set in %s.', $name, __CLASS__));
+            throw new ValueNotSetException(sprintf('Value %s is not set in %s.', $name, self::class));
         }
 
         return $this->{$name};

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\PostalCode;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -32,12 +33,12 @@ class PostalCode extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::POSTALCODE_API;
+    protected string $clientUrl = ClientUrls::POSTALCODE_API;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * Check if the return from server is NORMAL postal code
@@ -45,7 +46,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfNormal(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'NORMAL') ? true : false;
+        return $this->toArray()['postalCodeType'] == 'NORMAL';
     }
 
     /**
@@ -54,7 +55,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfUnknown(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'UNKNOWN') ? true : false;
+        return $this->toArray()['postalCodeType'] == 'UNKNOWN';
     }
 
     /**
@@ -63,7 +64,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfPoBox(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'POBOX') ? true : false;
+        return $this->toArray()['postalCodeType'] == 'POBOX';
     }
 
     /**
@@ -72,7 +73,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfSpecialCustomer(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'SPECIALCUSTOMER') ? true : false;
+        return $this->toArray()['postalCodeType'] == 'SPECIALCUSTOMER';
     }
 
     /**
@@ -81,7 +82,7 @@ class PostalCode extends Base implements ClientsInterface
      */
     public function checkIfSpecialNoStreet(): bool
     {
-        return ($this->toArray()['postalCodeType'] == 'SPECIALNOSTREET') ? true : false;
+        return $this->toArray()['postalCodeType'] == 'SPECIALNOSTREET';
     }
 
     /**
@@ -115,7 +116,7 @@ class PostalCode extends Base implements ClientsInterface
     {
         try {
             $this->getApiEntity();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             throw new ApiEntityNotCorrectException('Api Entity needs to be set.');
         }
         $this->setOptionsQuery($this->apiEntity->toArray());

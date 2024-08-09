@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,18 +32,17 @@ class GetReport extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_GET_REPORT;
+    protected string $clientUrl = ClientUrls::REPORTS_GET_REPORT;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * ReportId to be used in url
-     * @var string $reportId
      */
-    protected $reportId;
+    protected string $reportId;
 
     public function __construct(ApiEntityInterface $apiEntity = null, AuthorizationInterface $authorizationModule = null, ClientInterface $client = null)
     {
@@ -53,7 +53,6 @@ class GetReport extends Base implements ClientsInterface
 
     /**
      * Sets the reportId for clientUrl
-     * @param string $reportId
      * @example db285042-6e8d-4563-94ca-eb1100706a73
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -67,7 +66,6 @@ class GetReport extends Base implements ClientsInterface
     /**
      * Gets the reportId for clientUrl
      * @example db285042-6e8d-4563-94ca-eb1100706a73
-     * @return string
      */
     public function getReportId(): string
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,18 +32,17 @@ class StatusOfReport extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_CHECK_STATUS_OF_REPORT;
+    protected string $clientUrl = ClientUrls::REPORTS_CHECK_STATUS_OF_REPORT;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * ReportId to be used in url
-     * @var string $reportId
      */
-    protected $reportId;
+    protected string $reportId;
 
     /**
      * Gets the available status from response.
@@ -59,7 +59,6 @@ class StatusOfReport extends Base implements ClientsInterface
      * Gets the report id from url (for the fluent interface to work correctly it is needed so you can do ->setReturnXml() and the url is set by client class)
      * @example db285042-6e8d-4563-94ca-eb1100706a73
      * @see Base::toArray()
-     * @return string
      */
     public function getResultReportId(): string
     {
@@ -106,16 +105,11 @@ class StatusOfReport extends Base implements ClientsInterface
      */
     public function checkStatus(): bool
     {
-        if ($this->getStatus() == 'DONE') {
-            return true;
-        }
-
-        return false;
+        return $this->getStatus() === 'DONE';
     }
 
     /**
      * Sets the reportId for clientUrl
-     * @param string $reportId
      * @example db285042-6e8d-4563-94ca-eb1100706a73
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -129,7 +123,6 @@ class StatusOfReport extends Base implements ClientsInterface
     /**
      * Gets the reportId for clientUrl
      * @example db285042-6e8d-4563-94ca-eb1100706a73
-     * @return string
      */
     public function getReportId(): string
     {

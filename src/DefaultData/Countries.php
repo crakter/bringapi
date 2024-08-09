@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\DefaultData;
 
 /**
@@ -25,14 +26,14 @@ abstract class Countries
 {
     use \Crakter\BringApi\Traits\Validate;
 
-    const NORWAY = 'NO';
-    const DENMARK = 'DK';
-    const SWEDEN = 'SE';
-    const FINLAND = 'FI';
-    const NETHERLAND = 'NL';
-    const GERMANY = 'DE';
-    const UNITED_STATES = 'US';
-    const BELGIUM = 'BE';
-    const FAROE_ISLANDS = 'FO';
-    const GREENLAND = 'GL';
+    public const NORWAY = 'NO';
+    public const DENMARK = 'DK';
+    public const SWEDEN = 'SE';
+    public const FINLAND = 'FI';
+    public const NETHERLAND = 'NL';
+    public const GERMANY = 'DE';
+    public const UNITED_STATES = 'US';
+    public const BELGIUM = 'BE';
+    public const FAROE_ISLANDS = 'FO';
+    public const GREENLAND = 'GL';
 }

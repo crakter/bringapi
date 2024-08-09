@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity\Booking;
 
 use Crakter\BringApi\Entity\ApiEntityBase;
@@ -61,7 +62,6 @@ class ConsignmentsEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Method to add to array of packages.
      * @param  ApiEntityInterface $package Information about the new package
-     * @return ApiEntityInterface
      */
     public function addPackage(array $package): ApiEntityInterface
     {
@@ -72,7 +72,6 @@ class ConsignmentsEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Sets correct input format
-     * @param DateTime $dateTime
      */
     public function setShippingDateTime(\DateTime $dateTime): ApiEntityInterface
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients;
 
 /**
@@ -54,7 +55,6 @@ interface AuthorizationInterface
 
     /**
      * Check if variable is set
-     * @param  string $variable
      * @return bool   true/false
      */
     public function has(string $variable): bool;
@@ -62,28 +62,24 @@ interface AuthorizationInterface
     /**
      * Gets the variable
      * @throws ValueNotSetException if "has" fails.
-     * @return string
      */
     public function get(string $name): string;
 
     /**
      * Gets the variable
      * @throws ValueNotSetException if "has" fails.
-     * @return string
      */
     public function getApiKey(): string;
 
     /**
      * Gets the variable
      * @throws ValueNotSetException if "has" fails.
-     * @return string
      */
     public function getClientId(): string;
 
     /**
      * Gets the variable
      * @throws ValueNotSetException if "has" fails.
-     * @return string
      */
     public function getClientUrl(): string;
 }

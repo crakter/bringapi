@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Tracking;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,23 +32,22 @@ class TrackingEndpoint extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::TRACKING_NOT_LOGGED_IN;
+    protected string $clientUrl = ClientUrls::TRACKING_NOT_LOGGED_IN;
 
     /**
      * @var string $alternativeAuthorizedUrl    The alternative clients url if logged in
      */
-    protected $alternativeAuthorizedUrl = ClientUrls::TRACKING_LOGGED_IN;
+    protected string $alternativeAuthorizedUrl = ClientUrls::TRACKING_LOGGED_IN;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * Gets the last position of the goods, only for tracking number - not for reference as it can have multiple outputs.
      * @example
      * @see Base::toArray()
-     * @return array
      */
     public function getLastPosition(): array
     {
@@ -69,7 +69,7 @@ class TrackingEndpoint extends Base implements ClientsInterface
      */
     public function checkErrors(): ClientsInterface
     {
-        $array = $this->toArray();
+        $this->toArray();
 
         return $this;
     }
@@ -81,7 +81,7 @@ class TrackingEndpoint extends Base implements ClientsInterface
     {
         try {
             $this->getApiEntity();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             throw new ApiEntityNotCorrectException('Api Entity needs to be set.');
         }
         $this->setOptionsQuery($this->apiEntity->toArray());

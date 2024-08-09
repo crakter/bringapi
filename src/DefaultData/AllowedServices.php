@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\DefaultData;
 
 use Crakter\BringApi\Exception\ProductAppliesToNotAllowedException;
@@ -27,7 +28,7 @@ abstract class AllowedServices
 {
     use \Crakter\BringApi\Traits\Validate;
 
-    const ALLOWEDMETHOD = [
+    public const ALLOWEDMETHOD = [
         'cashOnDelivery' => [
             'BPAKKE_DOR-DOR',
             'PICKUP_PARCEL',
@@ -108,7 +109,7 @@ abstract class AllowedServices
      */
     public static function hasAppliesTo(string $name, string $product): bool
     {
-        $class = new ReflectionClass(__CLASS__);
+        $class = new ReflectionClass(self::class);
         if (
             isset($class->getConstant('ALLOWEDMETHOD')[$name]) &&
             in_array($product, $class->getConstant('ALLOWEDMETHOD')[$name])
@@ -118,7 +119,5 @@ abstract class AllowedServices
         throw new ProductAppliesToNotAllowedException(
             sprintf('$name(%s) with $product(%s) is not allowed by Bring API in %s', $name, $product, $class->getName())
         );
-
-        return false;
     }
 }

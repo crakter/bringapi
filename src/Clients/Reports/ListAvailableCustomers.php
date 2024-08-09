@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Reports;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -31,12 +32,12 @@ class ListAvailableCustomers extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::REPORTS_LIST_AVAILABLE_CUSTOMERS;
+    protected string $clientUrl = ClientUrls::REPORTS_LIST_AVAILABLE_CUSTOMERS;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * Gets the available customers from response.
@@ -44,7 +45,6 @@ class ListAvailableCustomers extends Base implements ClientsInterface
      *                      'reports' => "https://www.mybring.com/reports/api/generate/PARCELS_NORWAY-00012341234/"]
      *                )
      * @see Base::toArray()
-     * @return array
      */
     public function getAvailableCustomers(): array
     {

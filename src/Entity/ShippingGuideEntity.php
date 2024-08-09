@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Entity;
 
 /**
@@ -128,7 +129,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Volume with support for multiple values.
      * @param  int                $int value of Volume per package
-     * @return ApiEntityInterface
      */
     public function addVolume(int $volume): ApiEntityInterface
     {
@@ -142,7 +142,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Weight in Grams with support for multiple values.
      * @param  int                $int value of weightInGrams per package
-     * @return ApiEntityInterface
      */
     public function addWeightInGrams(int $weightInGrams): ApiEntityInterface
     {
@@ -156,7 +155,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Width in cm with support for multiple values.
      * @param  int                $int value of width per package
-     * @return ApiEntityInterface
      */
     public function addWidth(int $width): ApiEntityInterface
     {
@@ -170,7 +168,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Height in cm with support for multiple values.
      * @param  int                $int value of height per package
-     * @return ApiEntityInterface
      */
     public function addHeight(int $height): ApiEntityInterface
     {
@@ -184,7 +181,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Length in cm with support for multiple values.
      * @param  int                $int value of length per package
-     * @return ApiEntityInterface
      */
     public function addLength(int $length): ApiEntityInterface
     {
@@ -198,7 +194,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * NonStackable does not follow the camelCase principe so we need this function to be able to set correct.
      * @param  bool               $bool value of NonStackable
-     * @return ApiEntityInterface
      */
     public function setNonStackable(bool $bool): ApiEntityInterface
     {
@@ -219,7 +214,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Sets the additional services
      * @param  array              $args setAdditional(AdditionalProducts::COD, AdditionalProducts::ENOTIFICATION)
-     * @return ApiEntityInterface
      */
     public function setAdditionalservice(array ...$args): ApiEntityInterface
     {
@@ -231,7 +225,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Sets the products
      * @param  array              $args setProduct(Products::SERVICEPAKKE, Products::SERVICEPAKKE_RETURSERVICE)
-     * @return ApiEntityInterface
      */
     public function setProduct(array ...$args): ApiEntityInterface
     {
@@ -242,8 +235,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Sets correct input format
-     * @param  DateTime           $dateTime
-     * @return ApiEntityInterface
      */
     public function setDate(\DateTime $dateTime): ApiEntityInterface
     {
@@ -254,8 +245,6 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
 
     /**
      * Sets correct input format
-     * @param  DateTime           $dateTime
-     * @return ApiEntityInterface
      */
     public function setTime(\DateTime $dateTime): ApiEntityInterface
     {
@@ -267,11 +256,10 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Add product to the list of products
      * @param  string             $product Products::SERVICEPAKKE
-     * @return ApiEntityInterface
      */
     public function addProduct(string $product): ApiEntityInterface
     {
-        if (!isset($this->product)) {
+        if ($this->product === null) {
             $this->product = [];
         }
         $this->product[] = $product;
@@ -282,11 +270,10 @@ class ShippingGuideEntity extends ApiEntityBase implements ApiEntityInterface
     /**
      * Add addtional service to the list of services
      * @param  string             $additional
-     * @return ApiEntityInterface
      */
     public function addAdditionalservice(string $additionalservice): ApiEntityInterface
     {
-        if (!isset($this->additionalservice)) {
+        if ($this->additionalservice === null) {
             $this->additionalservice = [];
         }
         $this->additionalservice[] = $additionalservice;

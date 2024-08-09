@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\DefaultData;
 
 /**
@@ -24,8 +25,8 @@ abstract class Languages
 {
     use \Crakter\BringApi\Traits\Validate;
 
-    const NORWEGIAN = 'no';
-    const ENGLISH = 'en';
-    const DANISH = 'da';
-    const SWEDISH = 'sv';
+    public const NORWEGIAN = 'no';
+    public const ENGLISH = 'en';
+    public const DANISH = 'da';
+    public const SWEDISH = 'sv';
 }

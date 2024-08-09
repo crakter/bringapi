@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\Clients\Tracking;
 
 use Crakter\BringApi\DefaultData\ClientUrls;
@@ -30,22 +31,21 @@ class SignatureTracking extends Base implements ClientsInterface
     /**
      * @var string $clientUrl    The clients url
      */
-    protected $clientUrl = ClientUrls::TRACKING_SIGNATURE;
+    protected string $clientUrl = ClientUrls::TRACKING_SIGNATURE;
 
     /**
      * @var string $httpMethod  The Method for HTTP
      */
-    protected $httpMethod = HttpMethods::GET;
+    protected string $httpMethod = HttpMethods::GET;
 
     /**
      * @var string $signatureLink   The link to the signature
      */
-    protected $signatureLink;
+    protected string $signatureLink;
 
     /**
      * Gets the SignatureLink for clientUrl
      * @example api/signatur.png?kollinummer=3707xxxxxxxxx&dateTimeIso=2017-05-30T10:03:56+02:00
-     * @return string
      */
     public function getSignatureLink(): string
     {
@@ -54,7 +54,6 @@ class SignatureTracking extends Base implements ClientsInterface
 
     /**
      * Sets the signatureLink for clientUrl
-     * @param string $signatureLink
      * @example api/signatur.png?kollinummer=3707xxxxxxxxx&dateTimeIso=2017-05-30T10:03:56+02:00
      * @return ClientsInterface All clients must implement ClientsInterface
      */
@@ -80,7 +79,7 @@ class SignatureTracking extends Base implements ClientsInterface
      */
     public function checkErrors(): ClientsInterface
     {
-        $array = $this->toArray();
+        $this->toArray();
 
         return $this;
     }

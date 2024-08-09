@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Crakter\BringApi\DefaultData;
 
 /**
@@ -22,6 +23,6 @@ namespace Crakter\BringApi\DefaultData;
  */
 abstract class HttpMethods
 {
-    const GET = 'GET';
-    const POST = 'POST';
+    public const GET = 'GET';
+    public const POST = 'POST';
 }
