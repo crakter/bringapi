@@ -435,7 +435,7 @@ abstract class Base
     /**
      * Returns the response in Array format
      */
-    public function toArray(): array
+    public function toArray(): array|null
     {
         return json_decode($this->toJson(), true);
     }
