@@ -39,7 +39,7 @@ abstract class ClientUrls
     // 1st %s is reportTypeId & 2rd %s is returnFileType.
     public const REPORTS_GET_REPORT = 'https://www.mybring.com/reports/api/report/%s.%s';
     // 1st %s is CustomerNumber or GroupId & 2rd %s is returnFileType.
-    public const REPORTS_LIST_INVOICE_NUMBERS = 'https://www.mybring.com/reports/api/invoices/%s.%s';
+    public const REPORTS_LIST_INVOICE_NUMBERS = 'https://www.mybring.com/invoicearchive/api/invoices/%s.%s';
 
     /**
      * Links for Tracking Api

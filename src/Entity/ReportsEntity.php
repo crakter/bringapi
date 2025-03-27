@@ -45,11 +45,11 @@ use Crakter\BringApi\DefaultData\ValidateParameters;
 class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 {
     public string $selectedCriteria = '';
-    public string $fromDate;
-    public string $toDate;
-    public string $invoiceNumber;
-    public string $reporttype;
-    public string $year;
+    public ?string $fromDate;
+    public ?string $toDate;
+    public ?string $invoiceNumber;
+    public ?string $reporttype;
+    public ?string $year;
 
     /**
      * Sets the required Parameters, if you need extra checking.
