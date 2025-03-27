@@ -51,7 +51,7 @@ class ListInvoiceNumbers extends Base implements ClientsInterface
      */
     public function getInvoiceNumbers(): array
     {
-        return $this->toArray()['invoiceNumbers'];
+        return $this->toArray()['invoices'];
     }
 
     /**
