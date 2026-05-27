@@ -27,12 +27,13 @@ final class ExponentialBackoff implements BackoffStrategy
         $this->rng = $rng ?? static fn (): float => mt_rand() / mt_getrandmax();
     }
 
+    #[\Override]
     public function delaySeconds(int $attempt): float
     {
         if ($attempt < 1) {
             return 0.0;
         }
-        $exp = min($this->maxDelaySeconds, $this->baseDelaySeconds * (2 ** ($attempt - 1)));
+        $exp = min($this->maxDelaySeconds, $this->baseDelaySeconds * (float) (2 ** ($attempt - 1)));
 
         return ($this->rng)() * $exp;
     }

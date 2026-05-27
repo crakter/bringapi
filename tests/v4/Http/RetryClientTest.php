@@ -20,6 +20,7 @@ final class RetryClientTest extends TestCase
 {
     private HttpFactory $factory;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->factory = new HttpFactory();

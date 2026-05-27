@@ -85,9 +85,11 @@ final class BringApiException extends \RuntimeException implements BringExceptio
                     $xml = @simplexml_load_string($body);
                     if ($xml !== false) {
                         foreach ($xml->xpath('//error') ?: [] as $errNode) {
+                            // SimpleXMLElement always returns a SimpleXMLElement for child
+                            // accesses (empty when absent), so no null-coalesce is needed.
                             $errors[] = new BringApiError(
-                                (string) ($errNode->code ?? ''),
-                                (string) ($errNode->description ?? ''),
+                                (string) $errNode->code,
+                                (string) $errNode->description,
                                 null,
                             );
                         }

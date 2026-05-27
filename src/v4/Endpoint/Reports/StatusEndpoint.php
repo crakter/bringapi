@@ -21,11 +21,13 @@ final class StatusEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf(
@@ -36,6 +38,7 @@ final class StatusEndpoint extends AbstractJsonEndpoint
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): ReportStatusResponse
     {
         return ReportStatusResponse::fromArray($decoded);

@@ -175,10 +175,12 @@ php examples/v4_BookAndPickup.php   # uses test mode, no labels generated
 
 ```sh
 composer install
-vendor/bin/phpunit                              # all tests (legacy + v4)
-vendor/bin/phpunit --testsuite v4               # v4 tests only
-vendor/bin/phpstan analyse                      # static analysis on v4
-vendor/bin/php-cs-fixer fix --dry-run --diff    # coding-style check
+composer qa                                     # full gate: cs + phpstan + psalm + phpunit
+composer test                                   # all tests (legacy + v4)
+composer test-coverage                          # coverage in coverage/ + coverage.xml
+composer phpstan                                # PHPStan level 8 on v4
+composer psalm                                  # Psalm errorLevel 4 on v4
+composer cs                                     # php-cs-fixer dry run
 composer docs                                   # build API docs into docs/build
 ```
 

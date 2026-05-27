@@ -21,17 +21,20 @@ final class PostalCodeEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return 'https://api.bring.com/shippingguide/api/postalCode.json';
     }
 
     /** @return array<string, mixed> */
+    #[\Override]
     protected function queryParameters(): array
     {
         $q = ['pnr' => $this->postalCode];
@@ -43,6 +46,7 @@ final class PostalCodeEndpoint extends AbstractJsonEndpoint
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): PostalCodeResponse
     {
         return PostalCodeResponse::fromArray($decoded);

@@ -18,23 +18,27 @@ final class UpdateContactEndpoint extends AbstractJsonEndpoint
     {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::POST;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return 'https://www.mybring.com/modifydelivery/api/update-contact-details';
     }
 
     /** @return array<mixed, mixed>|null */
+    #[\Override]
     protected function jsonBody(): ?array
     {
         return $this->request->toArray();
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): ModifyDeliveryResponse
     {
         return ModifyDeliveryResponse::fromArray($decoded);

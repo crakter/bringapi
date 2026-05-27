@@ -86,6 +86,30 @@ echo $result->city;
 | — | `$bring->modifyDelivery()->stopShipment|changeAddress|updateContactDetails(...)` (new) |
 | — | `$bring->orderManagement()->getOrder|sendPackagingList(...)` (new REST) |
 
+## Automated migration with Rector
+
+For the bulk class-rename portion of the upgrade we ship a Rector ruleset.
+Downstream applications can run:
+
+```sh
+composer require --dev rector/rector
+vendor/bin/rector process src \
+  --config vendor/crakter/bringapi/rector-v4-migration.php
+```
+
+What it does automatically:
+- Renames every `Crakter\BringApi\Clients\*` endpoint class to its v4
+  `Bring\Api\Endpoint\*Api` facade equivalent.
+- Renames the `DefaultData\Countries|Languages|Products` constant classes
+  to the v4 `Enum\Country|Language|Product` enums.
+- Maps the v3 `BringClientException` to the v4 `BringApiException`.
+
+What still needs hand-editing afterwards (Rector flags symbols, you fix
+the call sites):
+- Fluent `(new TrackingEntity)->setQ(...)` chains → typed request DTOs.
+- `Authorization` setter chains → `new Credentials(...)`.
+- `->send()->toArray()` → direct DTO accessors on the v4 return type.
+
 ## Test mode
 
 ```php

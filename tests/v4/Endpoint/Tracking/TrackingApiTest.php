@@ -34,6 +34,7 @@ final class TrackingApiTest extends TestCase
             ]],
         ]);
 
+        self::assertNotFalse($payload);
         $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], $payload)]);
         $api = ApiClient::withCredentials(new Credentials('me@example.com', 'k'), $client);
 

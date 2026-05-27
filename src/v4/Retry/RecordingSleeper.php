@@ -12,6 +12,7 @@ final class RecordingSleeper implements Sleeper
     /** @var list<float> */
     public array $slept = [];
 
+    #[\Override]
     public function sleepSeconds(float $seconds): void
     {
         $this->slept[] = $seconds;

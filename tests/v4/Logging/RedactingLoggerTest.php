@@ -19,6 +19,7 @@ final class RedactingLoggerTest extends TestCase
     /** @var list<array{level:string, message:string, context:array<mixed, mixed>}> */
     private array $sink = [];
 
+    #[\Override]
     protected function setUp(): void
     {
         $sink = &$this->sink;
@@ -27,6 +28,7 @@ final class RedactingLoggerTest extends TestCase
             {
             }
 
+            #[\Override]
             public function log($level, \Stringable|string $message, array $context = []): void
             {
                 $this->sink[] = ['level' => (string) $level, 'message' => (string) $message, 'context' => $context];

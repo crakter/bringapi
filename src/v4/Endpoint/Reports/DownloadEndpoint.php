@@ -28,11 +28,13 @@ final class DownloadEndpoint implements Endpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     public function accept(): AcceptType
     {
         return match ($this->format) {
@@ -43,6 +45,7 @@ final class DownloadEndpoint implements Endpoint
         };
     }
 
+    #[\Override]
     public function uri(UriFactoryInterface $uris): UriInterface
     {
         return $uris->createUri(sprintf(
@@ -52,6 +55,7 @@ final class DownloadEndpoint implements Endpoint
         ));
     }
 
+    #[\Override]
     public function buildRequest(
         RequestFactoryInterface $requests,
         StreamFactoryInterface $streams,
@@ -62,6 +66,7 @@ final class DownloadEndpoint implements Endpoint
             ->withHeader('Accept', $this->accept()->value);
     }
 
+    #[\Override]
     public function parseResponse(ResponseInterface $response): string
     {
         return (string) $response->getBody();

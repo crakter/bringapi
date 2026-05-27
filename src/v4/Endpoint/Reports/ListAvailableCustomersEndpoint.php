@@ -19,17 +19,20 @@ final class ListAvailableCustomersEndpoint extends AbstractJsonEndpoint
     {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf('https://www.mybring.com/reports/api/generate.%s', $this->format->value);
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): GenericReportResponse
     {
         return GenericReportResponse::fromArray($decoded);

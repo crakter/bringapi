@@ -21,11 +21,13 @@ final class SuggestionsEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf(
@@ -35,12 +37,14 @@ final class SuggestionsEndpoint extends AbstractJsonEndpoint
     }
 
     /** @return array<string, mixed> */
+    #[\Override]
     protected function queryParameters(): array
     {
         return ['postal_code' => $this->prefix];
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): SuggestionsResponse
     {
         return SuggestionsResponse::fromArray($decoded);

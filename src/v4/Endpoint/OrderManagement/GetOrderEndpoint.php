@@ -20,11 +20,13 @@ final class GetOrderEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf(
@@ -35,6 +37,7 @@ final class GetOrderEndpoint extends AbstractJsonEndpoint
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): OrderResponse
     {
         return OrderResponse::fromArray($decoded);

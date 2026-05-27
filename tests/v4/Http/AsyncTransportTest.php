@@ -49,6 +49,7 @@ final class AsyncTransportTest extends TestCase
             $promises[] = $bring->async()->send(new PriceEndpoint($this->makeRequest()));
         }
         $results = Utils::all($promises)->wait();
+        self::assertIsArray($results);
 
         self::assertCount(3, $results);
         self::assertSame(100.0, $results[0]->products[0]->priceWithVat);

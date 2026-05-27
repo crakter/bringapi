@@ -22,11 +22,13 @@ final class ByLocationEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf(
@@ -38,6 +40,7 @@ final class ByLocationEndpoint extends AbstractJsonEndpoint
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): PickupPointListResponse
     {
         return PickupPointListResponse::fromArray($decoded);

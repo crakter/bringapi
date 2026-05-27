@@ -19,23 +19,27 @@ final class PackagingListEndpoint extends AbstractJsonEndpoint
     {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::POST;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return 'https://api.bring.com/po/api/v1/packaginglist';
     }
 
     /** @return array<mixed, mixed>|null */
+    #[\Override]
     protected function jsonBody(): ?array
     {
         return $this->payload;
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): PackagingListResponse
     {
         return PackagingListResponse::fromArray($decoded);

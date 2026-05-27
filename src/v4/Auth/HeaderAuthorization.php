@@ -13,11 +13,13 @@ final class HeaderAuthorization implements AuthorizationInterface
     {
     }
 
+    #[\Override]
     public function isAuthenticated(): bool
     {
         return true;
     }
 
+    #[\Override]
     public function applyTo(RequestInterface $request): RequestInterface
     {
         $request = $request

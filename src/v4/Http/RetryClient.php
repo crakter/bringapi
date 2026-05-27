@@ -51,11 +51,13 @@ final class RetryClient implements ClientInterface
 
     private LoggerInterface $logger;
 
+    #[\Override]
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $attempt = 0;
         $lastException = null;
         $lastResponse = null;
+        $response = null;
 
         while ($attempt < $this->maxAttempts) {
             $attempt++;
@@ -64,6 +66,7 @@ final class RetryClient implements ClientInterface
             } catch (ClientExceptionInterface $e) {
                 $lastException = $e;
                 $lastResponse = null;
+                $response = null;
                 if ($attempt >= $this->maxAttempts) {
                     throw $e;
                 }
@@ -94,7 +97,7 @@ final class RetryClient implements ClientInterface
         }
 
         // Unreachable in practice — every branch above either returns or throws — but
-        // makes the compiler happy and gives a clean message if logic regresses.
+        // gives a clean message if the loop logic regresses.
         if ($lastResponse !== null) {
             return $lastResponse;
         }

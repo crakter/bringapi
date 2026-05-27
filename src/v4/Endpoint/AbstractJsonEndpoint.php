@@ -27,6 +27,7 @@ use Psr\Http\Message\UriInterface;
  */
 abstract class AbstractJsonEndpoint implements Endpoint
 {
+    #[\Override]
     public function accept(): AcceptType
     {
         return AcceptType::JSON;
@@ -34,6 +35,7 @@ abstract class AbstractJsonEndpoint implements Endpoint
 
     abstract protected function baseUri(): string;
 
+    #[\Override]
     public function uri(UriFactoryInterface $uris): UriInterface
     {
         $uri = $uris->createUri($this->baseUri());
@@ -62,6 +64,7 @@ abstract class AbstractJsonEndpoint implements Endpoint
         return [];
     }
 
+    #[\Override]
     public function buildRequest(
         RequestFactoryInterface $requests,
         StreamFactoryInterface $streams,
@@ -92,6 +95,7 @@ abstract class AbstractJsonEndpoint implements Endpoint
      */
     abstract protected function parseDecoded(array $decoded): mixed;
 
+    #[\Override]
     public function parseResponse(ResponseInterface $response): mixed
     {
         $body = (string) $response->getBody();

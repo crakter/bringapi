@@ -18,23 +18,27 @@ final class TrackEndpoint extends AbstractJsonEndpoint
     {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::GET;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return 'https://tracking.bring.com/api/v2/tracking.json';
     }
 
     /** @return array<string, mixed> */
+    #[\Override]
     protected function queryParameters(): array
     {
         return ['q' => $this->query];
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): TrackingResponse
     {
         return TrackingResponse::fromArray($decoded);

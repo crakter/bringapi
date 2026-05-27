@@ -24,11 +24,13 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
     ) {
     }
 
+    #[\Override]
     public function method(): HttpMethod
     {
         return HttpMethod::POST;
     }
 
+    #[\Override]
     protected function baseUri(): string
     {
         return sprintf(
@@ -40,12 +42,14 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
     }
 
     /** @return array<mixed, mixed>|null */
+    #[\Override]
     protected function jsonBody(): ?array
     {
         return $this->parameters === [] ? null : $this->parameters;
     }
 
     /** @param array<mixed, mixed> $decoded */
+    #[\Override]
     protected function parseDecoded(array $decoded): GenerateReportResponse
     {
         return GenerateReportResponse::fromArray($decoded);

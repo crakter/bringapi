@@ -12,11 +12,13 @@ use Psr\Http\Message\RequestInterface;
  */
 final class NullAuthorization implements AuthorizationInterface
 {
+    #[\Override]
     public function isAuthenticated(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function applyTo(RequestInterface $request): RequestInterface
     {
         return $request;

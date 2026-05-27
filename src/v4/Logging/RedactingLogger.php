@@ -51,6 +51,7 @@ final class RedactingLogger extends AbstractLogger
         return $clone;
     }
 
+    #[\Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $msg = $this->maskString((string) $message);

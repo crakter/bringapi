@@ -105,7 +105,7 @@ final class AsyncTransport
                     }
                     // Guzzle's default http_errors=true rejects with a BadResponseException
                     // on non-2xx — surface those as BringApiException, not as transport errors.
-                    if ($e instanceof \GuzzleHttp\Exception\BadResponseException && $e->getResponse() !== null) {
+                    if ($e instanceof \GuzzleHttp\Exception\BadResponseException) {
                         throw BringApiException::fromResponse($e->getResponse(), $e);
                     }
                     throw new BringTransportException(
