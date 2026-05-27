@@ -25,6 +25,8 @@ use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
  * Quick setup: <code>class ReportsEntity extends ApiEntityBase {}</code>
  *
  * @author Martin Madsen <crakter@gmail.com>
+ * @deprecated since 4.0. Replaced by typed request DTOs under
+ *             Bring\Api\Endpoint\<Api>\*Request. Kept for v3 compatibility.
  */
 abstract class ApiEntityBase
 {
@@ -74,25 +76,29 @@ abstract class ApiEntityBase
      */
     private function checkValues(array $result): bool
     {
-        if ($this->getValidateParameters() !== []) {
-            foreach ($this->validateParameters as $key => $valid) {
-                foreach ($result as $k => $v) {
-                    $checked[] = $k;
-                    // Do not check if these values is set as these should of been checked.
-                    if (is_array($v)) {
-                        continue;
-                    }
-                    if (isset($v) && $v !== null) {
-                        continue;
-                    }
-                    if ($valid != ValidateParameters::NOT_NULL) {
-                        continue;
-                    }
-                    throw new ApiEntityNotCorrectException(sprintf('%s is not allowed to be empty in %s', $k, self::class));
+        if ($this->getValidateParameters() === []) {
+            return true;
+        }
+        $checked = [];
+        foreach ($this->validateParameters as $key => $valid) {
+            foreach ($result as $k => $v) {
+                $checked[] = $k;
+                if (is_array($v)) {
+                    continue;
                 }
-                if (!in_array($key, $checked)) {
-                    throw new ApiEntityNotCorrectException(sprintf('%s must be set in %s', $key, self::class));
+                if (isset($v) && $v !== null && $v !== '') {
+                    continue;
                 }
+                if ($valid !== ValidateParameters::NOT_NULL) {
+                    continue;
+                }
+                if ($k !== $key) {
+                    continue;
+                }
+                throw new ApiEntityNotCorrectException(sprintf('%s is not allowed to be empty in %s', $k, static::class));
+            }
+            if (!in_array($key, $checked, true)) {
+                throw new ApiEntityNotCorrectException(sprintf('%s must be set in %s', $key, static::class));
             }
         }
 
@@ -110,9 +116,14 @@ abstract class ApiEntityBase
 
         foreach ($props as $prop) {
             $name = $prop->getName();
+            if (!$prop->isInitialized($this)) {
+                continue;
+            }
             $value = $prop->getValue($this);
+            if ($value === null) {
+                continue;
+            }
             $result[$name] = $value;
-            $this->setValidateParameter($name, ValidateParameters::NOT_NULL);
         }
         $this->checkValues($result);
 
@@ -143,10 +154,11 @@ abstract class ApiEntityBase
     {
         foreach ($data as $key => $value) {
             if (is_array($value)) {
-                $new_object = $object->addChild($key);
+                $new_object = $object->addChild((string) $key);
                 $this->recursiveXml($new_object, $value);
             } else {
-                $object->addChild($key, $value);
+                $escaped = htmlspecialchars((string) ($value ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                $object->addChild((string) $key, $escaped);
             }
         }
 

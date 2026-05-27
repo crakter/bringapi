@@ -2,3 +2,9 @@
 /docs
 /coverage
 .vscode
+.idea
+.phpunit.result.cache
+.phpunit.cache
+.php-cs-fixer.cache
+composer.phar
+/composer.lock

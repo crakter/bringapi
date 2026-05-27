@@ -69,7 +69,7 @@ abstract class AllowedServices
         'saturdayDelivery' => [
             'EKSPRESS09',
         ],
-        'FLEX_DELIVERY' => [
+        'flexDelivery' => [
             'PICKUP_PARCEL',
             'PICKUP_PARCEL_BULK',
             'HOME_DELIVERY_PARCEL',

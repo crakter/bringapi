@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
+         backupGlobals="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="random"
+         failOnWarning="true"
+         failOnRisky="true"
+         failOnNotice="true"
+         stopOnError="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="v4">
+            <directory suffix="Test.php">tests/v4</directory>
+        </testsuite>
+        <testsuite name="legacy">
+            <directory suffix="Test.php">tests/legacy</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+</phpunit>

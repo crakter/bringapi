@@ -23,15 +23,19 @@ use Crakter\BringApi\Exception\BringClientException;
 use Crakter\BringApi\DefaultData\HttpMethods;
 use Crakter\BringApi\DefaultData\Languages;
 use Crakter\BringApi\Entity\ApiEntityInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheetIOFactory;
 
 /**
  * BringApi Base Client
  *
- * A facility for Client classes to be extended from
+ * A facility for Client classes to be extended from.
  *
  * Quick setup: <code>class ReportsGenerateReport extends Base {}</code>
  *
  * @author Martin Madsen <crakter@gmail.com>
+ * @deprecated since 4.0. Use the new Bring\Api facade and per-endpoint clients
+ *             under the Bring\Api\Endpoint\* namespace. This class is kept for
+ *             backwards-compatibility with v3 callers and will be removed in 5.0.
  */
 abstract class Base
 {
@@ -41,9 +45,9 @@ abstract class Base
     protected $authorizationModule;
 
     /**
-     * @var object $client Implements the ClientsInterface
+     * @var ClientInterface PSR-7 / Guzzle HTTP client implementation
      */
-    protected Client $client;
+    protected ClientInterface $client;
 
     /**
      * @var string $endPoint   The filetype to return
@@ -67,7 +71,7 @@ abstract class Base
     /**
      * @var array $options     The options for Request
      */
-    protected array $options;
+    protected array $options = [];
 
     /**
      * @var string $httpMethod  The Method for HTTP
@@ -93,21 +97,19 @@ abstract class Base
      * Set authorizationModule if provided and ClientInterface if provided, defaults to default GuzzleHttp Client
      * @return ClientsInterface       All clients must implement ClientsInterface
      */
-    public function __construct(ApiEntityInterface $apiEntity = null, AuthorizationInterface $authorizationModule = null, ClientInterface $client = null)
+    public function __construct(?ApiEntityInterface $apiEntity = null, ?AuthorizationInterface $authorizationModule = null, ?ClientInterface $client = null)
     {
-        if ($authorizationModule instanceof \Crakter\BringApi\Clients\AuthorizationInterface) {
+        if ($authorizationModule instanceof AuthorizationInterface) {
             $this->setAuthorizationModule($authorizationModule);
         }
-        if (!$client instanceof \GuzzleHttp\ClientInterface) {
+        if (!$client instanceof ClientInterface) {
             $client = new Client();
         }
         $this->client = $client;
         //Not all clients need ApiEntity.
-        if ($apiEntity != null) {
+        if ($apiEntity !== null) {
             $this->apiEntity = $apiEntity;
         }
-
-        return $this;
     }
 
     /**
@@ -124,9 +126,9 @@ abstract class Base
 
     /**
      * Get Client
-     * @return ClientInterface All clients must implement ClientsInterface
+     * @return ClientInterface The underlying PSR-7 HTTP client
      */
-    public function getClient(): self
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
@@ -139,6 +141,7 @@ abstract class Base
      */
     public function setAcceptLanguage(string $value): self
     {
+        $this->options['headers'] ??= [];
         $this->options['headers']['Accept-Language'] = Languages::get($value);
 
         return $this;
@@ -152,6 +155,7 @@ abstract class Base
      */
     public function setHeader(string $option, string $value): self
     {
+        $this->options['headers'] ??= [];
         $this->options['headers'][$option] = $value;
 
         return $this;
@@ -169,6 +173,9 @@ abstract class Base
                 $var = $var ? 'true' : 'false';
             }
         }
+        unset($var);
+        // Bring expects bare repeated keys (e.g. additional=A&additional=B) — strip the
+        // numeric subscripts that http_build_query injects for indexed arrays.
         $this->options['query'] = preg_replace('/%5B(?:\d|[1-9]\d+)%5D=/', '=', http_build_query($value));
 
         return $this;
@@ -212,6 +219,7 @@ abstract class Base
      */
     public function setReturnXml(): self
     {
+        $this->setHeader('Accept', ReturnFileContentTypes::XML);
         $this->setHeader('Content-type', ReturnFileContentTypes::XML);
         $this->setEndPoint(ReturnFileTypes::XML);
 
@@ -381,39 +389,54 @@ abstract class Base
     {
         switch ($this->getEndPoint()) {
             case ReturnFileTypes::XML:
-                $xml = simplexml_load_string((string) $this->getResponse()->getBody());
+                $body = (string) $this->getResponse()->getBody();
+                $previousErrors = libxml_use_internal_errors(true);
+                try {
+                    $xml = simplexml_load_string($body);
+                } finally {
+                    libxml_clear_errors();
+                    libxml_use_internal_errors($previousErrors);
+                }
+                if ($xml === false) {
+                    return $body;
+                }
 
                 return json_encode($xml);
             case ReturnFileTypes::XLS:
-                $tmpFile = @tempnam('/tmp', 'BringApi') ?? 'tmp.xls';
-                file_put_contents($tmpFile, $this->getResponse()->getBody());
-                $objPHPExcel = \PHPExcel_IOFactory::load($tmpFile);
-                unlink($tmpFile);
-                $array = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+                $tmpFile = tempnam(sys_get_temp_dir(), 'BringApi') ?: sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bringapi_' . bin2hex(random_bytes(8)) . '.xls';
+                file_put_contents($tmpFile, (string) $this->getResponse()->getBody());
+                if (!class_exists(PhpSpreadsheetIOFactory::class) && !class_exists(\PHPExcel_IOFactory::class)) {
+                    @unlink($tmpFile);
+                    throw new BringClientException('XLS response decoding requires phpoffice/phpspreadsheet (preferred) or the legacy phpoffice/phpexcel package to be installed.');
+                }
+                if (class_exists(PhpSpreadsheetIOFactory::class)) {
+                    $spreadsheet = PhpSpreadsheetIOFactory::load($tmpFile);
+                } else {
+                    $spreadsheet = \PHPExcel_IOFactory::load($tmpFile);
+                }
+                @unlink($tmpFile);
+                $array = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
-                $id = 0;
-                $newObj = new \stdClass();
-                $newArray = [];
+                $header = [];
+                $rows = [];
+                $rowIndex = 0;
                 foreach ($array as $val) {
-                    $id++;
-                    if ($id === 1) {
-                        foreach ($val as $k => $v) {
-                            $header[$k] = $v;
-                        }
+                    if ($rowIndex === 0) {
+                        $header = $val;
+                        $rowIndex++;
                         continue;
                     }
+                    $obj = new \stdClass();
                     foreach ($val as $k => $v) {
-                        $newObj->{$header[$k]} = $v;
+                        if (isset($header[$k])) {
+                            $obj->{$header[$k]} = $v;
+                        }
                     }
-                    if (($val === end($array)) && $id === 2) {
-                        $newArray = $newObj;
-                    } else {
-                        $newArray[] = $newObj;
-                    }
-                    $newObj = new \stdClass();
+                    $rows[] = $obj;
+                    $rowIndex++;
                 }
 
-                return json_encode($newArray);
+                return json_encode(count($rows) === 1 ? $rows[0] : $rows);
             case ReturnFileTypes::JSON:
             default:
                 return (string) $this->getResponse()->getBody();
@@ -465,10 +488,11 @@ abstract class Base
     {
         foreach ($data as $key => $value) {
             if (is_array($value)) {
-                $new_object = $object->addChild($key);
+                $new_object = $object->addChild((string) $key);
                 $this->recursiveXml($new_object, $value);
             } else {
-                $object->addChild($key, $value);
+                $escaped = htmlspecialchars((string) ($value ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                $object->addChild((string) $key, $escaped);
             }
         }
 
@@ -606,10 +630,13 @@ abstract class Base
             if ($this->getIsFullAddress() === false && ($this->getAlternativeAuthorizedUrl() !== '' && $this->getAlternativeAuthorizedUrl() !== '0')) {
                 $this->setClientUrl($this->getAlternativeAuthorizedUrl());
             }
-            $this->setHeader('X-Bring-Client-URL', $this->authorizationModule->getClientUrl());
+            if ($this->authorizationModule->has('clientUrl')) {
+                $this->setHeader('X-Bring-Client-URL', $this->authorizationModule->getClientUrl());
+            }
             if ($this->authorizationModule->hasAuthorization()) {
-                $this->setHeader('X-MyBring-API-Uid', $this->authorizationModule->getClientId());
-                $this->setHeader('X-MyBring-API-Key', $this->authorizationModule->getApiKey());
+                // Canonical header casing per Bring docs (https://developer.bring.com/api/authentication/).
+                $this->setHeader('X-Mybring-API-Uid', $this->authorizationModule->getClientId());
+                $this->setHeader('X-Mybring-API-Key', $this->authorizationModule->getApiKey());
             }
         }
         if ($this->getIsFullAddress() === false) {
@@ -628,14 +655,15 @@ abstract class Base
                 $this->getOptions()
             );
         } catch (ClientException $e) {
+            $status = $e->getResponse()?->getStatusCode() ?? 0;
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', static::class, $e->getResponse()->getBody(true)),
+                sprintf('Bring API HTTP %d error from %s.', $status, static::class),
                 0,
                 $e
             );
         } catch (RequestException $e) {
             throw new BringClientException(
-                sprintf('Error returned from Bring API when creating from %s. Error message from Bring: %s', static::class, $e->getMessage()),
+                sprintf('Bring API request failed from %s: %s', static::class, $this->redactCredentials($e->getMessage())),
                 0,
                 $e
             );
@@ -643,5 +671,26 @@ abstract class Base
         $this->setResponse($request);
 
         return $this;
+    }
+
+    /**
+     * Mask the API key in any string that may contain it (used to scrub Guzzle's
+     * verbose exception messages, which echo back full request headers).
+     */
+    protected function redactCredentials(string $message): string
+    {
+        if ($this->authorizationModule === null) {
+            return $message;
+        }
+        try {
+            $key = $this->authorizationModule->getApiKey();
+            if ($key !== '') {
+                $message = str_replace($key, '***redacted***', $message);
+            }
+        } catch (\Throwable) {
+            // No key set — nothing to redact.
+        }
+
+        return $message;
     }
 }
