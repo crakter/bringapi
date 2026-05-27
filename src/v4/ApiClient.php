@@ -17,6 +17,7 @@ use Bring\Api\Endpoint\PostalCode\PostalCodeApi;
 use Bring\Api\Endpoint\Reports\ReportsApi;
 use Bring\Api\Endpoint\Shipping\ShippingGuideApi;
 use Bring\Api\Endpoint\Tracking\TrackingApi;
+use Bring\Api\Http\AsyncTransport;
 use Bring\Api\Http\ClientFactory;
 use Bring\Api\Http\RetryClient;
 use Bring\Api\Http\Transport;
@@ -39,6 +40,13 @@ final class ApiClient
 {
     public function __construct(
         private readonly Transport $transport,
+        private readonly ClientInterface $httpClient,
+        private readonly RequestFactoryInterface $requests,
+        private readonly StreamFactoryInterface $streams,
+        private readonly UriFactoryInterface $uris,
+        private readonly AuthorizationInterface $auth,
+        private readonly ?LoggerInterface $logger = null,
+        private readonly bool $testMode = false,
     ) {
     }
 
@@ -77,15 +85,19 @@ final class ApiClient
         if ($retry && !$client instanceof RetryClient) {
             $client = new RetryClient($client, logger: $logger);
         }
+        $requests ??= ClientFactory::defaultRequestFactory();
+        $streams ??= ClientFactory::defaultStreamFactory();
+        $uris ??= ClientFactory::defaultUriFactory();
 
-        return new self(new Transport(
+        return new self(
+            new Transport($client, $requests, $streams, $uris, $auth, $logger),
             $client,
-            $requests ?? ClientFactory::defaultRequestFactory(),
-            $streams ?? ClientFactory::defaultStreamFactory(),
-            $uris ?? ClientFactory::defaultUriFactory(),
+            $requests,
+            $streams,
+            $uris,
             $auth,
             $logger,
-        ));
+        );
     }
 
     private static function wrapLogger(?LoggerInterface $logger, Credentials $credentials): ?LoggerInterface
@@ -93,19 +105,44 @@ final class ApiClient
         if ($logger === null) {
             return null;
         }
-        $wrapped = new RedactingLogger($logger, [$credentials->getApiKey()]);
 
-        return $wrapped;
+        return new RedactingLogger($logger, [$credentials->getApiKey()]);
     }
 
     public function withTestMode(bool $enabled = true): self
     {
-        return new self($this->transport->withTestMode($enabled));
+        return new self(
+            $this->transport->withTestMode($enabled),
+            $this->httpClient,
+            $this->requests,
+            $this->streams,
+            $this->uris,
+            $this->auth,
+            $this->logger,
+            $enabled,
+        );
     }
 
     public function transport(): Transport
     {
         return $this->transport;
+    }
+
+    /**
+     * Returns an async transport that yields Guzzle promises. Throws if the
+     * configured HTTP client is not Guzzle.
+     */
+    public function async(): AsyncTransport
+    {
+        return new AsyncTransport(
+            $this->httpClient,
+            $this->requests,
+            $this->streams,
+            $this->uris,
+            $this->auth,
+            $this->logger,
+            $this->testMode,
+        );
     }
 
     public function shippingGuide(): ShippingGuideApi
