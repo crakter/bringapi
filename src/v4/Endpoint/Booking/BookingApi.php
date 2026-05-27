@@ -30,8 +30,8 @@ final class BookingApi
         return $this->transport->send(new PickupEndpoint($request));
     }
 
-    public function customers(string $format = 'json'): CustomersResponse
+    public function customers(): CustomersResponse
     {
-        return $this->transport->send(new CustomersEndpoint($format));
+        return $this->transport->send(new CustomersEndpoint());
     }
 }

@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Bring\Api\Endpoint\Reports;
 
 use Bring\Api\Endpoint\AbstractJsonEndpoint;
-use Bring\Api\Enum\ReportFormat;
 use Bring\Api\Http\HttpMethod;
 
 /**
- * POST https://www.mybring.com/reports/api/generate/{customerNumber}/{reportTypeId}.{format}
+ * POST https://www.mybring.com/reports/api/generate/{customerNumber}/{reportTypeId}.json
+ *
+ * Hardcoded to JSON: this endpoint extends AbstractJsonEndpoint, so
+ * non-JSON responses would fail to parse here. The format of the
+ * eventual report file is controlled separately by the parameters
+ * payload, not by the request URL suffix.
  *
  * @extends AbstractJsonEndpoint<GenerateReportResponse>
  */
@@ -20,7 +24,6 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
         private readonly string $customerNumber,
         private readonly string $reportTypeId,
         private readonly array $parameters = [],
-        private readonly ReportFormat $format = ReportFormat::JSON,
     ) {
     }
 
@@ -34,10 +37,9 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
     protected function baseUri(): string
     {
         return sprintf(
-            'https://www.mybring.com/reports/api/generate/%s/%s.%s',
+            'https://www.mybring.com/reports/api/generate/%s/%s.json',
             rawurlencode($this->customerNumber),
             rawurlencode($this->reportTypeId),
-            $this->format->value,
         );
     }
 

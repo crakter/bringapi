@@ -131,4 +131,50 @@ final class RetryClientTest extends TestCase
             self::assertLessThanOrEqual(10.0, $delay, "attempt $attempt must be capped at maxDelay");
         }
     }
+
+    public function testRewindsRequestBodyBeforeEachRetry(): void
+    {
+        // Simulate a real PSR-18 client that reads the body to EOF (Guzzle).
+        $bodiesSeen = [];
+        $reader = new class($bodiesSeen) implements \Psr\Http\Client\ClientInterface {
+            /** @var array<int, string> */
+            public array $sink;
+            private int $call = 0;
+
+            public function __construct(array &$bodiesSeen)
+            {
+                $this->sink = &$bodiesSeen;
+            }
+
+            #[\Override]
+            public function sendRequest(\Psr\Http\Message\RequestInterface $request): \Psr\Http\Message\ResponseInterface
+            {
+                $this->sink[] = (string) $request->getBody();
+                // getContents() left the pointer at EOF, just like real clients.
+                $this->call++;
+
+                return $this->call < 3
+                    ? new Response(503)
+                    : new Response(200, [], 'ok');
+            }
+        };
+
+        $client = new RetryClient(
+            $reader,
+            maxAttempts: 4,
+            sleeper: new RecordingSleeper(),
+            backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0),
+        );
+        $body = $this->factory->createStream('{"correlationId":"abc-123"}');
+        $request = $this->factory->createRequest('POST', 'https://api.bring.com/booking')
+            ->withBody($body);
+
+        $client->sendRequest($request);
+
+        self::assertSame(
+            ['{"correlationId":"abc-123"}', '{"correlationId":"abc-123"}', '{"correlationId":"abc-123"}'],
+            $reader->sink,
+            'every retry must see the full body, not an empty string',
+        );
+    }
 }

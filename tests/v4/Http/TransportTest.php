@@ -112,6 +112,33 @@ final class TransportTest extends TestCase
         $transport->send(new PostalCodeEndpoint('0150'));
     }
 
+    public function testGuzzleBadResponseExceptionSurfacesAsBringApiException(): void
+    {
+        // A user-supplied Guzzle client with the default http_errors=true throws
+        // BadResponseException on non-2xx — which implements ClientExceptionInterface.
+        // We must surface it as a BringApiException, not a transport failure.
+        $errorResponse = new Response(
+            404,
+            ['Content-Type' => 'application/json'],
+            '{"errors":[{"code":"NOT_FOUND","description":"Unknown postal code"}]}',
+        );
+        $badResponse = new \GuzzleHttp\Exception\BadResponseException(
+            'Server error',
+            $this->factory->createRequest('GET', 'https://api.bring.com/'),
+            $errorResponse,
+        );
+        $client = new RecordingClient([$badResponse]);
+        $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
+
+        try {
+            $transport->send(new PostalCodeEndpoint('0150'));
+            self::fail('expected BringApiException');
+        } catch (BringApiException $e) {
+            self::assertSame(404, $e->getStatusCode());
+            self::assertSame('NOT_FOUND', $e->getErrors()[0]->code);
+        }
+    }
+
     public function testShippingPriceQueryBuildsBareRepeatedKeys(): void
     {
         $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"Product":[]}')]);

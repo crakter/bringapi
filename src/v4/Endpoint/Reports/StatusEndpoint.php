@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Bring\Api\Endpoint\Reports;
 
 use Bring\Api\Endpoint\AbstractJsonEndpoint;
-use Bring\Api\Enum\ReportFormat;
 use Bring\Api\Http\HttpMethod;
 
 /**
- * GET https://www.mybring.com/reports/api/report/{reportId}/status.{format}
+ * GET https://www.mybring.com/reports/api/report/{reportId}/status.json
+ *
+ * Hardcoded to JSON: this endpoint extends AbstractJsonEndpoint, so
+ * non-JSON responses (which the Reports API supports for some routes)
+ * would fail to parse here. Use {@see DownloadEndpoint} for raw bytes.
  *
  * @extends AbstractJsonEndpoint<ReportStatusResponse>
  */
 final class StatusEndpoint extends AbstractJsonEndpoint
 {
-    public function __construct(
-        private readonly string $reportId,
-        private readonly ReportFormat $format = ReportFormat::JSON,
-    ) {
+    public function __construct(private readonly string $reportId)
+    {
     }
 
     #[\Override]
@@ -31,9 +32,8 @@ final class StatusEndpoint extends AbstractJsonEndpoint
     protected function baseUri(): string
     {
         return sprintf(
-            'https://www.mybring.com/reports/api/report/%s/status.%s',
+            'https://www.mybring.com/reports/api/report/%s/status.json',
             rawurlencode($this->reportId),
-            $this->format->value,
         );
     }
 

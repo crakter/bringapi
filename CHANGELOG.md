@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `RetryClient` now rewinds seekable request bodies between attempts.
+  Without this, retried POSTs (booking, pickup, modify-delivery) sent an
+  empty body on attempt 2+ because the inner client had already read the
+  stream to EOF.
+- `Transport` unwraps Guzzle's `BadResponseException` (raised when a
+  caller supplies a Guzzle client with the default `http_errors=true`)
+  into a `BringApiException` carrying the real response, instead of
+  mislabeling it as a transport failure.
+- `CustomersEndpoint`, `StatusEndpoint`, `GenerateReportEndpoint`,
+  `ListAvailableCustomersEndpoint`, `ListAvailableReportsForCustomerEndpoint`,
+  and `ListInvoiceNumbersEndpoint` no longer accept a `$format`
+  parameter that they couldn't honour: each one extends
+  `AbstractJsonEndpoint`, so a non-JSON format would have triggered a
+  guaranteed `JsonException` at runtime. The URL is now hardcoded to
+  `.json`. `ReportsApi::download()` retains the format param — it
+  returns raw bytes and is the only Reports method where the format is
+  meaningful.
+
 ## [4.0.0-beta1] - 2026-05-27
 
 First public preview of the v4 typed rewrite. **Breaking changes against

@@ -61,6 +61,16 @@ final class RetryClient implements ClientInterface
 
         while ($attempt < $this->maxAttempts) {
             $attempt++;
+            // POST bodies (BookEndpoint, ChangeAddressEndpoint, etc.) are
+            // already consumed after the first sendRequest() — Guzzle and
+            // most PSR-18 clients read the stream to EOF. Rewind before
+            // retrying or we'll send an empty body the second time.
+            if ($attempt > 1) {
+                $body = $request->getBody();
+                if ($body->isSeekable()) {
+                    $body->rewind();
+                }
+            }
             try {
                 $response = $this->inner->sendRequest($request);
             } catch (ClientExceptionInterface $e) {

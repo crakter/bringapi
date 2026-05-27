@@ -5,23 +5,18 @@ declare(strict_types=1);
 namespace Bring\Api\Endpoint\Booking;
 
 use Bring\Api\Endpoint\AbstractJsonEndpoint;
-use Bring\Api\Exception\InvalidArgumentException;
 use Bring\Api\Http\HttpMethod;
 
 /**
- * GET https://api.bring.com/booking/api/customers.{format}
+ * GET https://api.bring.com/booking/api/customers.json
+ *
+ * Bring also exposes an `.xml` variant, but this endpoint extends
+ * AbstractJsonEndpoint — XML responses cannot be parsed here.
  *
  * @extends AbstractJsonEndpoint<CustomersResponse>
  */
 final class CustomersEndpoint extends AbstractJsonEndpoint
 {
-    public function __construct(private readonly string $format = 'json')
-    {
-        if (!in_array($format, ['json', 'xml'], true)) {
-            throw new InvalidArgumentException('CustomersEndpoint: format must be json or xml.');
-        }
-    }
-
     #[\Override]
     public function method(): HttpMethod
     {
@@ -31,7 +26,7 @@ final class CustomersEndpoint extends AbstractJsonEndpoint
     #[\Override]
     protected function baseUri(): string
     {
-        return sprintf('https://api.bring.com/booking/api/customers.%s', $this->format);
+        return 'https://api.bring.com/booking/api/customers.json';
     }
 
     /** @param array<mixed, mixed> $decoded */

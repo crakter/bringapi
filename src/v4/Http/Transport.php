@@ -70,6 +70,14 @@ final class Transport
         try {
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
+            // A user-supplied Guzzle client with the default http_errors=true
+            // rejects 4xx/5xx responses as a BadResponseException — which
+            // implements ClientExceptionInterface. We carry a real Bring
+            // response here, so surface it as a BringApiException instead
+            // of mislabeling it as a transport failure.
+            if ($e instanceof \GuzzleHttp\Exception\BadResponseException) {
+                throw BringApiException::fromResponse($e->getResponse(), $e);
+            }
             throw new BringTransportException(
                 sprintf('Bring API transport error: %s', $e->getMessage()),
                 0,

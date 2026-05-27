@@ -19,35 +19,39 @@ final class ReportsApi
     {
     }
 
-    public function listAvailableCustomers(ReportFormat $format = ReportFormat::JSON): GenericReportResponse
+    public function listAvailableCustomers(): GenericReportResponse
     {
-        return $this->transport->send(new ListAvailableCustomersEndpoint($format));
+        return $this->transport->send(new ListAvailableCustomersEndpoint());
     }
 
-    public function listAvailableReportsForCustomer(string $customerNumber, ReportFormat $format = ReportFormat::JSON): GenericReportResponse
+    public function listAvailableReportsForCustomer(string $customerNumber): GenericReportResponse
     {
-        return $this->transport->send(new ListAvailableReportsForCustomerEndpoint($customerNumber, $format));
+        return $this->transport->send(new ListAvailableReportsForCustomerEndpoint($customerNumber));
     }
 
     /** @param array<string, mixed> $parameters report-type-specific filter parameters (date ranges, etc.) */
-    public function generate(string $customerNumber, string $reportTypeId, array $parameters = [], ReportFormat $format = ReportFormat::JSON): GenerateReportResponse
+    public function generate(string $customerNumber, string $reportTypeId, array $parameters = []): GenerateReportResponse
     {
-        return $this->transport->send(new GenerateReportEndpoint($customerNumber, $reportTypeId, $parameters, $format));
+        return $this->transport->send(new GenerateReportEndpoint($customerNumber, $reportTypeId, $parameters));
     }
 
-    public function status(string $reportId, ReportFormat $format = ReportFormat::JSON): ReportStatusResponse
+    public function status(string $reportId): ReportStatusResponse
     {
-        return $this->transport->send(new StatusEndpoint($reportId, $format));
+        return $this->transport->send(new StatusEndpoint($reportId));
     }
 
-    /** Returns the raw response body (for XLS/XML/HTML/JSON file types). */
+    /**
+     * Returns the raw response body — this is the only Reports route where
+     * the format genuinely matters: callers may want XLS bytes or an HTML
+     * blob, not a JSON envelope.
+     */
     public function download(string $reportId, ReportFormat $format = ReportFormat::JSON): string
     {
         return $this->transport->send(new DownloadEndpoint($reportId, $format));
     }
 
-    public function listInvoiceNumbers(string $customerNumberOrGroupId, ReportFormat $format = ReportFormat::JSON): GenericReportResponse
+    public function listInvoiceNumbers(string $customerNumberOrGroupId): GenericReportResponse
     {
-        return $this->transport->send(new ListInvoiceNumbersEndpoint($customerNumberOrGroupId, $format));
+        return $this->transport->send(new ListInvoiceNumbersEndpoint($customerNumberOrGroupId));
     }
 }
