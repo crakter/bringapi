@@ -1,5 +1,7 @@
 /vendor
-/docs
+/docs/build
+/docs/.cache
+/tools
 /coverage
 .vscode
 .idea

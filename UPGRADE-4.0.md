@@ -125,5 +125,6 @@ $bring = ApiClient::withCredentials($creds, logger: $logger);
 - `.travis.yml` — replaced by `.github/workflows/ci.yml` (matrix
   PHP 8.2 / 8.3 / 8.4 with `lowest` and `highest` deps).
 - `.php_cs` — replaced by `.php-cs-fixer.dist.php`.
-- The Sami documentation generator (abandoned) is no longer referenced in the
-  README; consider phpDocumentor if you generate API docs.
+- The Sami documentation generator (abandoned, no PHP 8 support) is replaced
+  by phpDocumentor 3. Run `composer docs` locally or push to `master`/`main` —
+  the new `docs` GitHub Action builds and (optionally) publishes to Pages.

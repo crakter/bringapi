@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Build API documentation with phpDocumentor.
+#
+# phpDocumentor's composer install pulls a large transitive tree that
+# routinely conflicts with project deps, so we do NOT require it via
+# composer. Instead, this script downloads the phar once into tools/
+# and re-uses it on subsequent runs.
+#
+# Usage:
+#   bin/build-docs              # build into docs/build
+#   bin/build-docs --clean      # wipe docs/build + docs/.cache first
+#
+# Requires: php, curl (or wget).
+
+set -euo pipefail
+
+REPO_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+TOOLS_DIR="$REPO_ROOT/tools"
+PHAR_PATH="$TOOLS_DIR/phpdoc.phar"
+PHAR_URL="${PHPDOC_PHAR_URL:-https://phpdoc.org/phpDocumentor.phar}"
+PHAR_SHA="${PHPDOC_PHAR_SHA256:-}"   # optional pinned SHA-256
+
+if [[ "${1:-}" == "--clean" ]]; then
+    rm -rf "$REPO_ROOT/docs/build" "$REPO_ROOT/docs/.cache"
+fi
+
+mkdir -p "$TOOLS_DIR"
+
+if [[ ! -f "$PHAR_PATH" ]]; then
+    echo "Fetching phpDocumentor from $PHAR_URL ..." >&2
+    if command -v curl >/dev/null 2>&1; then
+        curl -fSL --retry 3 --retry-delay 2 -o "$PHAR_PATH" "$PHAR_URL"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -O "$PHAR_PATH" "$PHAR_URL"
+    else
+        echo "error: need curl or wget to download phpDocumentor" >&2
+        exit 1
+    fi
+    chmod +x "$PHAR_PATH"
+fi
+
+if [[ -n "$PHAR_SHA" ]]; then
+    echo "$PHAR_SHA  $PHAR_PATH" | sha256sum -c -
+fi
+
+cd "$REPO_ROOT"
+exec php "$PHAR_PATH" --config phpdoc.dist.xml "$@"

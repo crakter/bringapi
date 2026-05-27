@@ -50,7 +50,13 @@
         "test": "phpunit",
         "phpstan": "phpstan analyse",
         "cs": "php-cs-fixer fix --dry-run --diff",
-        "cs-fix": "php-cs-fixer fix"
+        "cs-fix": "php-cs-fixer fix",
+        "docs": "@php bin/build-docs",
+        "docs-clean": "@php bin/build-docs --clean"
+    },
+    "scripts-descriptions": {
+        "docs": "Build API documentation with phpDocumentor (downloads the phar into tools/ on first run).",
+        "docs-clean": "Wipe docs/build + docs/.cache, then rebuild."
     },
     "config": {
         "sort-packages": true

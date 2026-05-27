@@ -179,7 +179,28 @@ vendor/bin/phpunit                              # all tests (legacy + v4)
 vendor/bin/phpunit --testsuite v4               # v4 tests only
 vendor/bin/phpstan analyse                      # static analysis on v4
 vendor/bin/php-cs-fixer fix --dry-run --diff    # coding-style check
+composer docs                                   # build API docs into docs/build
 ```
+
+## API documentation
+
+Generated with [phpDocumentor 3](https://phpdoc.org/) (the abandoned Sami
+generator was dropped in 4.0). `bin/build-docs` downloads the official
+phar into `tools/phpdoc.phar` on first run — we deliberately do NOT
+require phpDocumentor through Composer because its transitive dependency
+tree conflicts with most application stacks.
+
+```sh
+composer docs              # build into docs/build
+composer docs-clean        # wipe + rebuild
+bin/build-docs --force     # any extra phpdoc flags pass through
+```
+
+Open `docs/build/index.html` in a browser, or let CI publish it:
+`.github/workflows/docs.yml` builds on every push to `master`/`main` and
+deploys to GitHub Pages (enable Pages in repo settings → Pages → Source =
+GitHub Actions to activate). Every workflow run also uploads the rendered
+docs as an artifact named `api-docs`.
 
 ## License
 
