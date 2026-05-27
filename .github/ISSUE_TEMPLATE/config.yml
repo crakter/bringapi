@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/crakter/bringapi/blob/master/SECURITY.md
+    about: Report privately to crakter@gmail.com instead of opening a public issue.
+  - name: Bring developer documentation
+    url: https://developer.bring.com/api/
+    about: For Bring-side bugs or missing API documentation, contact Bring directly.
+  - name: Question or discussion
+    url: https://github.com/crakter/bringapi/discussions
+    about: Use GitHub Discussions for usage questions.

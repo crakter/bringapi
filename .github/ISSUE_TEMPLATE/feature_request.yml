@@ -1,0 +1,32 @@
+name: Feature request
+description: A new Bring endpoint, a missing convenience helper, or an architectural change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the use case from the application's point of view, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: bring-docs
+    attributes:
+      label: Link to the relevant Bring documentation
+      description: If this is a new endpoint or a Bring-side change, paste the link to https://developer.bring.com/ so we can match the schema exactly.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed PHP API
+      description: Optional — a short sketch of how the new surface should look.
+      render: php
+  - type: dropdown
+    id: who
+    attributes:
+      label: Are you willing to send a PR?
+      options:
+        - "Yes — I'll open a PR"
+        - "Maybe — with some guidance"
+        - "No — please pick this up"
+    validations:
+      required: true

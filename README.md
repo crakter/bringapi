@@ -204,6 +204,13 @@ deploys to GitHub Pages (enable Pages in repo settings → Pages → Source =
 GitHub Actions to activate). Every workflow run also uploads the rendered
 docs as an artifact named `api-docs`.
 
+## Project documents
+
+- [CHANGELOG.md](CHANGELOG.md) — release history (Keep a Changelog format)
+- [UPGRADE-4.0.md](UPGRADE-4.0.md) — v3 → v4 migration guide
+- [SECURITY.md](SECURITY.md) — vulnerability reporting
+- [CONTRIBUTING.md](CONTRIBUTING.md) — coding standards and PR process
+
 ## License
 
 MIT
