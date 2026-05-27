@@ -18,6 +18,7 @@ use Bring\Api\Endpoint\Reports\ReportsApi;
 use Bring\Api\Endpoint\Shipping\ShippingGuideApi;
 use Bring\Api\Endpoint\Tracking\TrackingApi;
 use Bring\Api\Http\ClientFactory;
+use Bring\Api\Http\RetryClient;
 use Bring\Api\Http\Transport;
 use Bring\Api\Logging\RedactingLogger;
 use Psr\Http\Client\ClientInterface;
@@ -45,15 +46,22 @@ final class ApiClient
         Credentials $credentials,
         ?ClientInterface $httpClient = null,
         ?LoggerInterface $logger = null,
+        bool $retry = true,
     ): self {
-        return self::build(new HeaderAuthorization($credentials), $httpClient, self::wrapLogger($logger, $credentials));
+        return self::build(
+            new HeaderAuthorization($credentials),
+            $httpClient,
+            self::wrapLogger($logger, $credentials),
+            retry: $retry,
+        );
     }
 
     public static function withoutAuth(
         ?ClientInterface $httpClient = null,
         ?LoggerInterface $logger = null,
+        bool $retry = true,
     ): self {
-        return self::build(new NullAuthorization(), $httpClient, $logger);
+        return self::build(new NullAuthorization(), $httpClient, $logger, retry: $retry);
     }
 
     public static function build(
@@ -63,9 +71,15 @@ final class ApiClient
         ?RequestFactoryInterface $requests = null,
         ?StreamFactoryInterface $streams = null,
         ?UriFactoryInterface $uris = null,
+        bool $retry = true,
     ): self {
+        $client = $httpClient ?? ClientFactory::defaultClient();
+        if ($retry && !$client instanceof RetryClient) {
+            $client = new RetryClient($client, logger: $logger);
+        }
+
         return new self(new Transport(
-            $httpClient ?? ClientFactory::defaultClient(),
+            $client,
             $requests ?? ClientFactory::defaultRequestFactory(),
             $streams ?? ClientFactory::defaultStreamFactory(),
             $uris ?? ClientFactory::defaultUriFactory(),
