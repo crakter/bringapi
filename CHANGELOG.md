@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- `RetryClient` no longer burns retry attempts on permanent 4xx failures
+  when wrapped around a Guzzle client with the default `http_errors=true`
+  setting. A `BadResponseException` whose response is not in the retry
+  status set is now rethrown immediately instead of being treated as a
+  generic transport error and retried up to `maxAttempts` times.
 - `RetryClient` now rewinds seekable request bodies between attempts.
   Without this, retried POSTs (booking, pickup, modify-delivery) sent an
   empty body on attempt 2+ because the inner client had already read the

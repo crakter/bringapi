@@ -132,6 +132,48 @@ final class RetryClientTest extends TestCase
         }
     }
 
+    public function testDoesNotRetryNonRetryableBadResponseExceptionFromGuzzleHttpErrorsClient(): void
+    {
+        // Guzzle with http_errors=true throws BadResponseException on 4xx/5xx.
+        // RetryClient must NOT retry permanent failures like 401 / 404 / 403.
+        $errorResponse = new Response(404, [], 'not found');
+        $bad = new \GuzzleHttp\Exception\BadResponseException(
+            'not found',
+            $this->factory->createRequest('GET', 'https://api.bring.com/'),
+            $errorResponse,
+        );
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([$bad, $bad, $bad, $bad]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper);
+
+        try {
+            $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+            self::fail('expected BadResponseException');
+        } catch (\GuzzleHttp\Exception\BadResponseException) {
+            self::assertCount(1, $inner->requests, 'no retries for non-retryable 4xx');
+            self::assertSame([], $sleeper->slept);
+        }
+    }
+
+    public function testRetriesRetryableBadResponseExceptionFromGuzzleHttpErrorsClient(): void
+    {
+        $errorResponse = new Response(503, [], 'busy');
+        $bad = new \GuzzleHttp\Exception\BadResponseException(
+            'busy',
+            $this->factory->createRequest('GET', 'https://api.bring.com/'),
+            $errorResponse,
+        );
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([$bad, $bad, new Response(200, [], 'ok')]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper, backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0));
+
+        $resp = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(200, $resp->getStatusCode());
+        self::assertCount(3, $inner->requests);
+        self::assertCount(2, $sleeper->slept);
+    }
+
     public function testRewindsRequestBodyBeforeEachRetry(): void
     {
         // Simulate a real PSR-18 client that reads the body to EOF (Guzzle).

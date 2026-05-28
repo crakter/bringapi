@@ -74,6 +74,31 @@ final class RetryClient implements ClientInterface
             try {
                 $response = $this->inner->sendRequest($request);
             } catch (ClientExceptionInterface $e) {
+                // A Guzzle client with the default http_errors=true throws
+                // BadResponseException for every non-2xx — including
+                // non-retryable 4xx (400, 401, 403, 404). Extract the
+                // response and treat it the same as if the inner client
+                // had returned it normally; otherwise we'd burn retry
+                // attempts on permanent failures.
+                if ($e instanceof \GuzzleHttp\Exception\BadResponseException) {
+                    $response = $e->getResponse();
+                    if (!in_array($response->getStatusCode(), $this->retryStatuses, true)) {
+                        throw $e;
+                    }
+                    $lastResponse = $response;
+                    $lastException = $e;
+                    if ($attempt >= $this->maxAttempts) {
+                        throw $e;
+                    }
+                    $delay = $this->retryAfter($response) ?? $this->backoff->delaySeconds($attempt);
+                    $this->logger->info('Bring API retrying after HTTP error', [
+                        'attempt' => $attempt,
+                        'status' => $response->getStatusCode(),
+                        'delay' => $delay,
+                    ]);
+                    $this->sleeper->sleepSeconds($delay);
+                    continue;
+                }
                 $lastException = $e;
                 $lastResponse = null;
                 $response = null;
