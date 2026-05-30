@@ -10,7 +10,6 @@ use Bring\Api\Endpoint\Shipping\PriceEndpoint;
 use Bring\Api\Endpoint\Shipping\PriceRequest;
 use Bring\Api\Enum\Country;
 use Bring\Api\Exception\BringApiException;
-use Bring\Api\Exception\InvalidArgumentException;
 use Bring\Api\Http\AsyncTransport;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;

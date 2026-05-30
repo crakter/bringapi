@@ -10,19 +10,20 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Clients;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Client;
-use Crakter\BringApi\DefaultData\ReturnFileContentTypes;
-use Crakter\BringApi\DefaultData\ReturnFileTypes;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use Crakter\BringApi\Exception\BringClientException;
 use Crakter\BringApi\DefaultData\HttpMethods;
 use Crakter\BringApi\DefaultData\Languages;
+use Crakter\BringApi\DefaultData\ReturnFileContentTypes;
+use Crakter\BringApi\DefaultData\ReturnFileTypes;
 use Crakter\BringApi\Entity\ApiEntityInterface;
+use Crakter\BringApi\Exception\BringClientException;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheetIOFactory;
 
 /**
@@ -652,20 +653,20 @@ abstract class Base
             $request = $this->client->request(
                 $this->getHttpMethod(),
                 $this->getClientUrl(),
-                $this->getOptions()
+                $this->getOptions(),
             );
         } catch (ClientException $e) {
             $status = $e->getResponse()?->getStatusCode() ?? 0;
             throw new BringClientException(
                 sprintf('Bring API HTTP %d error from %s.', $status, static::class),
                 0,
-                $e
+                $e,
             );
         } catch (RequestException $e) {
             throw new BringClientException(
                 sprintf('Bring API request failed from %s: %s', static::class, $this->redactCredentials($e->getMessage())),
                 0,
-                $e
+                $e,
             );
         }
         $this->setResponse($request);

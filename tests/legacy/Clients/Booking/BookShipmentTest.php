@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,14 +13,14 @@
 
 namespace Crakter\BringApi\Clients;
 
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Psr7\Response;
+use Crakter\BringApi\Entity\BookShipmentsEntity;
+use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
+use Crakter\BringApi\Exception\BringClientException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Client;
-use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
-use Crakter\BringApi\Entity\BookShipmentsEntity;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class BookShipmentTest extends TestCase
 {
@@ -27,7 +29,7 @@ class BookShipmentTest extends TestCase
 
     public function setUp(): void
     {
-        $this->class = (new Booking\BookShipment);
+        $this->class = (new Booking\BookShipment());
         $this->json = file_get_contents(dirname(dirname(__DIR__)).'/Data/BookShipmentResponse.json');
         $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $this->json));
     }

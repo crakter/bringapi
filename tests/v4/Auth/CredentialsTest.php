@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bring\Api\Tests\Auth;
 
 use Bring\Api\Auth\Credentials;
-use Bring\Api\Exception\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

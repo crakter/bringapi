@@ -23,7 +23,7 @@ final class RedactingLoggerTest extends TestCase
     protected function setUp(): void
     {
         $sink = &$this->sink;
-        $this->captured = new class($sink) extends AbstractLogger {
+        $this->captured = new class ($sink) extends AbstractLogger {
             public function __construct(private array &$sink)
             {
             }

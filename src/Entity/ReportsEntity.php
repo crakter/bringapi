@@ -10,6 +10,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Entity;
 
 use Crakter\BringApi\DefaultData\ValidateParameters;
@@ -97,14 +98,14 @@ class ReportsEntity extends ApiEntityBase implements ApiEntityInterface
 
         return $this;
     }
-    
+
     public function setReportType(string $val): ApiEntityInterface
     {
         $this->reporttype = $val;
 
         return $this;
     }
-    
+
     public function setYear(string $val): ApiEntityInterface
     {
         $this->year = $val;

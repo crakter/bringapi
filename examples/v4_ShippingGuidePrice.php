@@ -33,7 +33,8 @@ $request = new PriceRequest(
 try {
     $resp = $bring->shippingGuide()->price($request);
     foreach ($resp->products as $p) {
-        printf("%-30s  %7.2f %s  (delivery: %d days)\n",
+        printf(
+            "%-30s  %7.2f %s  (delivery: %d days)\n",
             $p->productId,
             $p->priceWithVat ?? 0.0,
             $p->currency ?? 'NOK',

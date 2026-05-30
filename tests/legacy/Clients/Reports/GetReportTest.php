@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,13 +13,13 @@
 
 namespace Crakter\BringApi\Clients;
 
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Psr7\Response;
+use Crakter\BringApi\DefaultData\ReturnFileTypes;
+use Crakter\BringApi\Exception\BringClientException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Client;
-use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\DefaultData\ReturnFileTypes;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class GetReportTest extends TestCase
 {
@@ -26,7 +28,7 @@ class GetReportTest extends TestCase
 
     public function setUp(): void
     {
-        $this->class = (new Reports\GetReport);
+        $this->class = (new Reports\GetReport());
         $this->xml = file_get_contents(dirname(dirname(__DIR__)).'/Data/GetReportResponse.xml');
         $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $this->xml));
     }

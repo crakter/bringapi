@@ -23,7 +23,8 @@ try {
         foreach ($c->packages as $pkg) {
             printf("  package %s — %s\n", $pkg->packageNumber, $pkg->statusDescription ?? '-');
             foreach ($pkg->events as $event) {
-                printf("    %s  %s (%s)\n",
+                printf(
+                    "    %s  %s (%s)\n",
                     $event->dateIso?->format(DATE_ATOM) ?? '-',
                     $event->description,
                     $event->city ?? '-',

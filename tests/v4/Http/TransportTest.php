@@ -103,7 +103,7 @@ final class TransportTest extends TestCase
 
     public function testTransportExceptionWrapsPsr18Failure(): void
     {
-        $networkFail = new class('boom') extends \RuntimeException implements ClientExceptionInterface {
+        $networkFail = new class ('boom') extends \RuntimeException implements ClientExceptionInterface {
         };
         $client = new RecordingClient([$networkFail]);
         $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());

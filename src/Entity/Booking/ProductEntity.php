@@ -10,12 +10,13 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Entity\Booking;
 
+use Crakter\BringApi\DefaultData\AllowedServices;
 use Crakter\BringApi\Entity\ApiEntityBase;
 use Crakter\BringApi\Entity\ApiEntityInterface;
 use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
-use Crakter\BringApi\DefaultData\AllowedServices;
 
 /**
  * BringApi PartiesEntity

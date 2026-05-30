@@ -10,12 +10,13 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Entity;
 
-use ReflectionObject;
-use ReflectionProperty;
 use Crakter\BringApi\DefaultData\ValidateParameters;
 use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
+use ReflectionObject;
+use ReflectionProperty;
 
 /**
  * BringApi ApiEntityBase
@@ -205,10 +206,10 @@ abstract class ApiEntityBase
     {
         $var = lcfirst(substr($name, 3));
 
-        if (strncasecmp($name, "get", 3) === 0) {
+        if (strncasecmp($name, 'get', 3) === 0) {
             return $this->{$var} ?? '';
         }
-        if (strncasecmp($name, "set", 3) === 0) {
+        if (strncasecmp($name, 'set', 3) === 0) {
             $this->{$var} = $value[0];
         }
 

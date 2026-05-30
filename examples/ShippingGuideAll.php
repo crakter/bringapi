@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,13 +13,13 @@
 
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use Crakter\BringApi\Entity\ShippingGuideEntity;
+use Crakter\BringApi\Clients\Authorization;
 use Crakter\BringApi\Clients\ShippingGuide\ShipmentAll;
+use Crakter\BringApi\DefaultData\AdditionalProducts;
 use Crakter\BringApi\DefaultData\Countries;
 use Crakter\BringApi\DefaultData\Products;
-use Crakter\BringApi\DefaultData\AdditionalProducts;
+use Crakter\BringApi\Entity\ShippingGuideEntity;
 use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\Clients\Authorization;
 
 // Gets the environment variables we have set
 $apiKey = getenv('BRING_API_KEY');
@@ -31,7 +33,7 @@ $fromPostalCode = $argv[1];
 $toPostalCode = $argv[2];
 
 // Sets the authorizationModule
-$credentials = (new Authorization)
+$credentials = (new Authorization())
     ->setApiKey($apiKey)
     ->setClientId($uid)
     ->setClientUrl($clientUrl);
@@ -41,7 +43,7 @@ $shipDate = new \DateTime('now');
 $shipDate->modify('+5 hours');
 
 // Adds the essentials for ShippingGuide
-$request = (new ShippingGuideEntity)
+$request = (new ShippingGuideEntity())
     ->setClientUrl($clientUrl)
     ->setFromPostalCode($fromPostalCode)
     ->setToPostalCode($toPostalCode)
@@ -123,7 +125,7 @@ foreach ($length as $k => $v) {
     }
 }
 try {
-    $result = (new ShipmentAll)->setAuthorizationModule($credentials)->setApiEntity($request)->send();
+    $result = (new ShipmentAll())->setAuthorizationModule($credentials)->setApiEntity($request)->send();
     print_r($result->toArray());
 } catch (BringClientException $e) {
     print_r($e->getMessage());

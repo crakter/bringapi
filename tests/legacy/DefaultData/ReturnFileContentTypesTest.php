@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,8 +13,8 @@
 
 namespace Crakter\BringApi\DefaultData;
 
-use PHPUnit\Framework\TestCase;
 use Crakter\BringApi\Exception\InputValueNotAllowedException;
+use PHPUnit\Framework\TestCase;
 
 class ReturnFileContentTypesTest extends TestCase
 {

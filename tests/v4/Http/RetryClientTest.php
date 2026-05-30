@@ -94,7 +94,7 @@ final class RetryClientTest extends TestCase
     public function testRetriesOnTransportExceptionThenRethrows(): void
     {
         $sleeper = new RecordingSleeper();
-        $boom = new class('network down') extends \RuntimeException implements ClientExceptionInterface {
+        $boom = new class ('network down') extends \RuntimeException implements ClientExceptionInterface {
         };
         $inner = new RecordingClient([$boom, $boom]);
         $client = new RetryClient($inner, maxAttempts: 2, sleeper: $sleeper, backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0));
@@ -178,7 +178,7 @@ final class RetryClientTest extends TestCase
     {
         // Simulate a real PSR-18 client that reads the body to EOF (Guzzle).
         $bodiesSeen = [];
-        $reader = new class($bodiesSeen) implements \Psr\Http\Client\ClientInterface {
+        $reader = new class ($bodiesSeen) implements \Psr\Http\Client\ClientInterface {
             /** @var array<int, string> */
             public array $sink;
             private int $call = 0;

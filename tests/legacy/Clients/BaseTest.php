@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,15 +13,15 @@
 
 namespace Crakter\BringApi\Clients;
 
-use PHPUnit\Framework\TestCase;
+use Crakter\BringApi\DefaultData\HttpMethods;
 use Crakter\BringApi\DefaultData\ReturnFileContentTypes;
 use Crakter\BringApi\DefaultData\ReturnFileTypes;
-use Crakter\BringApi\DefaultData\HttpMethods;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use Crakter\BringApi\Entity\ApiEntityInterface;
 use Crakter\BringApi\Entity\TrackingEntity;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class BaseTest extends TestCase
 {
@@ -27,7 +29,7 @@ class BaseTest extends TestCase
 
     public function setUp(): void
     {
-        $this->class = (new Booking\BookShipment);
+        $this->class = (new Booking\BookShipment());
     }
 
     public function testConstruct(): void

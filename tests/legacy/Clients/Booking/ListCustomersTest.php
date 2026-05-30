@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,12 +13,12 @@
 
 namespace Crakter\BringApi\Clients;
 
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Psr7\Response;
+use Crakter\BringApi\Exception\BringClientException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Client;
-use Crakter\BringApi\Exception\BringClientException;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class ListCustomersTest extends TestCase
 {
@@ -25,7 +27,7 @@ class ListCustomersTest extends TestCase
 
     public function setUp(): void
     {
-        $this->class = (new Booking\ListCustomers);
+        $this->class = (new Booking\ListCustomers());
         $this->json = file_get_contents(dirname(dirname(__DIR__)).'/Data/ListCustomerNumbersResponse.json');
         $this->class->setResponse(new Response(200, ['X-Foo' => 'Bar'], $this->json));
     }
@@ -33,25 +35,25 @@ class ListCustomersTest extends TestCase
     public function testGetProductsCustomer(): void
     {
         $this->assertSame($this->class->getProductsCustomer('PARCELS_NORWAY-00012341234'), [
-          "SERVICEPAKKE",
-          "EKSPRESS09",
-          "BEDRIFTSPAKKE",
-          "BPAKKE_DOR-DOR",
-          "PA_DOREN",
-          "BPAKKE_DOR-DOR_RETURSERVICE",
-          "EKSPRESS09_RETURSERVICE",
-          "SERVICEPAKKE_RETURSERVICE",
-          "MINIPAKKE",
-          "BUSINESS_PARCEL",
-          "PICKUP_PARCEL",
-          "BUSINESS_PALLET",
-          "BUSINESS_PARCEL_HALFPALLET",
-          "BUSINESS_PARCEL_QUARTERPALLET",
-          "BUSINESS_PARCEL_BULK",
-          "EXPRESS_NORDIC_0900_BULK",
-          "PICKUP_PARCEL_BULK",
-          "HOME_DELIVERY_PARCEL",
-          "HOME_DELIVERY_MAILBOX",
+          'SERVICEPAKKE',
+          'EKSPRESS09',
+          'BEDRIFTSPAKKE',
+          'BPAKKE_DOR-DOR',
+          'PA_DOREN',
+          'BPAKKE_DOR-DOR_RETURSERVICE',
+          'EKSPRESS09_RETURSERVICE',
+          'SERVICEPAKKE_RETURSERVICE',
+          'MINIPAKKE',
+          'BUSINESS_PARCEL',
+          'PICKUP_PARCEL',
+          'BUSINESS_PALLET',
+          'BUSINESS_PARCEL_HALFPALLET',
+          'BUSINESS_PARCEL_QUARTERPALLET',
+          'BUSINESS_PARCEL_BULK',
+          'EXPRESS_NORDIC_0900_BULK',
+          'PICKUP_PARCEL_BULK',
+          'HOME_DELIVERY_PARCEL',
+          'HOME_DELIVERY_MAILBOX',
         ]);
         $this->assertSame($this->class->getProductsCustomer('x'), []);
     }

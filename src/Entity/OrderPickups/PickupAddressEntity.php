@@ -10,11 +10,12 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Entity\OrderPickups;
 
-use Crakter\BringApi\Entity\Booking\AddressEntity;
 use Crakter\BringApi\Entity\ApiEntityBase;
 use Crakter\BringApi\Entity\ApiEntityInterface;
+use Crakter\BringApi\Entity\Booking\AddressEntity;
 
 /**
  * BringApi PickupAddressEntity

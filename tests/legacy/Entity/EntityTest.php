@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,9 +13,9 @@
 
 namespace Crakter\BringApi\Entity;
 
-use PHPUnit\Framework\TestCase;
 use Crakter\BringApi\DefaultData\ValidateParameters;
 use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
+use PHPUnit\Framework\TestCase;
 
 class EntityTest extends TestCase
 {
