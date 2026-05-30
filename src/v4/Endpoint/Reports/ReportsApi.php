@@ -50,8 +50,30 @@ final class ReportsApi
         return $this->transport->send(new DownloadEndpoint($reportId, $format));
     }
 
-    public function listInvoiceNumbers(string $customerNumberOrGroupId): GenericReportResponse
-    {
-        return $this->transport->send(new ListInvoiceNumbersEndpoint($customerNumberOrGroupId));
+    /**
+     * Without a date range Bring returns every invoice on file — which is
+     * the *whole archive*, not a recent slice. Pass {@see \DateTimeInterface}
+     * arguments to scope the export; both bounds are inclusive and use
+     * Bring's documented `d.m.Y` wire format.
+     *
+     * @param bool|null $onlyWithSpecification Restrict to invoices that have
+     *                                         specification data available.
+     * @param bool|null $onlyProcessed         Restrict to invoices Bring has
+     *                                         already marked as processed.
+     */
+    public function listInvoiceNumbers(
+        string $customerNumberOrGroupId,
+        ?\DateTimeInterface $fromDate = null,
+        ?\DateTimeInterface $toDate = null,
+        ?bool $onlyWithSpecification = null,
+        ?bool $onlyProcessed = null,
+    ): GenericReportResponse {
+        return $this->transport->send(new ListInvoiceNumbersEndpoint(
+            $customerNumberOrGroupId,
+            $fromDate,
+            $toDate,
+            $onlyWithSpecification,
+            $onlyProcessed,
+        ));
     }
 }

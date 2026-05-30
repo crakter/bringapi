@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `ReportsApi::listInvoiceNumbers()` and `ListInvoiceNumbersEndpoint`
+  now accept `fromDate` / `toDate` (`\DateTimeInterface`) plus
+  `onlyWithSpecification` / `onlyProcessed` boolean filters. Without a
+  date range, Bring returns the entire archive — which can be hundreds
+  of MB on large accounts. Dates are emitted in Bring's documented
+  `dd.mm.yyyy` wire format (not ISO 8601). The constructor rejects an
+  inverted range with `InvalidArgumentException`.
 - `TrackedEvent::$signatureLink` — the relative path Bring returns when a
   delivery signature is available (e.g.
   `api/signatur.png?kollinummer=…&dateTimeIso=…`).
