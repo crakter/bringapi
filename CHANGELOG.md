@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `TrackedEvent::$signatureLink` — the relative path Bring returns when a
+  delivery signature is available (e.g.
+  `api/signatur.png?kollinummer=…&dateTimeIso=…`).
+- `TrackingApi::signatureUrl(string)` — returns the full signature URL
+  without performing an HTTP request, for embedding in an already-
+  authenticated UI via `<img src="…">`.
+
+### Changed
+- `TrackingApi::signature(string)` and `SignatureEndpoint::__construct`
+  now expect the **signature-link path** (the value Bring returns on
+  each `TrackedEvent`), not a raw tracking id. The previous behaviour
+  built `https://www.mybring.com/tracking/{trackingId}`, which returns
+  the HTML tracking page — not PNG bytes. Matches v3
+  `SignatureTracking::setSignatureLink()` semantics, which always
+  expected this path.
+
 ### Fixed
 - `RetryClient` no longer burns retry attempts on permanent 4xx failures
   when wrapped around a Guzzle client with the default `http_errors=true`

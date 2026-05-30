@@ -15,14 +15,33 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
- * GET https://www.mybring.com/tracking/{id} (returns image bytes)
+ * GET https://www.mybring.com/tracking/{signatureLinkPath} — returns the
+ * raw PNG bytes of a delivery signature.
+ *
+ * Bring's tracking API surfaces the signature as a *relative path* on each
+ * delivery event (see {@see TrackedEvent::$signatureLink}); the path
+ * already contains the query string with the package id and timestamp.
+ * Example:
+ *
+ *   $signaturePath = $tracking->latestEvent()->signatureLink;
+ *   // → 'api/signatur.png?kollinummer=370123456789&dateTimeIso=2026-…'
+ *   $bytes = $bring->tracking()->signature($signaturePath);
+ *   file_put_contents('signature.png', $bytes);
  *
  * @implements Endpoint<string>
  */
 final class SignatureEndpoint implements Endpoint
 {
-    public function __construct(private readonly string $trackingId)
+    private const BASE = 'https://www.mybring.com/tracking/';
+
+    public function __construct(private readonly string $signatureLinkPath)
     {
+        if ($signatureLinkPath === '') {
+            throw new \Bring\Api\Exception\InvalidArgumentException(
+                'SignatureEndpoint: signatureLinkPath must not be empty. '
+                . 'Read the path from TrackedEvent::$signatureLink.',
+            );
+        }
     }
 
     #[\Override]
@@ -37,13 +56,22 @@ final class SignatureEndpoint implements Endpoint
         return AcceptType::PNG;
     }
 
+    /**
+     * Full URL — useful when you want to render the signature in an
+     * already-authenticated UI via `<img src="…">` instead of fetching
+     * the bytes in PHP.
+     */
+    public function url(): string
+    {
+        // Strip any leading slash so we always end up with exactly one
+        // separator, regardless of whether Bring's response includes it.
+        return self::BASE . ltrim($this->signatureLinkPath, '/');
+    }
+
     #[\Override]
     public function uri(UriFactoryInterface $uris): UriInterface
     {
-        return $uris->createUri(sprintf(
-            'https://www.mybring.com/tracking/%s',
-            rawurlencode($this->trackingId),
-        ));
+        return $uris->createUri($this->url());
     }
 
     #[\Override]

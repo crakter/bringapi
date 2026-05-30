@@ -12,6 +12,14 @@ final class TrackedEvent
         public readonly ?string $status,
         public readonly ?string $city,
         public readonly ?string $countryCode,
+        /**
+         * Relative path Bring returns when a delivery signature is available,
+         * e.g. `api/signatur.png?kollinummer=370123456789&dateTimeIso=2026-05-27T10:15:00+02:00`.
+         * Pass it to {@see TrackingApi::signature()} for the raw PNG bytes,
+         * or {@see TrackingApi::signatureUrl()} for a full URL suitable for
+         * an `<img src="…">` attribute on an authenticated UI.
+         */
+        public readonly ?string $signatureLink,
         /** @var array<mixed, mixed> */
         public readonly array $raw,
     ) {
@@ -35,6 +43,7 @@ final class TrackedEvent
             status: isset($a['status']) ? (string) $a['status'] : null,
             city: isset($a['city']) ? (string) $a['city'] : null,
             countryCode: isset($a['countryCode']) ? (string) $a['countryCode'] : null,
+            signatureLink: isset($a['signatureLink']) ? (string) $a['signatureLink'] : null,
             raw: $a,
         );
     }
