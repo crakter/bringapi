@@ -24,7 +24,7 @@ If `composer qa` is green, your patch is ready to push.
 
 ## Coding standards
 
-- PHP **8.2** minimum, target PHP 8.4. We use `declare(strict_types=1);`
+- PHP **8.2** minimum, target PHP 8.5. We use `declare(strict_types=1);`
   in every file.
 - PSR-12 + a few project tweaks via php-cs-fixer (see
   `.php-cs-fixer.dist.php`).
