@@ -32,7 +32,7 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.deps }}
 
@@ -62,7 +62,7 @@ jobs:
           php-version: "8.3"
           coverage: none
           tools: composer:v2
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: vendor/bin/phpstan analyse --no-progress
 
   psalm:
@@ -75,7 +75,7 @@ jobs:
           php-version: "8.3"
           coverage: none
           tools: composer:v2
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: vendor/bin/psalm --no-progress --output-format=github
 
   cs:
@@ -88,5 +88,5 @@ jobs:
           php-version: "8.3"
           coverage: none
           tools: composer:v2, cs2pr
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=checkstyle | cs2pr
