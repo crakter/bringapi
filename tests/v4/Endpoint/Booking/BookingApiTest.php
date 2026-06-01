@@ -47,7 +47,7 @@ final class BookingApiTest extends TestCase
         $request = BookingRequest::single(
             schemaVersion: '1',
             customerNumber: 'PARCELS_NORWAY-10001234567',
-            product: Product::HOME_DELIVERY_PARCEL,
+            product: Product::BUSINESS_PARCEL,
             sender: $sender,
             recipient: $recipient,
             packages: [new Package(weightInKg: 2)],
@@ -67,7 +67,9 @@ final class BookingApiTest extends TestCase
         self::assertArrayNotHasKey('customerNumber', $body, 'customerNumber must not be at request root — Bring expects it under consignments[].product');
         self::assertSame('PARCELS_NORWAY-10001234567', $body['consignments'][0]['product']['customerNumber']);
         self::assertTrue($body['testIndicator']);
-        self::assertSame(Product::HOME_DELIVERY_PARCEL->value, $body['consignments'][0]['product']['id']);
+        // Booking API expects the numeric service code, not the string enum
+        // value (which the Shipping Guide uses). BUSINESS_PARCEL → "5000".
+        self::assertSame('5000', $body['consignments'][0]['product']['id']);
         self::assertSame('EVARSLING', $body['consignments'][0]['product']['additionalServices'][0]['id']);
         self::assertSame('Sender Co', $body['consignments'][0]['parties']['sender']['name']);
         self::assertSame('NO', $body['consignments'][0]['parties']['recipient']['countryCode']);

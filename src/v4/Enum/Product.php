@@ -56,4 +56,47 @@ enum Product: string
             default => null,
         };
     }
+
+    /**
+     * Product identifier as Bring's Booking API expects it in product.id.
+     *
+     * The Booking API takes numeric service codes (e.g. "5000" for
+     * BUSINESS_PARCEL, "9000" for BUSINESS_PARCEL_RETURN) — the same
+     * codes the v3 SDK used. Sending the v2 Shipping-Guide string name
+     * (BUSINESS_PARCEL, …) makes Bring's gateway look it up in the
+     * international catalog and reject Norway→Norway routes with
+     * BOOK-INPUT-025 / BOOK_VALIDATION-014 ("product not available
+     * between the given countries" / "customs declarations required for
+     * exporting from Norway"), even though the parties are both NO.
+     *
+     * The mapping below covers the products with codes confirmed against
+     * the v3 SDK catalog Bring still accepts in v4. Products NOT in this
+     * match (e.g. HOME_DELIVERY_PARCEL, BUSINESS_PALLET, the home/express
+     * return variants) fall back to the enum string value — Bring
+     * accepts strings for some products and the fallback keeps unknown
+     * cases at least as functional as today. If you hit BOOK-INPUT-025
+     * on a product handled by the fallback, look up its numeric code in
+     * Mybring (Customer numbers → service product line) and add it
+     * here. Do not guess: a wrong numeric code silently books the wrong
+     * product, while the string fallback at worst surfaces a 4xx.
+     */
+    public function bookingProductId(): string
+    {
+        $numeric = match ($this) {
+            self::PICKUP_PARCEL => 5800,
+            self::PICKUP_PARCEL_BULK => 5802,
+            self::BUSINESS_PARCEL => 5000,
+            self::BUSINESS_PARCEL_BULK => 5100,
+            self::EXPRESS_NORDIC_0900 => 4850,
+            self::MAILBOX_PARCEL => 3584,
+            self::MAILBOX_PARCEL_TRACKED => 3570,
+            self::CARGO_GROUPAGE => 5300,
+            self::RETURN_PICKUP_PARCEL => 9300,
+            self::RETURN_BUSINESS_PARCEL => 9000,
+            self::RETURN_BUSINESS_PALLET => 9100,
+            default => null,
+        };
+
+        return $numeric === null ? $this->value : (string) $numeric;
+    }
 }

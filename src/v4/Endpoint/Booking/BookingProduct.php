@@ -24,7 +24,11 @@ final class BookingProduct
     /** @return array<string, mixed> */
     public function toArray(): array
     {
-        $a = ['id' => $this->id->value];
+        // Booking API wants the numeric service code in product.id, not the
+        // string enum value the Shipping Guide uses (see Product::bookingProductId
+        // for the why). Falls back to the string value for products without a
+        // known numeric mapping.
+        $a = ['id' => $this->id->bookingProductId()];
         if ($this->additionalServices !== []) {
             $a['additionalServices'] = array_map(
                 static fn (AdditionalService $s): array => ['id' => $s->value],
