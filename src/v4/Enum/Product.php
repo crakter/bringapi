@@ -69,9 +69,16 @@ enum Product: string
      * between the given countries" / "customs declarations required for
      * exporting from Norway"), even though the parties are both NO.
      *
-     * For products with no known numeric mapping we fall back to the
-     * enum value — Bring accepts strings for some newer products and
-     * this keeps unknown cases at least as functional as today.
+     * The mapping below covers the products with codes confirmed against
+     * the v3 SDK catalog Bring still accepts in v4. Products NOT in this
+     * match (e.g. HOME_DELIVERY_PARCEL, BUSINESS_PALLET, the home/express
+     * return variants) fall back to the enum string value — Bring
+     * accepts strings for some products and the fallback keeps unknown
+     * cases at least as functional as today. If you hit BOOK-INPUT-025
+     * on a product handled by the fallback, look up its numeric code in
+     * Mybring (Customer numbers → service product line) and add it
+     * here. Do not guess: a wrong numeric code silently books the wrong
+     * product, while the string fallback at worst surfaces a 4xx.
      */
     public function bookingProductId(): string
     {
