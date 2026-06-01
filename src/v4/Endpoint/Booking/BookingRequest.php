@@ -84,7 +84,7 @@ final class BookingRequest
         $consignments = array_map(
             static function (Consignment $c) use ($customerNumber): array {
                 $arr = $c->toArray();
-                $arr['product'] = ['customerNumber' => $customerNumber] + (array) $arr['product'];
+                $arr['product']['customerNumber'] = $customerNumber;
 
                 return $arr;
             },
