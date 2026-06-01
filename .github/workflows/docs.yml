@@ -1,0 +1,72 @@
+name: Docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths:
+      - "src/**"
+      - "phpdoc.dist.xml"
+      - "README.md"
+      - "UPGRADE-4.0.md"
+      - ".github/workflows/docs.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "phpdoc.dist.xml"
+      - ".github/workflows/docs.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # phpDocumentor publishes an official Docker image and a GitHub
+      # Action — but the action only has versioned tags (no moving "v3"),
+      # so the image is the more stable reference. `phpdoc/phpdoc:3` is
+      # the published image; pin a digest in the future for full repro.
+      - name: Build API docs
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/data" \
+            phpdoc/phpdoc:3 \
+            --config=phpdoc.dist.xml \
+            --target=docs/build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-docs
+          path: docs/build
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
+
+  deploy:
+    # Auto-deploy to GitHub Pages on master/main. Enable Pages with
+    # "GitHub Actions" as the source in repo settings to make this effective.
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

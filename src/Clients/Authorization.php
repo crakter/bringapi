@@ -10,7 +10,10 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Clients;
+
+use Crakter\BringApi\Exception\ValueNotSetException;
 
 /**
  * BringApi Authorization
@@ -22,6 +25,8 @@ namespace Crakter\BringApi\Clients;
  *
  * @implements AuthorizationInterface
  * @author Martin Madsen <crakter@gmail.com>
+ * @deprecated since 4.0. Use Bring\Api\Auth\Credentials together with
+ *             Bring\Api\Auth\HeaderAuthorization.
  */
 class Authorization implements AuthorizationInterface
 {
@@ -47,7 +52,7 @@ class Authorization implements AuthorizationInterface
      * @param  string                 $clientUrl Your Url
      * @return AuthorizationInterface
      */
-    public function __construct(string $apiKey = null, string $clientId = null, string $clientUrl = null)
+    public function __construct(#[\SensitiveParameter] ?string $apiKey = null, ?string $clientId = null, ?string $clientUrl = null)
     {
         if ($apiKey !== null) {
             $this->setApiKey($apiKey);
@@ -58,18 +63,26 @@ class Authorization implements AuthorizationInterface
         if ($clientUrl !== null) {
             $this->setClientUrl($clientUrl);
         }
-
-        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setApiKey(string $apiKey): AuthorizationInterface
+    public function setApiKey(#[\SensitiveParameter] string $apiKey): AuthorizationInterface
     {
         $this->apiKey = $apiKey;
 
         return $this;
+    }
+
+    public function __debugInfo(): array
+    {
+        $fingerprint = isset($this->apiKey) && $this->apiKey !== ''
+            ? substr(hash('sha256', $this->apiKey), 0, 8)
+            : null;
+
+        return [
+            'clientId' => $this->clientId ?? null,
+            'clientUrl' => $this->clientUrl ?? null,
+            'apiKeyFingerprint' => $fingerprint,
+        ];
     }
 
     /**

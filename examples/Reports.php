@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,11 +13,10 @@
 
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use Crakter\BringApi\Exception\BringClientException;
+use Crakter\BringApi\Clients\Authorization;
 use Crakter\BringApi\Clients\Reports\GenerateReport;
 use Crakter\BringApi\Clients\Reports\GetReport;
 use Crakter\BringApi\Clients\Reports\StatusOfReport;
-use Crakter\BringApi\Clients\Authorization;
 use Crakter\BringApi\Entity\ReportsEntity;
 
 set_time_limit(480);
@@ -27,7 +28,7 @@ $customerNumber = getenv('BRING_CUSTOMER_NUMBER');
 $clientUrl = 'http://example.com';
 
 // Sets the Report to get, passed through terminal like "php PostalCode.php report id"
-$reportId = isset($argv[1]) ? $argv[1] : 'PARCELS-PRE_NOTIFICATION_RECEIVED';
+$reportId = $argv[1] ?? 'PARCELS-PRE_NOTIFICATION_RECEIVED';
 
 /*
  * You can also get the customers by calling the ListAvailableCustomers client
@@ -41,15 +42,15 @@ $reportId = isset($argv[1]) ? $argv[1] : 'PARCELS-PRE_NOTIFICATION_RECEIVED';
  */
 
 // Sets the authorizationModule - you can track without authorization aswell.
-$credentials = (new Authorization)
+$credentials = (new Authorization())
     ->setApiKey($apiKey)
     ->setClientId($uid)
     ->setClientUrl($clientUrl);
 
 // Set from date to date on the report - 5 days is good.
-$entity = (new ReportsEntity)->setFromDate((new \DateTime('now'))->modify('-5 days'))->setToDate((new \DateTime('now')));
+$entity = (new ReportsEntity())->setFromDate((new \DateTime('now'))->modify('-5 days'))->setToDate((new \DateTime('now')));
 // Generate the report.
-$generateReport = (new GenerateReport)
+$generateReport = (new GenerateReport())
     ->setAuthorizationModule($credentials)
     ->setCustomerId($customerNumber)
     ->setReportTypeId($reportId)
@@ -58,13 +59,13 @@ $generateReport = (new GenerateReport)
 // Get the report id that we get in reponse.
 $reportId = $generateReport->getReportId();
 // Check the status of the report.
-$statusOfReport = (new StatusOfReport)->setAuthorizationModule($credentials)->setReportId($reportId)->send();
+$statusOfReport = (new StatusOfReport())->setAuthorizationModule($credentials)->setReportId($reportId)->send();
 // Check the status of the report til it is finished.
-while(!$statusOfReport->checkStatus()) {
+while (!$statusOfReport->checkStatus()) {
     sleep(30);
     $statusOfReport->send();
 }
 // Get the report that is finished.
-$getReport = (new GetReport)->setAuthorizationModule($credentials)->setApiEntity($entity)->setReportId($reportId)->send();
+$getReport = (new GetReport())->setAuthorizationModule($credentials)->setApiEntity($entity)->setReportId($reportId)->send();
 // Get the reponse back in Array.
 print_r($getReport->toArray());

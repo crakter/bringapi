@@ -1,0 +1,24 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0.5%
+      v4:
+        paths:
+          - src/v4
+        target: 80%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+
+ignore:
+  - src/Clients         # legacy v3 — frozen
+  - src/Entity          # legacy v3 — frozen
+  - src/DefaultData     # legacy v3 — frozen
+  - src/Exception       # legacy v3 — frozen
+  - src/Traits          # legacy v3 — frozen
+  - tests
+  - vendor
+  - examples

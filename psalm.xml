@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="4"
+    resolveFromConfigFile="true"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="false"
+    phpVersion="8.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd">
+    <projectFiles>
+        <directory name="src/v4"/>
+        <directory name="tests/v4"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+            <directory name="tests/v4/Support"/>
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <UnsupportedPropertyReferenceUsage>
+            <errorLevel type="suppress">
+                <directory name="tests/v4"/>
+            </errorLevel>
+        </UnsupportedPropertyReferenceUsage>
+        <!-- Endpoint<ConcreteResponse> passed where Endpoint<mixed> is expected:
+             PHPDoc generics are invariant, but read-only use is safe. -->
+        <InvalidArgument>
+            <errorLevel type="suppress">
+                <directory name="tests/v4"/>
+            </errorLevel>
+        </InvalidArgument>
+    </issueHandlers>
+</psalm>

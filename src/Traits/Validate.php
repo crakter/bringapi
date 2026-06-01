@@ -10,10 +10,11 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Traits;
 
-use ReflectionClass;
 use Crakter\BringApi\Exception\InputValueNotAllowedException;
+use ReflectionClass;
 
 /**
  * BringApi Validate trait
@@ -49,7 +50,7 @@ trait Validate
         $class = new ReflectionClass(self::class);
         if (!self::has($name)) {
             throw new InputValueNotAllowedException(
-                sprintf('$name(%s) is not allowed by Bring API in %s', $name, $class->getName())
+                sprintf('$name(%s) is not allowed by Bring API in %s', $name, $class->getName()),
             );
         }
         $class = new ReflectionClass(self::class);

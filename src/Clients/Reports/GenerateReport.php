@@ -10,14 +10,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\Clients\Reports;
 
-use Crakter\BringApi\DefaultData\ClientUrls;
 use Crakter\BringApi\Clients\Base;
 use Crakter\BringApi\Clients\ClientsInterface;
+use Crakter\BringApi\DefaultData\ClientUrls;
 use Crakter\BringApi\DefaultData\HttpMethods;
-use Crakter\BringApi\Exception\BringClientException;
 use Crakter\BringApi\Exception\ApiEntityNotCorrectException;
+use Crakter\BringApi\Exception\BringClientException;
 
 /**
  * BringApi GenerateReport

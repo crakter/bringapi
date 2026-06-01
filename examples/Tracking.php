@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the BringApi package.
  *
@@ -11,11 +13,11 @@
 
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use Crakter\BringApi\Entity\TrackingEntity;
+use Crakter\BringApi\Clients\Authorization;
 use Crakter\BringApi\Clients\Tracking\SignatureTracking;
 use Crakter\BringApi\Clients\Tracking\TrackingEndpoint;
+use Crakter\BringApi\Entity\TrackingEntity;
 use Crakter\BringApi\Exception\BringClientException;
-use Crakter\BringApi\Clients\Authorization;
 
 // Gets the environment variables we have set - you can track without authorization aswell.
 $apiKey = getenv('BRING_API_KEY');
@@ -28,18 +30,18 @@ $clientUrl = 'http://example.com';
 $q = $argv[1];
 
 // Sets the authorizationModule - you can track without authorization aswell.
-$credentials = (new Authorization)
+$credentials = (new Authorization())
     ->setApiKey($apiKey)
     ->setClientId($uid)
     ->setClientUrl($clientUrl);
 
 // Adds the essentials for ShippingGuide
-$request = (new TrackingEntity)
+$request = (new TrackingEntity())
     ->setQ($q);
 
 // Try to send the tracking request - or catch the error.
 try {
-    $result = (new TrackingEndpoint)->setAuthorizationModule($credentials)->setApiEntity($request)->send();
+    $result = (new TrackingEndpoint())->setAuthorizationModule($credentials)->setApiEntity($request)->send();
     // Get the reponse back in Array.
     print_r($result->toArray());
 } catch (BringClientException $e) {
@@ -51,22 +53,22 @@ $array = $result->toArray()['consignmentSet'];
 
 $signatureArray = [];
 $lastSignature = [];
-foreach($array as $var) {
-    foreach($var['packageSet'] as $v) {
+foreach ($array as $var) {
+    foreach ($var['packageSet'] as $v) {
         // Do not check it if it has already been checked.
-        if(isset($signatureArray[$v['packageNumber']])) {
+        if (isset($signatureArray[$v['packageNumber']])) {
             continue;
         }
-        foreach($v['eventSet'] as $val) {
+        foreach ($v['eventSet'] as $val) {
             // Check if there is a signature.
-            if(isset($val['recipientSignature']['linkToImage'])) {
+            if (isset($val['recipientSignature']['linkToImage'])) {
                 // Check that the signature is not the same as the last.
-                if(!isset($lastSignature['signatureLink']) || $val['recipientSignature']['linkToImage'] != $lastSignature['signatureLink']) {
+                if (!isset($lastSignature['signatureLink']) || $val['recipientSignature']['linkToImage'] != $lastSignature['signatureLink']) {
                     $lastSignature =  [
                         'signatureLink' => $val['recipientSignature']['linkToImage'],
-                        'signature' => isset($signatureArray[$v['packageNumber']]) ? $signatureArray[$v['packageNumber']] : 0
+                        'signature' => $signatureArray[$v['packageNumber']] ?? 0,
                     ];
-                    $signature = (new SignatureTracking)
+                    $signature = (new SignatureTracking())
                         ->setAuthorizationModule($credentials)
                         ->setReturnPng()
                         ->setSignatureLink($val['recipientSignature']['linkToImage'])

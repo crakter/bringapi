@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdocumentor
+    configVersion="3"
+    xmlns="https://www.phpdoc.org"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.phpdoc.org https://docs.phpdoc.org/latest/phpdoc.xsd">
+
+    <title>Bring API PHP</title>
+
+    <paths>
+        <output>docs/build</output>
+        <cache>docs/.cache</cache>
+    </paths>
+
+    <version number="4.0.0">
+        <folder>latest</folder>
+
+        <api>
+            <output>api</output>
+            <encoding>utf-8</encoding>
+            <source dsn=".">
+                <path>src/v4/**/*</path>
+                <path>src/Clients/**/*</path>
+                <path>src/Entity/**/*</path>
+                <path>src/Exception/**/*</path>
+                <path>src/DefaultData/**/*</path>
+                <path>src/Traits/**/*</path>
+            </source>
+            <ignore>
+                <path>vendor/**/*</path>
+                <path>tests/**/*</path>
+                <path>examples/**/*</path>
+            </ignore>
+            <extensions>
+                <extension>php</extension>
+            </extensions>
+            <visibility>public</visibility>
+            <visibility>protected</visibility>
+            <default-package-name>Bring\Api</default-package-name>
+            <include-source>true</include-source>
+            <markers>
+                <marker>TODO</marker>
+                <marker>FIXME</marker>
+                <marker>@deprecated</marker>
+            </markers>
+        </api>
+    </version>
+
+    <setting name="graphs.enabled" value="false"/>
+    <setting name="template.color" value="green"/>
+</phpdocumentor>

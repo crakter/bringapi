@@ -1,4 +1,12 @@
 /vendor
-/docs
+/docs/build
+/docs/.cache
+/tools
 /coverage
 .vscode
+.idea
+.phpunit.result.cache
+.phpunit.cache
+.php-cs-fixer.cache
+composer.phar
+/composer.lock

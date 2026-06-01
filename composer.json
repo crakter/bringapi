@@ -1,8 +1,10 @@
 {
     "name": "crakter/bringapi",
     "type": "library",
-    "description": "BringApi is a fully functional library to help contact Bring API",
-    "version": "3.0.3",
+    "description": "PHP wrapper for Bring's developer APIs (Shipping Guide, Booking, Tracking, Reports, Postal Code, Address, Pickup Point, Modify Delivery, Order Management).",
+    "keywords": ["bring", "posten", "shipping", "tracking", "logistics", "norway", "psr-18"],
+    "homepage": "https://github.com/crakter/bringapi",
+    "license": "MIT",
     "authors": [
         {
             "name": "Martin Madsen",
@@ -11,26 +13,67 @@
         }
     ],
     "require": {
-        "php": ">=8.2.0",
-        "guzzlehttp/guzzle": ">=7.9.2"
+        "php": "^8.2",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0",
+        "psr/log": "^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=11.2.8",
-        "friendsofphp/php-cs-fixer": ">=3.60.0",
-        "rector/rector": "^1.1"
+        "friendsofphp/php-cs-fixer": "^3.60",
+        "guzzlehttp/guzzle": "^7.9",
+        "guzzlehttp/psr7": "^2.7",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "phpoffice/phpspreadsheet": "^2.0 || ^3.0",
+        "phpstan/phpstan": "^1.11",
+        "phpunit/phpunit": "^11.0",
+        "rector/rector": "^1.1",
+        "vimeo/psalm": "^6.0 || ^7.0"
     },
     "suggest": {
-        "phpoffice/phpexcel": "Allows for convertion of response to JSON/array"
+        "guzzlehttp/guzzle": "Default PSR-18 client used by Bring\\Api\\Http\\ClientFactory when no explicit client is provided.",
+        "phpoffice/phpspreadsheet": "Required when calling endpoints that return XLS reports (Reports API).",
+        "psr/log-implementation": "Inject a PSR-3 logger via Bring\\Api\\Logging\\RedactingLogger to log API calls without leaking credentials."
     },
     "autoload": {
         "psr-4": {
-            "Crakter\\BringApi\\": "src/"
+            "Crakter\\BringApi\\": "src/",
+            "Bring\\Api\\": "src/v4/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Crakter\\BringApi\\": "tests/"
+            "Crakter\\BringApi\\": "tests/legacy/",
+            "Bring\\Api\\Tests\\": "tests/v4/"
         }
     },
-    "license": "MIT"
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage --coverage-clover coverage.xml",
+        "phpstan": "phpstan analyse",
+        "psalm": "psalm --no-progress",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "qa": [
+            "@cs",
+            "@phpstan",
+            "@psalm",
+            "@test"
+        ],
+        "docs": "@php bin/build-docs",
+        "docs-clean": "@php bin/build-docs --clean"
+    },
+    "scripts-descriptions": {
+        "qa": "Run the full quality-assurance gate: php-cs-fixer + phpstan + psalm + phpunit.",
+        "docs": "Build API documentation with phpDocumentor (downloads the phar into tools/ on first run).",
+        "docs-clean": "Wipe docs/build + docs/.cache, then rebuild."
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.x-dev"
+        }
+    }
 }

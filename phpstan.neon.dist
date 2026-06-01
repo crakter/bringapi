@@ -1,0 +1,14 @@
+parameters:
+    level: 8
+    paths:
+        - src/v4
+        - tests/v4
+    bootstrapFiles:
+        - vendor/autoload.php
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        # Anonymous read-via-reference sink in RedactingLoggerTest is set via closure binding.
+        -
+            message: '#never read, only written#'
+            paths:
+                - tests/v4/Logging/RedactingLoggerTest.php

@@ -1,0 +1,64 @@
+name: Bug report
+description: Something the library does that contradicts the docs or Bring's API
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. **If this looks like a
+        security issue (credential leakage, response-body exposure, etc.) please
+        follow SECURITY.md instead of filing it here.**
+  - type: input
+    id: library-version
+    attributes:
+      label: Library version
+      description: "Output of `composer show crakter/bringapi | grep versions`"
+      placeholder: "4.0.0-beta1"
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "8.3.4"
+    validations:
+      required: true
+  - type: dropdown
+    id: api
+    attributes:
+      label: Which Bring API is affected?
+      multiple: true
+      options:
+        - Shipping Guide
+        - Booking
+        - Tracking
+        - Reports
+        - Postal Code (legacy)
+        - Address (new)
+        - Pickup Point
+        - Modify Delivery
+        - Order Management
+        - Not API-specific (auth, retry, logging, …)
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A short PHP snippet that triggers the bug. Do NOT paste real Bring credentials.
+      render: php
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: "Stack trace, response body (redacted), or log excerpt."
+    validations:
+      required: true

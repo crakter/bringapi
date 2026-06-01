@@ -10,6 +10,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Crakter\BringApi\DefaultData;
 
 /**
@@ -31,9 +32,9 @@ abstract class Products
     public const RETUR_PAKKE_FRA_BEDRIFT = 9000;
     public const EKSPRESS_NESTE_DAG = 4850;
     public const RETUREKSPRESS = 9600;
-	public const STYKKGODS_TIL_BEDRIFT = 5300;
-	public const RETUR_STYKKGODS_FRA_BEDRIFT = 9100;
-	public const SERVICEPAKKE = 'SERVICEPAKKE'; // @deprecated
+    public const STYKKGODS_TIL_BEDRIFT = 5300;
+    public const RETUR_STYKKGODS_FRA_BEDRIFT = 9100;
+    public const SERVICEPAKKE = 'SERVICEPAKKE'; // @deprecated
     public const SERVICEPAKKE_RETURSERVICE = 'SERVICEPAKKE_RETURSERVICE'; // @deprecated
     public const BPAKKE_DOR_DOR = 'BPAKKE_DOR-DOR'; // @deprecated
     public const BPAKKE_DOR_DOR_RETURSERVICE = 'BPAKKE_DOR-DOR_RETURSERVICE'; // @deprecated

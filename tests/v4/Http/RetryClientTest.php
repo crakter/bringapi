@@ -1,0 +1,222 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Bring\Api\Tests\Http;
+
+use Bring\Api\Http\RetryClient;
+use Bring\Api\Retry\ExponentialBackoff;
+use Bring\Api\Retry\RecordingSleeper;
+use Bring\Api\Tests\Support\RecordingClient;
+use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientExceptionInterface;
+
+#[CoversClass(RetryClient::class)]
+#[CoversClass(ExponentialBackoff::class)]
+final class RetryClientTest extends TestCase
+{
+    private HttpFactory $factory;
+
+    #[\Override]
+    protected function setUp(): void
+    {
+        $this->factory = new HttpFactory();
+    }
+
+    public function testSucceedsOnFirstTryWithoutSleeping(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([new Response(200, [], 'ok')]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper);
+
+        $response = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertCount(1, $inner->requests);
+        self::assertSame([], $sleeper->slept);
+    }
+
+    public function testRetriesOn503ThenSucceeds(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([
+            new Response(503, [], 'busy'),
+            new Response(503, [], 'still busy'),
+            new Response(200, [], 'ok'),
+        ]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper, backoff: new ExponentialBackoff(1.0, 8.0, fn () => 1.0));
+
+        $resp = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(200, $resp->getStatusCode());
+        self::assertCount(3, $inner->requests);
+        self::assertCount(2, $sleeper->slept);
+        // Exponential: 1.0 * 1, 1.0 * 2 (with rng = 1.0 so no jitter reduction)
+        self::assertSame(1.0, $sleeper->slept[0]);
+        self::assertSame(2.0, $sleeper->slept[1]);
+    }
+
+    public function testHonoursRetryAfterHeader(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([
+            new Response(429, ['Retry-After' => '7'], 'rate limited'),
+            new Response(200, [], 'ok'),
+        ]);
+        $client = new RetryClient($inner, sleeper: $sleeper, backoff: new ExponentialBackoff(1.0, 30.0, fn () => 1.0));
+
+        $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        // Retry-After (7s) wins over backoff (1s).
+        self::assertSame([7.0], $sleeper->slept);
+    }
+
+    public function testGivesUpAfterMaxAttempts(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([
+            new Response(503),
+            new Response(503),
+            new Response(503),
+        ]);
+        $client = new RetryClient($inner, maxAttempts: 3, sleeper: $sleeper, backoff: new ExponentialBackoff(0.1, 1.0, fn () => 0.0));
+
+        $resp = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(503, $resp->getStatusCode());
+        self::assertCount(3, $inner->requests, '3 attempts total');
+        self::assertCount(2, $sleeper->slept, 'sleeps happen *between* attempts');
+    }
+
+    public function testRetriesOnTransportExceptionThenRethrows(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $boom = new class ('network down') extends \RuntimeException implements ClientExceptionInterface {
+        };
+        $inner = new RecordingClient([$boom, $boom]);
+        $client = new RetryClient($inner, maxAttempts: 2, sleeper: $sleeper, backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0));
+
+        $this->expectException(ClientExceptionInterface::class);
+        $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+    }
+
+    public function testNonRetryableStatusReturnsImmediately(): void
+    {
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([new Response(404)]);
+        $client = new RetryClient($inner, sleeper: $sleeper);
+
+        $resp = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(404, $resp->getStatusCode());
+        self::assertCount(1, $inner->requests);
+        self::assertSame([], $sleeper->slept);
+    }
+
+    public function testRejectsInvalidMaxAttempts(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new RetryClient(new RecordingClient([]), maxAttempts: 0);
+    }
+
+    public function testExponentialBackoffJitterWithinBounds(): void
+    {
+        $backoff = new ExponentialBackoff(1.0, 10.0);
+        for ($attempt = 1; $attempt <= 6; $attempt++) {
+            $delay = $backoff->delaySeconds($attempt);
+            self::assertGreaterThanOrEqual(0.0, $delay);
+            self::assertLessThanOrEqual(10.0, $delay, "attempt $attempt must be capped at maxDelay");
+        }
+    }
+
+    public function testDoesNotRetryNonRetryableBadResponseExceptionFromGuzzleHttpErrorsClient(): void
+    {
+        // Guzzle with http_errors=true throws BadResponseException on 4xx/5xx.
+        // RetryClient must NOT retry permanent failures like 401 / 404 / 403.
+        $errorResponse = new Response(404, [], 'not found');
+        $bad = new \GuzzleHttp\Exception\BadResponseException(
+            'not found',
+            $this->factory->createRequest('GET', 'https://api.bring.com/'),
+            $errorResponse,
+        );
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([$bad, $bad, $bad, $bad]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper);
+
+        try {
+            $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+            self::fail('expected BadResponseException');
+        } catch (\GuzzleHttp\Exception\BadResponseException) {
+            self::assertCount(1, $inner->requests, 'no retries for non-retryable 4xx');
+            self::assertSame([], $sleeper->slept);
+        }
+    }
+
+    public function testRetriesRetryableBadResponseExceptionFromGuzzleHttpErrorsClient(): void
+    {
+        $errorResponse = new Response(503, [], 'busy');
+        $bad = new \GuzzleHttp\Exception\BadResponseException(
+            'busy',
+            $this->factory->createRequest('GET', 'https://api.bring.com/'),
+            $errorResponse,
+        );
+        $sleeper = new RecordingSleeper();
+        $inner = new RecordingClient([$bad, $bad, new Response(200, [], 'ok')]);
+        $client = new RetryClient($inner, maxAttempts: 4, sleeper: $sleeper, backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0));
+
+        $resp = $client->sendRequest($this->factory->createRequest('GET', 'https://api.bring.com/'));
+
+        self::assertSame(200, $resp->getStatusCode());
+        self::assertCount(3, $inner->requests);
+        self::assertCount(2, $sleeper->slept);
+    }
+
+    public function testRewindsRequestBodyBeforeEachRetry(): void
+    {
+        // Simulate a real PSR-18 client that reads the body to EOF (Guzzle).
+        $bodiesSeen = [];
+        $reader = new class ($bodiesSeen) implements \Psr\Http\Client\ClientInterface {
+            /** @var array<int, string> */
+            public array $sink;
+            private int $call = 0;
+
+            public function __construct(array &$bodiesSeen)
+            {
+                $this->sink = &$bodiesSeen;
+            }
+
+            #[\Override]
+            public function sendRequest(\Psr\Http\Message\RequestInterface $request): \Psr\Http\Message\ResponseInterface
+            {
+                $this->sink[] = (string) $request->getBody();
+                // getContents() left the pointer at EOF, just like real clients.
+                $this->call++;
+
+                return $this->call < 3
+                    ? new Response(503)
+                    : new Response(200, [], 'ok');
+            }
+        };
+
+        $client = new RetryClient(
+            $reader,
+            maxAttempts: 4,
+            sleeper: new RecordingSleeper(),
+            backoff: new ExponentialBackoff(0.0, 0.0, fn () => 0.0),
+        );
+        $body = $this->factory->createStream('{"correlationId":"abc-123"}');
+        $request = $this->factory->createRequest('POST', 'https://api.bring.com/booking')
+            ->withBody($body);
+
+        $client->sendRequest($request);
+
+        self::assertSame(
+            ['{"correlationId":"abc-123"}', '{"correlationId":"abc-123"}', '{"correlationId":"abc-123"}'],
+            $reader->sink,
+            'every retry must see the full body, not an empty string',
+        );
+    }
+}
