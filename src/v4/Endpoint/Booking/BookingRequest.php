@@ -70,14 +70,31 @@ final class BookingRequest
     /** @return array<string, mixed> */
     public function toArray(): array
     {
+        // Bring's Booking API expects customerNumber inside each
+        // consignment's product object — not at the request root. Posting
+        // it at the root produces a per-consignment BOOK-INPUT-019
+        // ("Customer number must be provided") even though the SDK
+        // constructor enforces a non-empty value, because Bring reads it
+        // from the product slot and finds nothing there.
+        //
+        // We model customerNumber once on the request (it's per-request in
+        // practice) and inject it into each consignment's product at
+        // serialization time, so the public SDK shape stays unchanged.
+        $customerNumber = $this->customerNumber;
+        $consignments = array_map(
+            static function (Consignment $c) use ($customerNumber): array {
+                $arr = $c->toArray();
+                $arr['product'] = ['customerNumber' => $customerNumber] + (array) $arr['product'];
+
+                return $arr;
+            },
+            $this->consignments,
+        );
+
         return [
             'schemaVersion' => $this->schemaVersion,
-            'consignments' => array_map(
-                static fn (Consignment $c): array => $c->toArray(),
-                $this->consignments,
-            ),
+            'consignments' => $consignments,
             'testIndicator' => $this->testIndicator,
-            'customerNumber' => $this->customerNumber,
         ];
     }
 }

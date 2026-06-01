@@ -64,7 +64,8 @@ final class BookingApiTest extends TestCase
 
         $body = json_decode((string) $req->getBody(), true);
         self::assertSame('1', $body['schemaVersion']);
-        self::assertSame('PARCELS_NORWAY-10001234567', $body['customerNumber']);
+        self::assertArrayNotHasKey('customerNumber', $body, 'customerNumber must not be at request root — Bring expects it under consignments[].product');
+        self::assertSame('PARCELS_NORWAY-10001234567', $body['consignments'][0]['product']['customerNumber']);
         self::assertTrue($body['testIndicator']);
         self::assertSame(Product::HOME_DELIVERY_PARCEL->value, $body['consignments'][0]['product']['id']);
         self::assertSame('EVARSLING', $body['consignments'][0]['product']['additionalServices'][0]['id']);
