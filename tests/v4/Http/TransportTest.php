@@ -101,6 +101,45 @@ final class TransportTest extends TestCase
         }
     }
 
+    public function testUnparsableErrorBodyIsSurfacedInMessage(): void
+    {
+        // Bring occasionally returns a 4xx with a body that doesn't fit the
+        // errors/messages envelope (plain text, HTML, a different JSON shape).
+        // We must still surface enough of it that the operator can act on it
+        // instead of collapsing to "no parsable error body".
+        $body = 'Recipient postal code 1642 is not serviced by BUSINESS_PARCEL';
+        $client = new RecordingClient([new Response(400, ['Content-Type' => 'text/plain'], $body)]);
+        $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
+
+        try {
+            $transport->send(new PostalCodeEndpoint('0150'));
+            self::fail('expected BringApiException');
+        } catch (BringApiException $e) {
+            self::assertStringContainsString('HTTP 400', $e->getMessage());
+            self::assertStringContainsString('postal code 1642', $e->getMessage());
+            self::assertStringNotContainsString('no parsable error body', $e->getMessage());
+        }
+    }
+
+    public function testUnparsableErrorBodyRedactsCredentialShapedValues(): void
+    {
+        // If the unparsable body happens to echo credential-shaped values,
+        // they must be redacted before being embedded in getMessage().
+        $body = '{"detail":"unauthorized","api_key":"secretKey","Authorization":"Basic abc"}';
+        $client = new RecordingClient([new Response(401, ['Content-Type' => 'application/json'], $body)]);
+        $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
+
+        try {
+            $transport->send(new PostalCodeEndpoint('0150'));
+            self::fail('expected BringApiException');
+        } catch (BringApiException $e) {
+            self::assertStringContainsString('HTTP 401', $e->getMessage());
+            self::assertStringContainsString('unauthorized', $e->getMessage());
+            self::assertStringNotContainsString('secretKey', $e->getMessage());
+            self::assertStringNotContainsString('Basic abc', $e->getMessage());
+        }
+    }
+
     public function testTransportExceptionWrapsPsr18Failure(): void
     {
         $networkFail = new class ('boom') extends \RuntimeException implements ClientExceptionInterface {
