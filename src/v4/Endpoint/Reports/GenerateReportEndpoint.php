@@ -49,11 +49,21 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
         );
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * Report filters are passed through verbatim, except booleans: Bring
+     * expects the literal strings "true"/"false", but PHP's http_build_query
+     * would serialise a bool as 1/0, which Bring's validation rejects. Mirrors
+     * the explicit bool handling in {@see ListInvoiceNumbersEndpoint}.
+     *
+     * @return array<string, mixed>
+     */
     #[\Override]
     protected function queryParameters(): array
     {
-        return $this->parameters;
+        return array_map(
+            static fn (mixed $value): mixed => is_bool($value) ? ($value ? 'true' : 'false') : $value,
+            $this->parameters,
+        );
     }
 
     /** @param array<mixed, mixed> $decoded */

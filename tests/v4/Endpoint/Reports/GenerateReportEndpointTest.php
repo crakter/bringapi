@@ -63,4 +63,23 @@ final class GenerateReportEndpointTest extends TestCase
         // A GET carries no JSON body — the params must not leak into one.
         self::assertSame('', (string) $request->getBody());
     }
+
+    public function testBooleanParametersSerializeAsTrueFalseNotOneZero(): void
+    {
+        // PHP's http_build_query would emit 1/0; Bring expects literal true/false.
+        $client = $this->client();
+        $api = ApiClient::withCredentials(new Credentials('me@example.com', 'k'), $client);
+
+        $api->reports()->generate(
+            'PARCELS_NORWAY-00012341234',
+            'MASTER-SPECIFIED_INVOICE',
+            ['includeSpecification' => true, 'onlyProcessed' => false],
+        );
+
+        $uri = (string) $client->lastRequest()->getUri();
+        self::assertStringContainsString('includeSpecification=true', $uri);
+        self::assertStringContainsString('onlyProcessed=false', $uri);
+        self::assertStringNotContainsString('includeSpecification=1', $uri);
+        self::assertStringNotContainsString('onlyProcessed=0', $uri);
+    }
 }
