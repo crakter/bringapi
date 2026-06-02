@@ -32,6 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   expected this path.
 
 ### Fixed
+- `GenerateReportEndpoint` now issues a **GET** with the report-type filters as
+  query parameters, not a POST with a JSON body. Bring's
+  `/reports/api/generate/{customer}/{reportType}` route only accepts GET (the
+  sibling `generate` / `generate/{customer}` list routes are GET too), so the
+  v4 POST was rejected with `405 Method Not Allowed` and an empty body —
+  surfacing as `Bring API returned HTTP 405 (-: HTTP 405 (empty error body))`.
+  Restores v3 `GenerateReport` behaviour.
 - `RetryClient` no longer burns retry attempts on permanent 4xx failures
   when wrapped around a Guzzle client with the default `http_errors=true`
   setting. A `BadResponseException` whose response is not in the retry

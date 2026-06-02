@@ -8,12 +8,18 @@ use Bring\Api\Endpoint\AbstractJsonEndpoint;
 use Bring\Api\Http\HttpMethod;
 
 /**
- * POST https://www.mybring.com/reports/api/generate/{customerNumber}/{reportTypeId}.json
+ * GET https://www.mybring.com/reports/api/generate/{customerNumber}/{reportTypeId}.json
+ *
+ * Bring's report-generation route is a GET with the report-type filters
+ * passed as query parameters (the sibling list-available routes on the same
+ * /reports/api/generate base path are GET too). Issuing a POST here makes
+ * Bring's gateway reject the request with 405 Method Not Allowed and an
+ * empty body before the response ever carries an error envelope.
  *
  * Hardcoded to JSON: this endpoint extends AbstractJsonEndpoint, so
  * non-JSON responses would fail to parse here. The format of the
- * eventual report file is controlled separately by the parameters
- * payload, not by the request URL suffix.
+ * eventual report file is controlled separately by the parameters,
+ * not by the request URL suffix.
  *
  * @extends AbstractJsonEndpoint<GenerateReportResponse>
  */
@@ -30,7 +36,7 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
     #[\Override]
     public function method(): HttpMethod
     {
-        return HttpMethod::POST;
+        return HttpMethod::GET;
     }
 
     #[\Override]
@@ -43,11 +49,11 @@ final class GenerateReportEndpoint extends AbstractJsonEndpoint
         );
     }
 
-    /** @return array<mixed, mixed>|null */
+    /** @return array<string, mixed> */
     #[\Override]
-    protected function jsonBody(): ?array
+    protected function queryParameters(): array
     {
-        return $this->parameters === [] ? null : $this->parameters;
+        return $this->parameters;
     }
 
     /** @param array<mixed, mixed> $decoded */
