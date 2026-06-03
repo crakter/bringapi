@@ -22,6 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   without performing an HTTP request, for embedding in an already-
   authenticated UI via `<img src="…">`.
 
+### Fixed
+- `PriceRequest::toQuery()` now serialises the `product` query parameter
+  as Bring's numeric service code (via the new `Product::shippingGuideCode()`)
+  instead of the v2 string name. Shipping Guide v2 prices by numeric code,
+  so sending `EXPRESS_NORDIC_0900` (and the other string names) returned an
+  empty product list — i.e. "no price". Products without a confirmed numeric
+  code fall back to the string value, unchanged. Note: Express Nordic 09:00
+  (`0335`) is being decommissioned by Bring on 2026-09-01 in favour of Bring
+  Courier & Express (`3620` + VAS `1171`).
+
+### Added
+- `Product::shippingGuideCode(): ?string` — the numeric service code the
+  Shipping Guide v2 endpoints expect, string-typed so leading zeros survive
+  (`0335`). Distinct from `legacyNumericCode()`, which carries the historical
+  in-app codes (Express Nordic 09:00 is `4850` there, `0335` here).
+
 ### Changed
 - `TrackingApi::signature(string)` and `SignatureEndpoint::__construct`
   now expect the **signature-link path** (the value Bring returns on
