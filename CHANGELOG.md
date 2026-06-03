@@ -28,15 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of the v2 string name. Shipping Guide v2 prices by numeric code,
   so sending `EXPRESS_NORDIC_0900` (and the other string names) returned an
   empty product list — i.e. "no price". Products without a confirmed numeric
-  code fall back to the string value, unchanged. Note: Express Nordic 09:00
-  (`0335`) is being decommissioned by Bring on 2026-09-01 in favour of Bring
-  Courier & Express (`3620` + VAS `1171`).
+  code fall back to the string value, unchanged. The `EXPRESS_NORDIC_0900`
+  case maps to `4850` (Business Parcel Express / "Pakke til bedrift ekspress"),
+  the everyday express parcel — not Bring's separate "Express Nordic 09:00"
+  courier product (`0335`).
 
 ### Added
 - `Product::shippingGuideCode(): ?string` — the numeric service code the
-  Shipping Guide v2 endpoints expect, string-typed so leading zeros survive
-  (`0335`). Distinct from `legacyNumericCode()`, which carries the historical
-  in-app codes (Express Nordic 09:00 is `4850` there, `0335` here).
+  Shipping Guide v2 endpoints expect, string-typed (leading-zero safe).
 
 ### Changed
 - `TrackingApi::signature(string)` and `SignatureEndpoint::__construct`

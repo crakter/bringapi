@@ -33,13 +33,14 @@ final class PriceRequestTest extends TestCase
         self::assertSame(['5000', '5800'], $q['product']);
     }
 
-    public function testExpressNordicKeepsLeadingZeroAndUsesShippingGuideCode(): void
+    public function testExpressUsesNumericShippingGuideCode(): void
     {
         $q = $this->request(Product::EXPRESS_NORDIC_0900)->toQuery();
 
-        // 0335 (Shipping Guide v2), NOT the string name and NOT the legacy
-        // in-app code 4850 — and the leading zero must survive.
-        self::assertSame(['0335'], $q['product']);
+        // 4850 = Business Parcel Express ("Pakke til bedrift ekspress"), the
+        // express product this catalog uses — NOT the v2 string name, and NOT
+        // the unrelated "Express Nordic 09:00" courier code 0335.
+        self::assertSame(['4850'], $q['product']);
     }
 
     public function testUnmappedProductFallsBackToStringValue(): void

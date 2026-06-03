@@ -70,19 +70,21 @@ enum Product: string
      * parameter.
      *
      * Shipping Guide v2 identifies products by Bring's numeric service codes
-     * (e.g. "5800" Pickup Parcel, "5600" Home Delivery, "0335" Express Nordic
-     * 09:00). It does NOT price the v2 string names (EXPRESS_NORDIC_0900, …) —
-     * sending those returns an empty product list ("no price"). Codes are
-     * returned as strings so leading zeros survive ("0335" must not become 335).
+     * (e.g. "5800" Pickup Parcel, "5600" Home Delivery, "5000" Business Parcel,
+     * "4850" Business Parcel Express / "Pakke til bedrift ekspress"). It does
+     * NOT price the v2 string names (EXPRESS_NORDIC_0900, …) — sending those
+     * returns an empty product list ("no price"). Codes are returned as strings
+     * so any future leading-zero code survives intact.
      *
      * Returns null for products whose Shipping Guide code is not yet confirmed;
      * callers should fall back to the enum string value for those so unknown
      * products are no worse off than before.
      *
-     * NOTE: Express Nordic 09:00 (0335) is being decommissioned by Bring on
-     * 2026-09-01. The successor is Bring Courier & Express (3620) with VAS 1171
-     * — that migration needs both a product and an additional-service change,
-     * so it is intentionally NOT silently mapped here.
+     * NOTE on the EXPRESS_NORDIC_0900 case: despite the enum name, this catalog
+     * uses it for Business Parcel Express (4850) — the everyday express parcel,
+     * confirmed against Bring's revised-services list (5000/5100/5300/5600/5800/
+     * 4850). It is NOT Bring's separate time-definite courier product "Express
+     * Nordic 09:00" (0335), which is being decommissioned 2026-09-01.
      */
     public function shippingGuideCode(): ?string
     {
@@ -90,7 +92,7 @@ enum Product: string
             self::PICKUP_PARCEL => '5800',
             self::HOME_DELIVERY_PARCEL => '5600',
             self::BUSINESS_PARCEL => '5000',
-            self::EXPRESS_NORDIC_0900 => '0335',
+            self::EXPRESS_NORDIC_0900 => '4850',
             self::MAILBOX_PARCEL => '3584',
             self::MAILBOX_PARCEL_TRACKED => '3570',
             default => null,
