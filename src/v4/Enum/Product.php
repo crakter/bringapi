@@ -44,7 +44,14 @@ enum Product: string
     case RETURN_BUSINESS_PARCEL = 'BUSINESS_PARCEL_RETURN';
     case RETURN_BUSINESS_PALLET = 'BUSINESS_PALLET_RETURN';
 
-    /** Numeric legacy codes still accepted by some endpoints. */
+    /**
+     * In-app/legacy numeric codes some callers still send (e.g. the price
+     * calculator). These are the historical service numbers carried over from
+     * the v3 era — NOT necessarily the codes the current Shipping Guide v2
+     * endpoint prices by. Use {@see shippingGuideCode()} when building a
+     * Shipping Guide request; the two diverge for Express Nordic 09:00
+     * (legacy 4850 vs Shipping Guide 0335).
+     */
     public function legacyNumericCode(): ?int
     {
         return match ($this) {
@@ -53,6 +60,39 @@ enum Product: string
             self::EXPRESS_NORDIC_0900 => 4850,
             self::MAILBOX_PARCEL => 3584,
             self::MAILBOX_PARCEL_TRACKED => 3570,
+            default => null,
+        };
+    }
+
+    /**
+     * Product identifier as the Shipping Guide v2 endpoints
+     * (/shippingguide/v2/products[/price]) expect it in the `product` query
+     * parameter.
+     *
+     * Shipping Guide v2 identifies products by Bring's numeric service codes
+     * (e.g. "5800" Pickup Parcel, "5600" Home Delivery, "0335" Express Nordic
+     * 09:00). It does NOT price the v2 string names (EXPRESS_NORDIC_0900, …) —
+     * sending those returns an empty product list ("no price"). Codes are
+     * returned as strings so leading zeros survive ("0335" must not become 335).
+     *
+     * Returns null for products whose Shipping Guide code is not yet confirmed;
+     * callers should fall back to the enum string value for those so unknown
+     * products are no worse off than before.
+     *
+     * NOTE: Express Nordic 09:00 (0335) is being decommissioned by Bring on
+     * 2026-09-01. The successor is Bring Courier & Express (3620) with VAS 1171
+     * — that migration needs both a product and an additional-service change,
+     * so it is intentionally NOT silently mapped here.
+     */
+    public function shippingGuideCode(): ?string
+    {
+        return match ($this) {
+            self::PICKUP_PARCEL => '5800',
+            self::HOME_DELIVERY_PARCEL => '5600',
+            self::BUSINESS_PARCEL => '5000',
+            self::EXPRESS_NORDIC_0900 => '0335',
+            self::MAILBOX_PARCEL => '3584',
+            self::MAILBOX_PARCEL_TRACKED => '3570',
             default => null,
         };
     }

@@ -81,7 +81,14 @@ final class PriceRequest
         }
 
         if ($this->products !== []) {
-            $q['product'] = array_map(static fn (Product $p): string => $p->value, $this->products);
+            // Shipping Guide v2 prices by Bring's numeric service code, not the
+            // v2 string name (sending EXPRESS_NORDIC_0900 et al. yields an empty
+            // product list / "no price"). Fall back to the string value only for
+            // products without a confirmed numeric code.
+            $q['product'] = array_map(
+                static fn (Product $p): string => $p->shippingGuideCode() ?? $p->value,
+                $this->products,
+            );
         }
         if ($this->additional !== []) {
             $q['additional'] = array_map(static fn (AdditionalService $a): string => $a->value, $this->additional);
