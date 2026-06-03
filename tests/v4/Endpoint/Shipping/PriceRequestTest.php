@@ -21,7 +21,7 @@ final class PriceRequestTest extends TestCase
             toCountry: Country::NO,
             toPostalCode: '0150',
             packages: [['weightInGrams' => 1000]],
-            products: $products,
+            products: array_values($products),
         );
     }
 
