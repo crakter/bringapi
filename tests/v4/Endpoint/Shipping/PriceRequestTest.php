@@ -55,4 +55,47 @@ final class PriceRequestTest extends TestCase
     {
         self::assertArrayNotHasKey('product', $this->request()->toQuery());
     }
+
+    public function testSinglePackageUsesUnsuffixedParameterNames(): void
+    {
+        $q = (new PriceRequest(
+            fromCountry: Country::NO,
+            fromPostalCode: '1712',
+            toCountry: Country::NO,
+            toPostalCode: '0150',
+            packages: [['weightInGrams' => 1000, 'length' => 30, 'width' => 20, 'height' => 15]],
+        ))->toQuery();
+
+        self::assertSame(1000, $q['weightInGrams']);
+        self::assertSame(30, $q['length']);
+        self::assertSame(20, $q['width']);
+        self::assertSame(15, $q['height']);
+    }
+
+    public function testEachPackageGetsItsOwnIndexedParameters(): void
+    {
+        // Bring indexes multi-package requests by suffixing the parameter name.
+        // Repeating a bare `weightInGrams` loses every package but one, which is
+        // what made the price identical for 1, 2 and 20 packages.
+        $q = (new PriceRequest(
+            fromCountry: Country::NO,
+            fromPostalCode: '1712',
+            toCountry: Country::NO,
+            toPostalCode: '0150',
+            packages: [
+                ['weightInGrams' => 1000, 'length' => 30, 'width' => 20, 'height' => 15],
+                ['weightInGrams' => 2500],
+                ['weightInGrams' => 400],
+            ],
+        ))->toQuery();
+
+        self::assertSame(1000, $q['weightInGrams0']);
+        self::assertSame(2500, $q['weightInGrams1']);
+        self::assertSame(400, $q['weightInGrams2']);
+        self::assertSame(30, $q['length0']);
+        self::assertSame(20, $q['width0']);
+        self::assertSame(15, $q['height0']);
+        self::assertArrayNotHasKey('weightInGrams', $q);
+        self::assertArrayNotHasKey('length1', $q);
+    }
 }

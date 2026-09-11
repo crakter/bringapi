@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   authenticated UI via `<img src="…">`.
 
 ### Fixed
+- `PriceRequest::toQuery()` now gives every package its own indexed query
+  parameters (`weightInGrams0`, `length0`, …, `weightInGrams1`, …) when a
+  request carries more than one package. The previous shape repeated the bare
+  key (`weightInGrams=1200&weightInGrams=800`), which Shipping Guide v2
+  collapses to a single value — so a 2-, 3- or 20-package request was priced
+  as one package and every quote came back identical regardless of package
+  count. A single-package request keeps the unsuffixed names it always used.
 - `PriceRequest::toQuery()` now serialises the `product` query parameter
   as Bring's numeric service code (via the new `Product::shippingGuideCode()`)
   instead of the v2 string name. Shipping Guide v2 prices by numeric code,

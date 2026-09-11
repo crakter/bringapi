@@ -178,7 +178,7 @@ final class TransportTest extends TestCase
         }
     }
 
-    public function testShippingPriceQueryBuildsBareRepeatedKeys(): void
+    public function testShippingPriceQueryIndexesEachPackage(): void
     {
         $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"Product":[]}')]);
         $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
@@ -193,11 +193,32 @@ final class TransportTest extends TestCase
         $transport->send(new PriceEndpoint($request));
 
         $uri = (string) $client->lastRequest()->getUri();
-        // Repeated weightInGrams without [0]/[1] subscripts (Bring's expected format).
-        self::assertStringContainsString('weightInGrams=1200', $uri);
-        self::assertStringContainsString('weightInGrams=800', $uri);
+        // Shipping Guide v2 needs one suffixed parameter per package; a repeated
+        // bare `weightInGrams` is collapsed server-side and prices one package.
+        self::assertStringContainsString('weightInGrams0=1200', $uri);
+        self::assertStringContainsString('weightInGrams1=800', $uri);
+        self::assertStringNotContainsString('weightInGrams=', $uri);
         self::assertStringNotContainsString('weightInGrams%5B0%5D=', $uri);
-        self::assertStringNotContainsString('weightInGrams[0]=', $uri);
+    }
+
+    public function testShippingPriceQueryKeepsBareKeysForASinglePackage(): void
+    {
+        $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"Product":[]}')]);
+        $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
+
+        $request = new PriceRequest(
+            fromCountry: Country::NO,
+            fromPostalCode: '0150',
+            toCountry: Country::NO,
+            toPostalCode: '5003',
+            packages: [['weightInGrams' => 1200, 'length' => 30, 'width' => 20, 'height' => 15]],
+        );
+        $transport->send(new PriceEndpoint($request));
+
+        $uri = (string) $client->lastRequest()->getUri();
+        self::assertStringContainsString('weightInGrams=1200', $uri);
+        self::assertStringContainsString('length=30', $uri);
+        self::assertStringNotContainsString('weightInGrams0=', $uri);
     }
 
     public function testPostalCodeRequestUrl(): void

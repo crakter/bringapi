@@ -67,16 +67,25 @@ final class PriceRequest
             'toPostalCode' => $this->toPostalCode,
         ];
 
-        foreach ($this->packages as $i => $pkg) {
-            $q['weightInGrams'][$i] = (int) $pkg['weightInGrams'];
+        // Shipping Guide v2 addresses each package by an index *suffix* on the
+        // parameter name (weightInGrams0, length0, ..., weightInGrams1, ...) —
+        // not by a repeated bare key. A repeated `weightInGrams` is collapsed to
+        // a single value server-side, so every multi-package request was priced
+        // as one package. A lone package keeps the unsuffixed names, which is
+        // what the API documents for the single-package case.
+        $packages = array_values($this->packages);
+        $multiple = \count($packages) > 1;
+        foreach ($packages as $i => $pkg) {
+            $suffix = $multiple ? (string) $i : '';
+            $q['weightInGrams'.$suffix] = (int) $pkg['weightInGrams'];
             if (isset($pkg['length'])) {
-                $q['length'][$i] = (int) $pkg['length'];
+                $q['length'.$suffix] = (int) $pkg['length'];
             }
             if (isset($pkg['width'])) {
-                $q['width'][$i] = (int) $pkg['width'];
+                $q['width'.$suffix] = (int) $pkg['width'];
             }
             if (isset($pkg['height'])) {
-                $q['height'][$i] = (int) $pkg['height'];
+                $q['height'.$suffix] = (int) $pkg['height'];
             }
         }
 
