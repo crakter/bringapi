@@ -65,9 +65,8 @@ enum Product: string
     }
 
     /**
-     * Product identifier as the Shipping Guide v2 endpoints
-     * (/shippingguide/v2/products[/price]) expect it in the `product` query
-     * parameter.
+     * Product identifier as the Shipping Guide v2 expects it: the `id` of a
+     * product in the POST body (/shippingguide/api/v2/products).
      *
      * Shipping Guide v2 identifies products by Bring's numeric service codes
      * (e.g. "5800" Pickup Parcel, "5600" Home Delivery, "5000" Business Parcel,

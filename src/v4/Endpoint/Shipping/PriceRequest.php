@@ -57,7 +57,94 @@ final class PriceRequest
         }
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * Languages the POST body's `language` field accepts. Finnish is not one
+     * of them, so a Finnish request leaves the field out and Bring answers in
+     * its default (Norwegian).
+     */
+    private const BODY_LANGUAGES = ['NO', 'SV', 'DA', 'EN'];
+
+    /**
+     * The JSON body for `POST /shippingguide/api/v2/products`, the Shipping
+     * Guide request Bring documents. Every package is its own entry in
+     * `consignments[0].packages`, so a request of three packages is priced as
+     * three packages.
+     *
+     * `clientId` and `pid` have no field in the POST body and are not sent.
+     *
+     * @param bool|null $withPrice            overrides {@see $withPrice} (the price endpoint forces it on)
+     * @param bool|null $withExpectedDelivery overrides {@see $withExpectedDelivery} (the delivery-time endpoint forces it on)
+     *
+     * @return array<string, mixed>
+     */
+    public function toJsonBody(?bool $withPrice = null, ?bool $withExpectedDelivery = null): array
+    {
+        $packages = [];
+        foreach (array_values($this->packages) as $i => $pkg) {
+            $package = ['id' => (string) ($i + 1), 'grossWeight' => (int) $pkg['weightInGrams']];
+            foreach (['length', 'width', 'height'] as $dimension) {
+                if (isset($pkg[$dimension])) {
+                    $package[$dimension] = (int) $pkg[$dimension];
+                }
+            }
+            $packages[] = $package;
+        }
+
+        $consignment = [
+            'id' => '1',
+            'fromCountryCode' => $this->fromCountry->value,
+            'fromPostalCode' => $this->fromPostalCode,
+            'toCountryCode' => $this->toCountry->value,
+            'toPostalCode' => $this->toPostalCode,
+            'packages' => $packages,
+            // Shipping Guide v2 prices by Bring's numeric service code, not the
+            // v2 string name. Fall back to the string value only for products
+            // without a confirmed numeric code.
+            'products' => array_map(
+                static fn (Product $p): array => ['id' => $p->shippingGuideCode() ?? $p->value],
+                $this->products,
+            ),
+        ];
+        if ($this->additional !== []) {
+            $consignment['additionalServices'] = array_map(
+                static fn (AdditionalService $a): array => ['id' => $a->value],
+                $this->additional,
+            );
+        }
+        if ($this->shippingDate !== null) {
+            $consignment['shippingDate'] = [
+                'year' => $this->shippingDate->format('Y'),
+                'month' => $this->shippingDate->format('n'),
+                'day' => $this->shippingDate->format('j'),
+                'hour' => $this->shippingDate->format('G'),
+                'minute' => $this->shippingDate->format('i'),
+            ];
+        }
+
+        $body = ['consignments' => [$consignment]];
+        if ($this->language !== null && \in_array(strtoupper($this->language->value), self::BODY_LANGUAGES, true)) {
+            $body['language'] = strtoupper($this->language->value);
+        }
+        $body['withPrice'] = $withPrice ?? $this->withPrice;
+        $body['withExpectedDelivery'] = $withExpectedDelivery ?? $this->withExpectedDelivery;
+        $body['withGuiInformation'] = $this->withGuiInformation;
+        $body['edi'] = $this->edi;
+        $body['postingAtPostoffice'] = $this->postingAtPostOffice;
+
+        return $body;
+    }
+
+    /**
+     * Query parameters for the old GET form of the Shipping Guide.
+     *
+     * @deprecated Bring documents only `POST /shippingguide/api/v2/products`, and
+     *             the GET form priced a multi-package request as one package
+     *             whichever way the packages were written. The endpoints send
+     *             {@see toJsonBody()} now; this is kept for callers that built
+     *             their own URL from it.
+     *
+     * @return array<string, mixed>
+     */
     public function toQuery(): array
     {
         $q = [
