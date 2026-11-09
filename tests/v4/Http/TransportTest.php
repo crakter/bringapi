@@ -8,6 +8,7 @@ use Bring\Api\Auth\Credentials;
 use Bring\Api\Auth\HeaderAuthorization;
 use Bring\Api\Auth\NullAuthorization;
 use Bring\Api\Endpoint\PostalCode\PostalCodeEndpoint;
+use Bring\Api\Endpoint\Shipping\DeliveryTimeEndpoint;
 use Bring\Api\Endpoint\Shipping\PriceEndpoint;
 use Bring\Api\Endpoint\Shipping\PriceRequest;
 use Bring\Api\Enum\Country;
@@ -178,9 +179,9 @@ final class TransportTest extends TestCase
         }
     }
 
-    public function testShippingPriceQueryIndexesEachPackage(): void
+    public function testShippingPriceIsAPostWithEveryPackageInTheBody(): void
     {
-        $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"Product":[]}')]);
+        $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"consignments":[]}')]);
         $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
 
         $request = new PriceRequest(
@@ -188,37 +189,42 @@ final class TransportTest extends TestCase
             fromPostalCode: '0150',
             toCountry: Country::NO,
             toPostalCode: '5003',
-            packages: [['weightInGrams' => 1200], ['weightInGrams' => 800]],
+            packages: [['weightInGrams' => 1200], ['weightInGrams' => 800], ['weightInGrams' => 800]],
         );
         $transport->send(new PriceEndpoint($request));
 
-        $uri = (string) $client->lastRequest()->getUri();
-        // Shipping Guide v2 needs one suffixed parameter per package; a repeated
-        // bare `weightInGrams` is collapsed server-side and prices one package.
-        self::assertStringContainsString('weightInGrams0=1200', $uri);
-        self::assertStringContainsString('weightInGrams1=800', $uri);
-        self::assertStringNotContainsString('weightInGrams=', $uri);
-        self::assertStringNotContainsString('weightInGrams%5B0%5D=', $uri);
+        $sent = $client->lastRequest();
+        // The GET form priced a multi-package request as one package however
+        // the packages were written; the documented POST lists each of them.
+        self::assertSame('POST', $sent->getMethod());
+        self::assertSame('https://api.bring.com/shippingguide/api/v2/products', (string) $sent->getUri());
+        self::assertSame('application/json', $sent->getHeaderLine('Content-Type'));
+
+        $body = json_decode((string) $sent->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        self::assertIsArray($body);
+        self::assertSame(
+            [1200, 800, 800],
+            array_column($body['consignments'][0]['packages'], 'grossWeight'),
+        );
+        self::assertTrue($body['withPrice']);
     }
 
-    public function testShippingPriceQueryKeepsBareKeysForASinglePackage(): void
+    public function testDeliveryTimeAsksForLeadTimes(): void
     {
-        $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"Product":[]}')]);
+        $client = new RecordingClient([new Response(200, ['Content-Type' => 'application/json'], '{"consignments":[]}')]);
         $transport = new Transport($client, $this->factory, $this->factory, $this->factory, new NullAuthorization());
 
-        $request = new PriceRequest(
+        $transport->send(new DeliveryTimeEndpoint(new PriceRequest(
             fromCountry: Country::NO,
             fromPostalCode: '0150',
             toCountry: Country::NO,
             toPostalCode: '5003',
-            packages: [['weightInGrams' => 1200, 'length' => 30, 'width' => 20, 'height' => 15]],
-        );
-        $transport->send(new PriceEndpoint($request));
+            packages: [['weightInGrams' => 1200]],
+        )));
 
-        $uri = (string) $client->lastRequest()->getUri();
-        self::assertStringContainsString('weightInGrams=1200', $uri);
-        self::assertStringContainsString('length=30', $uri);
-        self::assertStringNotContainsString('weightInGrams0=', $uri);
+        $body = json_decode((string) $client->lastRequest()->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        self::assertIsArray($body);
+        self::assertTrue($body['withExpectedDelivery']);
     }
 
     public function testPostalCodeRequestUrl(): void

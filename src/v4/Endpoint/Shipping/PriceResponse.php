@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bring\Api\Endpoint\Shipping;
 
 /**
- * Parsed response from /shippingguide/v2/products/price.
+ * Parsed price response from POST /shippingguide/api/v2/products.
  *
  * Bring returns either {"consignments":[…]} (v2) or {"Product":[…]} (legacy).
  * Both shapes are folded into {@see $products}; callers walk the typed list.

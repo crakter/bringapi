@@ -23,9 +23,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   authenticated UI via `<img src="…">`.
 
 ### Fixed
-- `PriceRequest::toQuery()` now gives every package its own indexed query
-  parameters (`weightInGrams0`, `length0`, …, `weightInGrams1`, …) when a
-  request carries more than one package. The previous shape repeated the bare
+- The Shipping Guide endpoints (`ProductsEndpoint`, `PriceEndpoint`,
+  `DeliveryTimeEndpoint`) now `POST` the documented JSON request to
+  `https://api.bring.com/shippingguide/api/v2/products` instead of the
+  undocumented `GET /shippingguide/v2/products[/price|/expectedDelivery]`.
+  The GET form priced a multi-package request as one package however the
+  packages were written — repeated `weightInGrams` keys and the indexed
+  `weightInGrams0`, `weightInGrams1`, … below alike — so a quote for 1, 2 or
+  20 packages came back the same. The POST body lists every package in
+  `consignments[0].packages` (new `PriceRequest::toJsonBody()`). The price
+  endpoint always asks for prices and the delivery-time endpoint for lead
+  times; `clientId` and `pid` have no field in the POST body and are no longer
+  sent; a Finnish `language` is left out (the body takes NO/SV/DA/EN).
+- `ProductPrice::fromArray()` reads the POST answer's amounts, which are
+  plain strings under `price.listPrice.priceWith(out)AdditionalServices` with
+  the currency in `currencyCode`; it read none of them before. The older flat
+  `{"value": …}` shape still parses.
+- (Superseded by the POST change above.) `PriceRequest::toQuery()` now gives
+  every package its own indexed query parameters (`weightInGrams0`, `length0`,
+  …, `weightInGrams1`, …) when a request carries more than one package. The previous shape repeated the bare
   key (`weightInGrams=1200&weightInGrams=800`), which Shipping Guide v2
   collapses to a single value — so a 2-, 3- or 20-package request was priced
   as one package and every quote came back identical regardless of package
@@ -39,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   case maps to `4850` (Business Parcel Express / "Pakke til bedrift ekspress"),
   the everyday express parcel — not Bring's separate "Express Nordic 09:00"
   courier product (`0335`).
+
+### Deprecated
+- `PriceRequest::toQuery()` — nothing in the library sends it any more; use
+  `toJsonBody()`.
 
 ### Added
 - `Product::shippingGuideCode(): ?string` — the numeric service code the

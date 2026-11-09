@@ -8,7 +8,13 @@ use Bring\Api\Endpoint\AbstractJsonEndpoint;
 use Bring\Api\Http\HttpMethod;
 
 /**
- * GET https://api.bring.com/shippingguide/v2/products/price
+ * POST https://api.bring.com/shippingguide/api/v2/products
+ *
+ * Prices: the request is sent with `withPrice` on, whatever it says.
+ *
+ * Bring documents only the POST form of the Shipping Guide. Its body lists
+ * every package (see {@see PriceRequest::toJsonBody()}); the old GET form
+ * priced a multi-package request as one package.
  *
  * @extends AbstractJsonEndpoint<PriceResponse>
  */
@@ -21,20 +27,20 @@ final class PriceEndpoint extends AbstractJsonEndpoint
     #[\Override]
     public function method(): HttpMethod
     {
-        return HttpMethod::GET;
+        return HttpMethod::POST;
     }
 
     #[\Override]
     protected function baseUri(): string
     {
-        return 'https://api.bring.com/shippingguide/v2/products/price';
+        return 'https://api.bring.com/shippingguide/api/v2/products';
     }
 
     /** @return array<string, mixed> */
     #[\Override]
-    protected function queryParameters(): array
+    protected function jsonBody(): array
     {
-        return $this->request->toQuery();
+        return $this->request->toJsonBody(withPrice: true);
     }
 
     /** @param array<mixed, mixed> $decoded */
